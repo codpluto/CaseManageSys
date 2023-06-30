@@ -1,0 +1,141 @@
+package com.zhu.casemanage.controller;
+
+import com.zhu.casemanage.utils.Result;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping(value = "/platform/cmCaseInfo")
+public class CaseInfoController {
+
+    /*
+     * 获取指定病例号的病例信息
+     * */
+    @RequestMapping(value = "/{caseNumber}",method = RequestMethod.GET)
+    public Result getCaseInfoByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
+        return new Result();
+    }
+
+    /*
+     * 获取指定病例号的3D病例信息
+     * */
+    @RequestMapping(value = "3dcmCaseInfo/{caseNumber}",method = RequestMethod.GET)
+    public Result get3DCaseInfoByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
+        return new Result();
+    }
+
+    /*
+     * 获取指定病例号的pdf病例信息
+     * */
+    @RequestMapping(value = "pdfCaseInfo/{caseNumber}",method = RequestMethod.GET)
+    public Result getPDFCaseInfoByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
+        return new Result();
+    }
+
+    /*
+     * 删除指定病例号的病例信息
+     * */
+    @RequestMapping(value = "/{caseNumber}",method = RequestMethod.DELETE)
+    public Result deleteCaseInfoByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
+        return new Result();
+    }
+
+    /*
+     * 根据病例号获取暂存的患者信息
+     * */
+    @RequestMapping(value = "/record/{caseNumber}",method = RequestMethod.POST)
+    public Result getRecordCaseInfoByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
+        return new Result();
+    }
+
+    /*
+     * 暂存患者信息
+     * */
+    @RequestMapping(value = "/record",method = RequestMethod.POST)
+    public Result recordCaseInfo() {
+        return new Result();
+    }
+
+    /*
+     * 返回全部病例的第pageNum页（默认状态为全部）
+     * */
+    @RequestMapping(value = "/cmCaseInfo/{pageNum}/{pageSize}",method = RequestMethod.GET)
+    public Result showCaseInfo(@PathVariable("pageNum") int pageNum, @PathVariable("pageSize") int pageSize) {
+        return new Result();
+    }
+
+    /*
+     * 返回按所选状态(selectStatus)的全部病例的第pageNum页
+     * */
+    @RequestMapping(value = "/cmCaseInfo/dispose/{pageNum}/{pageSize}",method = RequestMethod.GET)
+    public Result showCaseInfoBySelectStatus(@PathVariable("pageNum") int pageNum,@PathVariable("selectStatus") int selectStatus ,@PathVariable("pageSize") int pageSize) {
+        return new Result();
+    }
+
+    /*
+     * 返回按关键字搜索(selectParam)的全部病例的第pageNum页
+     * */
+    @RequestMapping(value = "/cmCaseInfo/dispose/{pageNum}/{pageSize}",method = RequestMethod.GET)
+    public Result showCaseInfoBySelectParam(@PathVariable("pageNum") int pageNum,@PathVariable("selectParam") int selectStatus ,@PathVariable("pageSize") int pageSize) {
+        return new Result();
+    }
+
+    /*
+     * 返回待处理病例的第pageNum页（默认状态为全部）
+     * */
+    @RequestMapping(value = "/cmCaseInfo/dispose/{pageNum}/{pageSize}",method = RequestMethod.GET)
+    public Result showDisposeCaseInfo(@PathVariable("pageNum") int pageNum,@PathVariable("pageSize") int pageSize) {
+        return new Result();
+    }
+
+    /*
+     * 返回按所选状态的待处理病例的第pageNum页
+     * */
+    @RequestMapping(value = "/cmCaseInfo/dispose/{pageNum}/{pageSize}",method = RequestMethod.GET)
+    public Result showDisposeCaseInfoBySelectStatus(@PathVariable("pageNum") int pageNum,@PathVariable("selectStatus") int selectStatus,@PathVariable("pageSize") int pageSize) {
+        return new Result();
+    }
+
+    /*
+     * 根据病例号获取患者的临床信息
+     * */
+    @RequestMapping(value = "/clinicalCircumstance/{caseNumber}",method = RequestMethod.GET)
+    public Result getClinicalCircumstanceByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
+        return new Result();
+    }
+
+    /*
+     * 根据病例号提交患者的临床信息
+     * */
+    @RequestMapping(value = "/clinicalCircumstance/{caseNumber}",method = RequestMethod.PUT)
+    public Result commitClinicalCircumstanceByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
+        return new Result();
+    }
+
+    /*
+     * 上传数字模型或文件压缩包
+     * */
+    @RequestMapping(value = "/stl",method = RequestMethod.POST)
+    public Result uploadStl() {
+        return new Result();
+    }
+
+    /*
+     * 根据病例号获取该病例的文件信息（数字模型或文件压缩包）
+     * */
+    @RequestMapping(value = "/{caseNumber}/file",method = RequestMethod.POST)
+    public Result getFileByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
+        return new Result();
+    }
+
+    /*
+     * 重启病例(阶段调整)，修改旧的病例号为新的病例号
+     * */
+    @RequestMapping(value = "/restart/{oldCaseNumber}/{newCaseNumber}",method = RequestMethod.POST)
+    public Result restartCase(@PathVariable("oldCaseNumber") String oldCaseNumber,@PathVariable("newCaseNumber") String newCaseNumber) {
+        return new Result();
+    }
+
+}
