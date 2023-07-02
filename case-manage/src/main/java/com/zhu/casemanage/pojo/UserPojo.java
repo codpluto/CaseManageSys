@@ -26,8 +26,8 @@ public class UserPojo {
     @TableField(value = "user_type")
     private int userType;
 
-    @TableField(value = "user_face")
-    private String userFace;
+    @TableField(value = "face_photo")
+    private String facePhoto;
 
     @TableField(value = "user_phone")
     private String userPhone;

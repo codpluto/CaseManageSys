@@ -1,21 +1,28 @@
 package com.zhu.casemanage.controller;
 
+import com.zhu.casemanage.exception.BusinessException;
+import com.zhu.casemanage.pojo.UserPojo;
+import com.zhu.casemanage.service.UserServiceImpl;
 import com.zhu.casemanage.utils.Result;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.ibatis.jdbc.Null;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/login")
 public class LoginController {
 
+    @Autowired
+    UserServiceImpl userService;
+
     /*
     * 登录
     * */
     @RequestMapping(value = "/token", method = RequestMethod.POST)
-    public Result login() {
-        return new Result();
+    public Result login(@RequestParam("account") String account,
+                        @RequestParam("password") String password) {
+        String token = userService.login(account, password);
+        return Result.success(token);
     }
 
     /*
