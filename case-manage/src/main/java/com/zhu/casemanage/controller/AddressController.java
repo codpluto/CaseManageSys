@@ -19,12 +19,12 @@ public class AddressController {
      * */
     @RequestMapping(value = "/cmAddress",method = RequestMethod.GET)
     public Result getAddressList(@RequestParam("userId") int userId) {
-        List<AddressPojo> userAddressList = addressService.findUserAddressList(userId);
-        if (userAddressList == null ) {
-            return Result.failed("查询失败");
+        List<AddressPojo> userAddressList = null;
+        try {
+            userAddressList = addressService.findUserAddressList(userId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-//        if (userAddressList.size() == 0)
-//            return Result.failGetString("查询失败");
         return Result.success(userAddressList);
     }
 
@@ -33,7 +33,11 @@ public class AddressController {
      * */
     @RequestMapping(value = "/cmAddress",method = RequestMethod.POST)
     public Result addAddress(@RequestBody AddressPojo newAddress) {
-        addressService.addAddress(newAddress);
+        try {
+            addressService.addAddress(newAddress);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return Result.success();
     }
 
@@ -52,5 +56,7 @@ public class AddressController {
     public Result getAddressByCaseNumberAndId(@PathVariable("caseNumber") String caseNumber,@PathVariable("id") int id) {
         return new Result();
     }
+
+
 
 }
