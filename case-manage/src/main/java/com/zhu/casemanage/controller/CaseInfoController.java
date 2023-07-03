@@ -150,13 +150,6 @@ public class CaseInfoController {
         return new Result();
     }
 
-    /*
-     * 根据病例号获取该病例的文件信息（数字模型或文件压缩包）
-     * */
-    @RequestMapping(value = "/{caseNumber}/file",method = RequestMethod.POST)
-    public Result getFileByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
-        return new Result();
-    }
 
     /*
      * 重启病例(阶段调整)，修改旧的病例号为新的病例号

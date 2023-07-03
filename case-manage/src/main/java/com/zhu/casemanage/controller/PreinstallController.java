@@ -24,7 +24,7 @@ public class PreinstallController {
     }
 
     /*
-     * 提交预设偏好设定(新增、修改都会用到)
+     * 更新预设偏好设定
      * */
     @RequestMapping(value = "/cmPreinstall",method = RequestMethod.PUT)
     public Result commitPreinstall(@RequestBody PreferPojo newPrefer) {
