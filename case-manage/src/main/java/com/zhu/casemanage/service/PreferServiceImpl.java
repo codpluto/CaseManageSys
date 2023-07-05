@@ -59,4 +59,12 @@ public class PreferServiceImpl {
         return preferList;
     }
 
+    /*
+    * 设置偏好名称
+    * */
+    public PreferPojo setPreinstallName(@RequestBody PreferPojo prefer){
+        PreferPojo newPrefer = preferDao.selectOne(new QueryWrapper<PreferPojo>().eq("id", prefer.getPreferId()));
+        newPrefer.setPreinstall(prefer.getPreinstall());
+        return newPrefer;
+    }
 }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ResourceController {
 
     /*
-    * 返回公司信息(logo,officialWebsite,softIcon)
+    * 查询部分公司信息
     * */
     @RequestMapping(value = "/org")
     public Result showOrgInfo() {
@@ -17,7 +17,7 @@ public class ResourceController {
     }
 
     /*
-     * 返回公司信息（更全面）
+     * 查询更全面的公司信息
      * */
     @RequestMapping(value = "/org/login")
     public Result showOrgLoginInfo() {

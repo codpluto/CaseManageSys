@@ -76,5 +76,9 @@ public class UserServiceImpl {
     /*
     * 删除用户
     * */
-
+    public void delUserByAccount(String account){
+        if (userDao.delete(new QueryWrapper<UserPojo>().eq("account",account)) == 0){
+            throw new BusinessException("用户不存在,删除失败");
+        }
+    }
 }
