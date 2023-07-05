@@ -14,7 +14,7 @@ class CaseManageApplicationTests {
 
 	@Test
 	void contextLoads() {
-		userService.addUser(null,null,1,null,null,null);
+//		userService.addUser(null,null,1,null,null,null);
 	}
 
 	@Autowired

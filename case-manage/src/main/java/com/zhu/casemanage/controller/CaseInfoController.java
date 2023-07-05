@@ -16,7 +16,7 @@ public class CaseInfoController {
      * 获取指定病例号的病例信息
      * */
     @RequestMapping(value = "/{caseNumber}",method = RequestMethod.GET)
-    public Result getCaseInfoByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
+    public Result getCaseInfoByCaseNumber(@PathVariable("caseNumber") long caseNumber) {
         return new Result();
     }
 
@@ -24,7 +24,7 @@ public class CaseInfoController {
      * 获取指定病例号的3D病例信息
      * */
     @RequestMapping(value = "3dcmCaseInfo/{caseNumber}",method = RequestMethod.GET)
-    public Result get3DCaseInfoByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
+    public Result get3DCaseInfoByCaseNumber(@PathVariable("caseNumber") long caseNumber) {
         return new Result();
     }
 
@@ -32,7 +32,7 @@ public class CaseInfoController {
      * 获取指定病例号的pdf病例信息
      * */
     @RequestMapping(value = "pdfCaseInfo/{caseNumber}",method = RequestMethod.GET)
-    public Result getPDFCaseInfoByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
+    public Result getPDFCaseInfoByCaseNumber(@PathVariable("caseNumber") long caseNumber) {
         return new Result();
     }
 
@@ -40,14 +40,14 @@ public class CaseInfoController {
      * 删除指定病例号的病例信息
      * */
     @RequestMapping(value = "/{caseNumber}",method = RequestMethod.DELETE)
-    public Result deleteCaseInfoByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
+    public Result deleteCaseInfoByCaseNumber(@PathVariable("caseNumber") long caseNumber) {
         caseService.delCase(caseNumber);
         return Result.success();
     }
 
     //
 //    @RequestMapping(value = "/{caseNumber}",method = RequestMethod.DELETE)
-//    public Result deleteCaseInfoByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
+//    public Result deleteCaseInfoByCaseNumber(@PathVariable("caseNumber") long caseNumber) {
 //        caseService.delKeepCase(caseNumber);
 //        return Result.success();
 //    }
@@ -57,7 +57,7 @@ public class CaseInfoController {
      * 根据病例号获取暂存的患者信息
      * */
     @RequestMapping(value = "/record/{caseNumber}",method = RequestMethod.GET)
-    public Result getRecordCaseInfoByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
+    public Result getRecordCaseInfoByCaseNumber(@PathVariable("caseNumber") long caseNumber) {
         CasePojo caseByNumber = caseService.findCaseByNumber(caseNumber);
         return Result.success(caseByNumber);
     }
@@ -130,7 +130,7 @@ public class CaseInfoController {
      * 根据病例号获取患者的临床信息
      * */
     @RequestMapping(value = "/clinicalCircumstance/{caseNumber}",method = RequestMethod.GET)
-    public Result getClinicalCircumstanceByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
+    public Result getClinicalCircumstanceByCaseNumber(@PathVariable("caseNumber") long caseNumber) {
         return new Result();
     }
 
@@ -138,7 +138,7 @@ public class CaseInfoController {
      * 根据病例号提交患者的临床信息
      * */
     @RequestMapping(value = "/clinicalCircumstance/{caseNumber}",method = RequestMethod.PUT)
-    public Result commitClinicalCircumstanceByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
+    public Result commitClinicalCircumstanceByCaseNumber(@PathVariable("caseNumber") long caseNumber) {
         return new Result();
     }
 
@@ -155,7 +155,7 @@ public class CaseInfoController {
      * 重启病例(阶段调整)，修改旧的病例号为新的病例号
      * */
     @RequestMapping(value = "/restart/{oldCaseNumber}/{newCaseNumber}",method = RequestMethod.POST)
-    public Result restartCase(@PathVariable("oldCaseNumber") String oldCaseNumber,@PathVariable("newCaseNumber") String newCaseNumber) {
+    public Result restartCase(@PathVariable("oldCaseNumber") long oldCaseNumber,@PathVariable("newCaseNumber") long newCaseNumber) {
         return new Result();
     }
 

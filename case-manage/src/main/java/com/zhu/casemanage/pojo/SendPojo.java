@@ -1,45 +1,54 @@
-//package com.zhu.casemanage.pojo;
-//
-//import com.baomidou.mybatisplus.annotation.IdType;
-//import com.baomidou.mybatisplus.annotation.TableField;
-//import com.baomidou.mybatisplus.annotation.TableId;
-//import com.baomidou.mybatisplus.annotation.TableName;
-//import lombok.AllArgsConstructor;
-//import lombok.Data;
-//import lombok.NoArgsConstructor;
-//
-//@Data
-//@AllArgsConstructor
-//@NoArgsConstructor
-//@TableName(value = "send")
-//public class SendPojo {
-//    @TableId(value = "send_id",type = IdType.AUTO)
-//    private int sendId;
-//
-//    @TableField(value = "send_step_lower")
-//    private int sendStepLower;
-//
-//    @TableField(value = "send_step_upper")
-//    private int sendStepUpper;
-//
-//    @TableField(value = "send_list")
-//    private String sendList;
-//
-//    @TableField(value = "wear_remain")
-//    private int wearRemain;
-//
-//    @TableField(value = "total_step_lower")
-//    private int totalStepLower;
-//
-//    @TableField(value = "total_step_upper")
-//    private int totalStepUpper;
-//
-//    @TableField(value = "send_list_new")
-//    private String sendListNew;
-//
-//    @TableField(value = "wear_step")
-//    private int wearStep;
-//
-//    @TableField(value = "case_id")
-//    private int caseId;
-//}
+package com.zhu.casemanage.pojo;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.sql.Timestamp;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@TableName(value = "send")
+public class SendPojo {
+    @TableId(value = "id",type = IdType.AUTO)
+    private int sendId;
+
+    @TableField(value = "case_number")
+    private long caseNumber;
+
+    @TableField(value = "create_time")
+    private Timestamp createTime;
+
+    @TableField(value = "express_id")
+    private int expressId;
+
+    @TableField(value = "express_num")
+    private String expressNum;
+
+    @TableField(value = "lower_num")
+    private int lowerNum;
+
+    @TableField(value = "steps_low_start")
+    private int stepsLowStart;
+
+    @TableField(value = "steps_low_over")
+    private int stepsLowOver;
+
+    @TableField(value = "upper_num")
+    private int upperNum;
+
+    @TableField(value = "steps_up_start")
+    private int stepsUpStart;
+
+    @TableField(value = "steps_up_over")
+    private int stepsUpOver;
+
+    @TableField(value = "total_num")
+    private int totalNum;
+
+}

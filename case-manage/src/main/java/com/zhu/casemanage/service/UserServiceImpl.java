@@ -10,6 +10,7 @@ import com.zhu.casemanage.utils.RedisUtil;
 import com.zhu.casemanage.utils.Result;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
@@ -35,10 +36,11 @@ public class UserServiceImpl {
     }
 
 
-    public void addUser(String user_name,String password,int user_type,String user_face,String user_phone,String user_email){
-//        userDao.insert(new UserPojo(0,user_name,password,user_type,user_face,user_phone,user_email));
-        UserPojo user = new UserPojo();
-
+    public void addUser(@RequestBody UserPojo newUser){
+        if (userDao.selectOne(new QueryWrapper<UserPojo>().eq("account",newUser.getAccount())) != null){
+            throw new BusinessException("账号已存在");
+        }
+        userDao.insert(newUser);
     }
 
     public String login(String account,String password){
@@ -59,6 +61,20 @@ public class UserServiceImpl {
         return token;
     }
 
+    /**
+     *
+     * 根据查询用户信息
+     */
+    public UserPojo getUserInfoById(int userId){
+        UserPojo userPojo = userDao.selectById(userId);
+        if (userPojo == null){
+            throw new BusinessException("用户不存在");
+        }
+        return userPojo;
+    }
 
+    /*
+    * 删除用户
+    * */
 
 }

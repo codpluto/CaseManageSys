@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName(value = "address")
 public class AddressPojo {
-    @TableId(value = "address_id",type = IdType.AUTO)
+    @TableId(value = "id",type = IdType.AUTO)
     private int addressId;
 
     @TableField(value = "clinic")

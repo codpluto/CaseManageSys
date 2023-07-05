@@ -7,15 +7,14 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "preference")
-public class PreferPojo {
+@TableName(value = "scheme")
+public class SchemePojo {
     @TableId(value = "id",type = IdType.AUTO)
-    private int preferId;
+    private int schemeId;
 
     @TableField(value = "preinstall")
     private String preinstall;
@@ -95,7 +94,6 @@ public class PreferPojo {
     @TableField(value = "demand")
     private String demand;
 
-    @TableField(value = "user_id")
-    private int userId;
-
+    @TableField(value = "case_number")
+    private long caseNumber;
 }

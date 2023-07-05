@@ -15,7 +15,7 @@ public class CaseServiceImpl {
     private CaseDao caseDao;
 
     //根据病例号获取病例信息
-    public CasePojo findCaseByNumber(String caseNumber){
+    public CasePojo findCaseByNumber(long caseNumber){
         CasePojo caseInfo = caseDao.selectOne(new QueryWrapper<CasePojo>().eq("case_number", caseNumber));
         if (caseInfo == null){
             throw new BusinessException("该病例不存在");
@@ -41,13 +41,13 @@ public class CaseServiceImpl {
     }
 
     //根据病例号删除病例
-    public void delCase(String caseNumber){
+    public void delCase(long caseNumber){
         if (caseDao.delete(new QueryWrapper<CasePojo>().eq("case_number", caseNumber)) == 0){
             throw new BusinessException("病例不存在，删除失败");
         }
     }
 
-    public void delKeepCase(String caseNumber){
+    public void delKeepCase(long caseNumber){
         UpdateWrapper<CasePojo> updateWrapper = new UpdateWrapper<CasePojo>();
         updateWrapper.eq("case_number",caseNumber);
         updateWrapper.set("is_valid",0);

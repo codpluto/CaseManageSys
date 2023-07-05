@@ -15,11 +15,11 @@ import java.util.Date;
 @NoArgsConstructor
 @TableName(value = "case_info")
 public class CasePojo {
-    @TableId(value = "case_id",type = IdType.AUTO)
+    @TableId(value = "id",type = IdType.AUTO)
     private int caseId;
 
     @TableField(value = "case_number")
-    private String caseNumber;
+    private long caseNumber;
 
     @TableField(value = "patient_name")
     private String patientName;
@@ -75,20 +75,12 @@ public class CasePojo {
     @TableField(value = "address_id")
     private int addressId;
 
-    @TableField(value = "early_treatment_plan")
-    private int earlyTreatmentPlan;
 
     @TableField(value = "is_valid")
     private boolean isValid;
 
     @TableField(value = "mechanic_id")
     private int mechanicId;
-
-    @TableField(value = "org_id")
-    private int orgId;
-
-    @TableField(value = "out_case_number")
-    private String outCaseNumber;
 
     @TableField(value = "doctor_id")
     private int doctorId;
@@ -110,9 +102,6 @@ public class CasePojo {
 
     @TableField(value = "upper_total_step")
     private int upperTotalStep;
-
-    @TableField(value = "is_first_sent")
-    private int isFirstSent;
 
     @TableField(value = "wear_step")
     private int wearStep;

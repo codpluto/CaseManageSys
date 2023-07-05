@@ -26,7 +26,7 @@ public class PreferServiceImpl {
      * 修改偏好设定
      */
     public void updatePrefer(@RequestBody PreferPojo newPrefer){
-        if (preferDao.update(newPrefer,new QueryWrapper<PreferPojo>().eq("preference_id",newPrefer.getPreferenceId())) == 0){
+        if (preferDao.update(newPrefer,new QueryWrapper<PreferPojo>().eq("id",newPrefer.getPreferId())) == 0){
             throw new BusinessException("偏好不存在");
         }
     }
@@ -44,7 +44,7 @@ public class PreferServiceImpl {
      * 根据Id查询偏好
      */
     public PreferPojo findPreferById(int preferId){
-        PreferPojo preferPojo = preferDao.selectOne(new QueryWrapper<PreferPojo>().eq("preference_id", preferId));
+        PreferPojo preferPojo = preferDao.selectOne(new QueryWrapper<PreferPojo>().eq("id", preferId));
         if (preferPojo == null){
             throw new BusinessException("偏好不存在");
         }

@@ -9,12 +9,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.jdbc.Null;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "user")
 public class UserPojo {
-    @TableId(value = "user_id",type = IdType.AUTO)
+    @TableId(value = "id",type = IdType.AUTO)
     private int userId;
 
     @TableField(value = "user_name")
@@ -38,7 +41,11 @@ public class UserPojo {
     @TableField(value = "account")
     private String account;
 
-    @TableField(value = "org_id")
-    private int orgId;
+
+    @TableField(value = "update_time")
+    private Timestamp updateTime;
+
+    @TableField(value = "create_time")
+    private Timestamp createTime;
 
 }
