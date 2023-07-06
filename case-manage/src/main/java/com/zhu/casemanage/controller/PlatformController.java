@@ -3,14 +3,14 @@ package com.zhu.casemanage.controller;
 
 import com.aeert.jfilter.annotation.MoreSerializeField;
 import com.aeert.jfilter.annotation.SerializeField;
-import com.zhu.casemanage.pojo.CasePojo;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zhu.casemanage.pojo.UserPojo;
 import com.zhu.casemanage.service.UserServiceImpl;
 import com.zhu.casemanage.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -26,8 +26,9 @@ public class PlatformController {
      * 查询登录平台的用户信息
      * */
     @RequestMapping(value = "/sysUser",method = RequestMethod.GET)
-    public Result getSysUser() {
-        return new Result();
+    public Result getSysUser(@RequestParam String account) {
+        UserPojo user = userService.findUserByAccount(account);
+        return Result.success(user);
     }
 
     /*
@@ -43,35 +44,39 @@ public class PlatformController {
     }
 
     /*
-     * 查询平台的所有技工用户信息
-     * */
-    @RequestMapping(value = "/sysUser/mechanic",method = RequestMethod.GET)
-    public Result getSysUserMechanic() {
-        return new Result();
-    }
-
-    /*
      * 查询平台的所有专家用户信息
      * */
     @RequestMapping(value = "/sysUser/specialist",method = RequestMethod.GET)
+    @MoreSerializeField({
+            @SerializeField(clazz = UserPojo.class, includes = {"userId","userName"}),
+    })
     public Result getSysUserSpecialist() {
-        return new Result();
+        List<UserPojo> userList = userService.getUserListByType(2);
+        return Result.success(userList);
+    }
+
+    /*
+     * 查询平台的所有技工用户信息
+     * */
+    @RequestMapping(value = "/sysUser/mechanic",method = RequestMethod.GET)
+    @MoreSerializeField({
+            @SerializeField(clazz = UserPojo.class, includes = {"userId","userName"}),
+    })
+    public Result getSysUserMechanic() {
+        List<UserPojo> userList = userService.getUserListByType(3);
+        return Result.success(userList);
     }
 
     /*
      * 查询平台的所有主管用户信息
      * */
     @RequestMapping(value = "/sysUser/supervisor",method = RequestMethod.GET)
+    @MoreSerializeField({
+            @SerializeField(clazz = UserPojo.class, includes = {"userId","userName"}),
+    })
     public Result getSysUserSupervisor() {
-        return new Result();
+        List<UserPojo> userList = userService.getUserListByType(4);
+        return Result.success(userList);
     }
-
-//    /*
-//     *
-//     * */
-//    @RequestMapping(value = "/cmAddress/button",method = RequestMethod.POST)
-//    public Result name() {
-//        return new Result();
-//    }
 
 }
