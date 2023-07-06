@@ -22,6 +22,9 @@ public class SchemePojo {
     @TableField(value = "orthodontic_arch")
     private int orthodonticArch;
 
+    @TableField(value = "ext_tooth")
+    private int extTooth;
+
     @TableField(value = "tooth_extraction")
     private String toothExtraction;
 

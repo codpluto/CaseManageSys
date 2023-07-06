@@ -1,14 +1,17 @@
 package com.zhu.casemanage.controller;
 
+import com.zhu.casemanage.pojo.SchemePojo;
+import com.zhu.casemanage.service.SchemeServiceImpl;
 import com.zhu.casemanage.utils.Result;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/platform/cmScheme")
 public class SchemeController {
+
+    @Autowired
+    private SchemeServiceImpl schemeService;
 
     /*
      * 根据病例号获取其所有的治疗方案（列表）
@@ -40,6 +43,15 @@ public class SchemeController {
     @RequestMapping(value = "/file_new/{caseNumber}",method = RequestMethod.GET)
     public Result getNewSchemeInfoByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
         return new Result();
+    }
+
+    /*
+    * 新增治疗方案（新增病例界面）
+    * */
+    @RequestMapping(value = "/scheme/addScheme",method = RequestMethod.POST)
+    public Result addScheme(@RequestBody SchemePojo newScheme){
+        schemeService.addScheme(newScheme);
+        return Result.success();
     }
 
 }

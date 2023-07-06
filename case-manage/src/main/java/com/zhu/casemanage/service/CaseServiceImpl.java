@@ -15,25 +15,25 @@ public class CaseServiceImpl {
     private CaseDao caseDao;
 
     //根据病例号获取病例信息
-    public CasePojo findCaseByNumber(Long caseNumber){
-        CasePojo caseInfo = caseDao.selectOne(new QueryWrapper<CasePojo>().eq("case_number", caseNumber));
+    public CasePojo getCaseByNumber(Long caseNumber){
+//        CasePojo caseInfo = caseDao.selectOne(new QueryWrapper<CasePojo>().eq("case_number", caseNumber));
+        CasePojo caseInfo = caseDao.selectById(caseNumber);
         if (caseInfo == null){
             throw new BusinessException("该病例不存在");
         }
-
         return caseInfo;
     }
 
-    public CasePojo findCaseById(int caseId){
-        CasePojo casePojo = caseDao.selectById(caseId);
-        if (casePojo == null){
-            throw new BusinessException("该病例不存在");
-        }
-        return casePojo;
-    }
+//    public CasePojo getCaseById(int caseId){
+//        CasePojo casePojo = caseDao.selectById(caseId);
+//        if (casePojo == null){
+//            throw new BusinessException("该病例不存在");
+//        }
+//        return casePojo;
+//    }
 
     //新增病例
-    public void addCase(@RequestBody CasePojo casePojo){
+    public void addCase(CasePojo casePojo){
 //        casePojo.setCaseNumber(snowFlake.nextId());
         try {
             caseDao.insert(casePojo);
@@ -44,7 +44,8 @@ public class CaseServiceImpl {
 
     //根据病例号删除病例
     public void delCase(Long caseNumber){
-        if (caseDao.delete(new QueryWrapper<CasePojo>().eq("case_number", caseNumber)) == 0){
+//        if (caseDao.delete(new QueryWrapper<CasePojo>().eq("case_number", caseNumber)) == 0){
+        if (caseDao.deleteById(caseNumber) == 0){
             throw new BusinessException("病例不存在，删除失败");
         }
     }
@@ -64,7 +65,7 @@ public class CaseServiceImpl {
 
     //跟新病例信息
     public void updateCase(CasePojo newCase){
-        if (caseDao.update(newCase,new QueryWrapper<CasePojo>().eq("case_number",newCase.getCaseNumber())) == 0){
+        if (caseDao.updateById(newCase) == 0){
             throw new BusinessException("病例不存在，修改失败");
         }
     }
@@ -73,6 +74,17 @@ public class CaseServiceImpl {
     * 获取病例的临床信息
     * */
     public CasePojo getClinicalCircumstance(Long caseNumber){
+        CasePojo casePojo = caseDao.selectById(caseNumber);
+        if (casePojo == null){
+            throw new BusinessException("病例不存在");
+        }
+        return casePojo;
+    }
+
+    /*
+    * 根据病例号获取排牙设定
+    * */
+    public CasePojo getToothSetByNumber(Long caseNumber){
         CasePojo casePojo = caseDao.selectById(caseNumber);
         if (casePojo == null){
             throw new BusinessException("病例不存在");

@@ -60,7 +60,7 @@ public class CaseInfoController {
      * */
     @RequestMapping(value = "/record/{caseNumber}",method = RequestMethod.GET)
     public Result getRecordCaseInfoByCaseNumber(@PathVariable("caseNumber") long caseNumber) {
-        CasePojo caseByNumber = caseService.findCaseByNumber(caseNumber);
+        CasePojo caseByNumber = caseService.getCaseByNumber(caseNumber);
         return Result.success(caseByNumber);
     }
 
