@@ -69,4 +69,15 @@ public class CaseServiceImpl {
         }
     }
 
+    /*
+    * 获取病例的临床信息
+    * */
+    public CasePojo getClinicalCircumstance(Long caseNumber){
+        CasePojo casePojo = caseDao.selectById(caseNumber);
+        if (casePojo == null){
+            throw new BusinessException("病例不存在");
+        }
+        return casePojo;
+    }
+
 }

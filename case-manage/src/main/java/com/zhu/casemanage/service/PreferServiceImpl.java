@@ -1,6 +1,7 @@
 package com.zhu.casemanage.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.zhu.casemanage.dao.PreferDao;
 import com.zhu.casemanage.exception.BusinessException;
 import com.zhu.casemanage.pojo.PreferPojo;
@@ -62,9 +63,15 @@ public class PreferServiceImpl {
     /*
     * 设置偏好名称
     * */
-    public PreferPojo setPreinstallName(@RequestBody PreferPojo prefer){
-        PreferPojo newPrefer = preferDao.selectOne(new QueryWrapper<PreferPojo>().eq("id", prefer.getPreferId()));
-        newPrefer.setPreinstall(prefer.getPreinstall());
-        return newPrefer;
+    public void setPreinstallName(int preferId,String preinstall){
+//        PreferPojo newPrefer = preferDao.selectOne(new QueryWrapper<PreferPojo>().eq("id", prefer.getPreferId()));
+//        newPrefer.setPreinstall(prefer.getPreinstall());
+//        return newPrefer;
+        UpdateWrapper<PreferPojo> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id",preferId);
+        updateWrapper.set("preinstall",preinstall);
+        if (preferDao.update(null,updateWrapper) == 0){
+            throw new BusinessException("病例不存在");
+        }
     }
 }

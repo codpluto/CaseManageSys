@@ -14,7 +14,8 @@ public class ToothController {
      * 根据病例号获取患者的排牙设定
      * */
     @RequestMapping(value = "/toothSet/caseId/{caseNumber}",method = RequestMethod.GET)
-    public Result getToothSetByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
+    public Result getToothSetByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
+
         return new Result();
     }
 

@@ -36,8 +36,9 @@ public class PreinstallController {
      * 设置预设偏好设定的偏好名称
      * */
     @RequestMapping(value = "/cmPreinstall/valid",method = RequestMethod.POST)
-    public Result addPreinstallName(@RequestBody PreferPojo prefer) {
-        preferService.setPreinstallName(prefer);
+    public Result addPreinstallName(@RequestParam int preferId,
+                                    @RequestParam String preinstall) {
+        preferService.setPreinstallName(preferId,preinstall);
         return Result.success();
     }
 

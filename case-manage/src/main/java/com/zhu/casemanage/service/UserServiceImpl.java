@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -80,5 +81,12 @@ public class UserServiceImpl {
         if (userDao.delete(new QueryWrapper<UserPojo>().eq("account",account)) == 0){
             throw new BusinessException("用户不存在,删除失败");
         }
+    }
+
+    /**
+     * 获取某种类型的用户列表
+     */
+    public List<UserPojo> getUserListByType(int type){
+        return userDao.selectList(new QueryWrapper<UserPojo>().eq("user_type", type));
     }
 }
