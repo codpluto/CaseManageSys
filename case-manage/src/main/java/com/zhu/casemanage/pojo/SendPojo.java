@@ -19,7 +19,7 @@ public class SendPojo {
     private int sendId;
 
     @TableField(value = "case_number")
-    private long caseNumber;
+    private Long caseNumber;
 
     @TableField(value = "create_time")
     private Timestamp createTime;

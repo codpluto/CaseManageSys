@@ -95,5 +95,5 @@ public class SchemePojo {
     private String demand;
 
     @TableField(value = "case_number")
-    private long caseNumber;
+    private Long caseNumber;
 }

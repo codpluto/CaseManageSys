@@ -15,11 +15,12 @@ public class CaseServiceImpl {
     private CaseDao caseDao;
 
     //根据病例号获取病例信息
-    public CasePojo findCaseByNumber(long caseNumber){
+    public CasePojo findCaseByNumber(Long caseNumber){
         CasePojo caseInfo = caseDao.selectOne(new QueryWrapper<CasePojo>().eq("case_number", caseNumber));
         if (caseInfo == null){
             throw new BusinessException("该病例不存在");
         }
+
         return caseInfo;
     }
 
@@ -33,21 +34,22 @@ public class CaseServiceImpl {
 
     //新增病例
     public void addCase(@RequestBody CasePojo casePojo){
+//        casePojo.setCaseNumber(snowFlake.nextId());
         try {
             caseDao.insert(casePojo);
         } catch (Exception e) {
-            throw new BusinessException("病例已存在");
+            throw new BusinessException(e.getMessage());
         }
     }
 
     //根据病例号删除病例
-    public void delCase(long caseNumber){
+    public void delCase(Long caseNumber){
         if (caseDao.delete(new QueryWrapper<CasePojo>().eq("case_number", caseNumber)) == 0){
             throw new BusinessException("病例不存在，删除失败");
         }
     }
 
-    public void delKeepCase(long caseNumber){
+    public void delKeepCase(Long caseNumber){
         UpdateWrapper<CasePojo> updateWrapper = new UpdateWrapper<CasePojo>();
         updateWrapper.eq("case_number",caseNumber);
         updateWrapper.set("is_valid",0);

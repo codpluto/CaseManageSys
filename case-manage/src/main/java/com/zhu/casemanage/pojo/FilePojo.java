@@ -28,7 +28,7 @@ public class FilePojo {
     private int fileType;
 
     @TableField(value = "case_number")
-    private int caseNumber;
+    private Long caseNumber;
 
     @TableField(value = "update_time")
     private Timestamp updateTime;

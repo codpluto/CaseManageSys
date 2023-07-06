@@ -31,7 +31,7 @@ public class TDSchemePojo {
     private Date updateTime;
 
     @TableField(value = "case_number")
-    private long caseNumber;
+    private Long caseNumber;
 
     @TableField(value = "scheme_url")
     private String schemeUrl;
