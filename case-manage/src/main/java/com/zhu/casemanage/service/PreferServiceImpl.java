@@ -55,7 +55,7 @@ public class PreferServiceImpl {
     /**
      * 根据userId查询偏好列表
      */
-    public List<PreferPojo> findPerferList(int userId){
+    public List<PreferPojo> getPerferList(int userId){
         List<PreferPojo> preferList = preferDao.selectList(new QueryWrapper<PreferPojo>().eq("user_id", userId));
         return preferList;
     }

@@ -1,5 +1,8 @@
 package com.zhu.casemanage.controller;
 
+import com.aeert.jfilter.annotation.MoreSerializeField;
+import com.aeert.jfilter.annotation.SerializeField;
+import com.zhu.casemanage.pojo.CasePojo;
 import com.zhu.casemanage.pojo.PreferPojo;
 import com.zhu.casemanage.service.PreferServiceImpl;
 import com.zhu.casemanage.utils.Result;
@@ -43,11 +46,14 @@ public class PreinstallController {
     }
 
     /*
-     * 返回当前登录用户SysUser的偏好设定信息
+     * 返回当前登录用户SysUser的偏好设定信息（只返回id和name字段）
      * */
     @RequestMapping(value = "/cmPreinstall/list",method = RequestMethod.GET)
+    @MoreSerializeField({
+            @SerializeField(clazz = PreferPojo.class, includes = {"preferId","preinstall"}),
+    })
     public Result getPreinstallList(@RequestParam("userId") int userId) {
-        List<PreferPojo> perferList = preferService.findPerferList(userId);
+        List<PreferPojo> perferList = preferService.getPerferList(userId);
         return Result.success(perferList);
     }
 

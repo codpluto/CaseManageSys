@@ -1,14 +1,17 @@
 package com.zhu.casemanage.controller;
 
+import com.zhu.casemanage.pojo.FilePojo;
+import com.zhu.casemanage.service.FileServiceImpl;
 import com.zhu.casemanage.utils.Result;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/platform/cmFileInfo")
 public class FileInfoController {
+
+    @Autowired
+    private FileServiceImpl fileService;
 
     /*
      * 上传数字模型或文件压缩包
@@ -32,6 +35,15 @@ public class FileInfoController {
     @RequestMapping(value = "/{caseNumber}/image",method = RequestMethod.PUT)
     public Result getImageByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
         return new Result();
+    }
+
+    /*
+     * 上传照片
+     * */
+    @RequestMapping(value = "/cmCaseInfo/record",method = RequestMethod.POST)
+    public Result addCaseImage(@RequestBody FilePojo img){
+        fileService.addFile(img);
+        return Result.success();
     }
 
 }

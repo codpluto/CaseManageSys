@@ -65,8 +65,19 @@ public class CaseServiceImpl {
 
     //跟新病例信息
     public void updateCase(CasePojo newCase){
-        if (caseDao.updateById(newCase) == 0){
-            throw new BusinessException("病例不存在，修改失败");
+//        if (caseDao.updateById(newCase) == 0){
+//            throw new BusinessException("病例不存在，修改失败");
+//        }
+        UpdateWrapper<CasePojo> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("case_number",newCase.getCaseNumber())
+                .set("address_id",newCase.getAddressId())
+                .set("birthday",newCase.getBirthday())
+                .set("gender",newCase.getGender())
+                .set("patient_name",newCase.getPatientName())
+                .set("doctor_id",newCase.getDoctorId())
+                .set("patient_complaint",newCase.getPatientComplaint());
+        if (caseDao.update(null,updateWrapper) == 0){
+            throw new BusinessException("病例不存在");
         }
     }
 
@@ -79,6 +90,19 @@ public class CaseServiceImpl {
             throw new BusinessException("病例不存在");
         }
         return casePojo;
+    }
+
+    /*
+    * 更新病例的临床信息
+    * */
+    public void updateClinicalCircumstance(Long caseNumber,String diagnosisInfos,String doctorRemark){
+        UpdateWrapper<CasePojo> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("case_number",caseNumber)
+                .set("diagnosis_infos",diagnosisInfos)
+                .set("doctor_remark",doctorRemark);
+        if (caseDao.update(null,updateWrapper) == 0){
+            throw new BusinessException("病例不存在");
+        }
     }
 
     /*

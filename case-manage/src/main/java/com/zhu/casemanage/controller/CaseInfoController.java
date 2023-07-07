@@ -2,17 +2,26 @@ package com.zhu.casemanage.controller;
 
 import com.aeert.jfilter.annotation.MoreSerializeField;
 import com.aeert.jfilter.annotation.SerializeField;
+import com.alibaba.fastjson2.JSON;
 import com.zhu.casemanage.pojo.CasePojo;
+import com.zhu.casemanage.pojo.FilePojo;
+import com.zhu.casemanage.pojo.SchemePojo;
 import com.zhu.casemanage.service.CaseServiceImpl;
+import com.zhu.casemanage.service.FileServiceImpl;
 import com.zhu.casemanage.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/platform/cmCaseInfo")
 public class CaseInfoController {
     @Autowired
     private CaseServiceImpl caseService;
+    @Autowired
+    private FileServiceImpl fileService;
 
     /*
      * 获取指定病例号的病例信息
@@ -59,9 +68,24 @@ public class CaseInfoController {
      * 根据病例号获取暂存的患者信息
      * */
     @RequestMapping(value = "/record/{caseNumber}",method = RequestMethod.GET)
+//    @MoreSerializeField({
+//            @SerializeField(clazz = CasePojo.class, includes = {"birthday","patientName","gender","addressId",
+//                    "doctorId"}),
+//    })
     public Result getRecordCaseInfoByCaseNumber(@PathVariable("caseNumber") long caseNumber) {
         CasePojo caseByNumber = caseService.getCaseByNumber(caseNumber);
-        return Result.success(caseByNumber);
+        List<FilePojo> imageList = fileService.getImageListByNumber(caseNumber);
+//        HashMap<String, Object> map = JSON.parseObject(JSON.toJSONString(caseByNumber));
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("caseNumber",caseByNumber.getCaseNumber());
+        map.put("patientName",caseByNumber.getPatientName());
+        map.put("gender",caseByNumber.getGender());
+        map.put("birthday",caseByNumber.getBirthday());
+        map.put("doctorId",caseByNumber.getDoctorId());
+        map.put("addressId",caseByNumber.getAddressId());
+        map.put("patientComplaint",caseByNumber.getPatientComplaint());
+        map.put("imageList",imageList);
+        return Result.success(map);
     }
 
 //    @RequestMapping(value = "/record/{caseId}",method = RequestMethod.GET)
@@ -75,8 +99,8 @@ public class CaseInfoController {
      * 暂存患者信息
      * */
     @RequestMapping(value = "/record",method = RequestMethod.POST)
-    public Result recordCaseInfo(@RequestBody CasePojo casePojo) {
-        caseService.addCase(casePojo);
+    public Result recordCaseInfo(@RequestBody CasePojo newCase) {
+        caseService.addCase(newCase);
         return Result.success();
     }
 
@@ -133,10 +157,10 @@ public class CaseInfoController {
      * */
     @RequestMapping(value = "/clinicalCircumstance/{caseNumber}",method = RequestMethod.GET)
     @MoreSerializeField({
-            @SerializeField(clazz = CasePojo.class, includes = {"diagnosisInfos","caseNumber"}),
+            @SerializeField(clazz = CasePojo.class, includes = {"diagnosisInfos","caseNumber","doctorRemark"}),
     })
     public Result getClinicalCircumstanceByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
-        CasePojo clinicalCircumstance = caseService.getClinicalCircumstance(caseNumber);
+        CasePojo clinicalCircumstance = caseService.getCaseByNumber(caseNumber);
         return Result.success(clinicalCircumstance);
     }
 
@@ -144,8 +168,11 @@ public class CaseInfoController {
      * 根据病例号提交患者的临床信息
      * */
     @RequestMapping(value = "/clinicalCircumstance/{caseNumber}",method = RequestMethod.PUT)
-    public Result commitClinicalCircumstanceByCaseNumber(@PathVariable("caseNumber") long caseNumber) {
-        return new Result();
+    public Result commitClinicalCircumstanceByCaseNumber(@PathVariable("caseNumber") Long caseNumber,
+                                                         @RequestParam String diagnosisInfos,
+                                                         @RequestParam String doctorRemark) {
+        caseService.updateClinicalCircumstance(caseNumber,diagnosisInfos,doctorRemark);
+        return Result.success();
     }
 
     /*
