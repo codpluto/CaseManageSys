@@ -22,10 +22,10 @@ public class TDSchemePojo {
     private String schemeName;
 
     @TableField(value = "is_pass")
-    private boolean isPass;
+    private Boolean isPass;
 
     @TableField(value = "is_to_view")
-    private boolean isToViem;
+    private Boolean isToViem;
 
     @TableField(value = "update_time")
     private Date updateTime;

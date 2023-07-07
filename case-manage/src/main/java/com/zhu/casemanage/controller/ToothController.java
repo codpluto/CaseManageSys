@@ -2,6 +2,7 @@ package com.zhu.casemanage.controller;
 
 import com.aeert.jfilter.annotation.MoreSerializeField;
 import com.aeert.jfilter.annotation.SerializeField;
+import com.zhu.casemanage.exception.BusinessException;
 import com.zhu.casemanage.pojo.CasePojo;
 import com.zhu.casemanage.pojo.SchemePojo;
 import com.zhu.casemanage.pojo.UserPojo;
@@ -23,7 +24,7 @@ public class ToothController {
     /*
      * 根据病例号获取患者的排牙设定
      * */
-    @RequestMapping(value = "/toothSet/caseId/{caseNumber}",method = RequestMethod.GET)
+    @RequestMapping(value = "/toothSet/caseNumber/{caseNumber}",method = RequestMethod.GET)
     @MoreSerializeField({
             @SerializeField(clazz = SchemePojo.class, excludes = {"schemeId","toothExtraction","accessoryTeeth","unmovableTeeth",
                     "intervalTeeth","accessoryTeeth","adjacentGlaze","isExcessive","demand"}),
@@ -36,7 +37,7 @@ public class ToothController {
     /*
      * 根据病例号提交患者的排牙设定
      * */
-    @RequestMapping(value = "/toothSet/caseId/addToothSet",method = RequestMethod.POST)
+    @RequestMapping(value = "/toothSet/caseNumber/addToothSet",method = RequestMethod.POST)
     public Result commitToothSetByCaseNumber(@RequestBody SchemePojo toothSet) {
         schemeService.updateToothSet(toothSet);
         return Result.success();
@@ -45,17 +46,25 @@ public class ToothController {
     /*
      * 根据病例号获取患者的牙位标记
      * */
-    @RequestMapping(value = "/toothTag/caseId/{caseNumber}",method = RequestMethod.GET)
-    public Result getToothTagByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
-        return new Result();
+    @RequestMapping(value = "/toothTag/caseNumber/{caseNumber}",method = RequestMethod.GET)
+    @MoreSerializeField({
+            @SerializeField(clazz = SchemePojo.class, includes = {"caseNumber","unmovableTeeth","accessoryTeeth","intervalTeeth","adjacentGlaze","isExcessive","demand"}),
+    })
+    public Result getToothTagByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
+        SchemePojo scheme = schemeService.getSchemeByNumber(caseNumber);
+        if (scheme == null){
+            throw new BusinessException("病例不存在");
+        }
+        return Result.success(scheme);
     }
 
     /*
      * 根据病例号提交患者的牙位标记
      * */
-    @RequestMapping(value = "/toothTag/caseId/{caseNumber}",method = RequestMethod.POST)
-    public Result commitToothTagByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
-        return new Result();
+    @RequestMapping(value = "/toothTag/caseNumber/addToothTag",method = RequestMethod.POST)
+    public Result commitToothTagByCaseNumber(@RequestBody SchemePojo toothTag) {
+        schemeService.updateToothTag(toothTag);
+        return Result.success();
     }
 
 }

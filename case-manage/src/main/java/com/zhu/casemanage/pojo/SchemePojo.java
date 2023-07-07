@@ -92,7 +92,7 @@ public class SchemePojo {
     private String adjacentGlaze;
 
     @TableField(value = "is_excessive")
-    private int isExcessive;
+    private Boolean isExcessive;
 
     @TableField(value = "demand")
     private String demand;

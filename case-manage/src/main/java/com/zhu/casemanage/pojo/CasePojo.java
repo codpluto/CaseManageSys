@@ -80,7 +80,7 @@ public class CasePojo {
 
 
     @TableField(value = "is_valid")
-    private boolean isValid;
+    private Boolean isValid;
 
     @TableField(value = "mechanic_id")
     private int mechanicId;
