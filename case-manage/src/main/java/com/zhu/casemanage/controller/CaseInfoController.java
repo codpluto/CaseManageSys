@@ -187,15 +187,6 @@ public class CaseInfoController {
     }
 
     /*
-     * 上传数字模型或文件压缩包
-     * */
-    @RequestMapping(value = "/stl",method = RequestMethod.POST)
-    public Result uploadStl() {
-        return new Result();
-    }
-
-
-    /*
      * 重启病例(阶段调整)，修改旧的病例号为新的病例号
      * */
     @RequestMapping(value = "/restart/{oldCaseNumber}/{newCaseNumber}",method = RequestMethod.POST)
