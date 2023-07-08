@@ -17,7 +17,7 @@ import java.util.Date;
 @TableName(value = "case_tracking")
 public class TrackPojo {
     @TableId(value = "id",type = IdType.AUTO)
-    private int trackId;
+    private Integer trackId;
 
     @TableField(value = "create_time")
     private Timestamp createTime;

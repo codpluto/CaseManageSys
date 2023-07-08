@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @TableName(value = "preference")
 public class PreferPojo {
     @TableId(value = "id",type = IdType.AUTO)
-    private int preferId;
+    private Integer preferId;
 
     @TableField(value = "preinstall")
     private String preinstall;

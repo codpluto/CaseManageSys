@@ -16,7 +16,7 @@ import java.util.Date;
 @TableName(value = "3dscheme")
 public class TDSchemePojo {
     @TableId(value = "id",type = IdType.AUTO)
-    private int tDschemeId;
+    private Integer tDschemeId;
 
     @TableField(value = "scheme_name")
     private String schemeName;

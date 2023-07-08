@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 @Service
 public class SendServiceImpl {
     @Autowired
@@ -23,30 +25,45 @@ public class SendServiceImpl {
     /*
     * 根据病例号获取发货信息
     * */
-    public SendPojo findSendByNumber(long caseNumber){
-        return sendDao.selectOne(new QueryWrapper<SendPojo>().eq("case_number", caseNumber));
+    public List<SendPojo> getSendListByNumber(Long caseNumber){
+        return sendDao.selectList(new QueryWrapper<SendPojo>().eq("case_number", caseNumber));
     }
 
     /*
      * 根据病例号更新发货信息
      * */
-    public void updateSendByNumber(long caseNumber,@RequestBody SendPojo sendInfo){
+    public void updateSendByNumber(Long caseNumber,@RequestBody SendPojo sendInfo){
         if (sendDao.update(sendInfo,new QueryWrapper<SendPojo>().eq("case_number",caseNumber)) == 0){
             throw new BusinessException("发货记录不存在");
         }
     }
 
+//    /*
+//    * 根据病例号提交快递信息
+//    * */
+//    public void updateCaseExpressByCaseNumber(SendPojo newExpress){
+////        UpdateWrapper<CasePojo> updateWrapper = new UpdateWrapper<>();
+////        updateWrapper.eq("case_number",caseNumber);
+////        updateWrapper.set("express_id",expressId);
+////        updateWrapper.set("express_num",expressNum);
+//
+//        if (caseDao.update() == 0){
+//            throw new BusinessException("病例不存在");
+//        }
+//    }
+
     /*
-    * 根据病例号提交快递信息
+    * 提交快递信息
     * */
-    public void updateCaseExpressByCaseNumber(long caseNumber,int expressId,String expressNum){
-        UpdateWrapper<CasePojo> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("case_number",caseNumber);
-        updateWrapper.set("express_id",expressId);
-        updateWrapper.set("express_num",expressNum);
-        if (caseDao.update(null,updateWrapper) == 0){
-            throw new BusinessException("病例不存在");
-        }
+    public void addCaseExpress(SendPojo newExpress){
+        sendDao.insert(newExpress);
     }
 
+    /*
+    * 根据病例号查询快递信息
+    * */
+    public SendPojo getCaseExpressByCaseNumber(Long caseNumber){
+        return sendDao.selectOne(new QueryWrapper<SendPojo>().eq("case_number",caseNumber)
+                .eq("express_type",1));
+    }
 }

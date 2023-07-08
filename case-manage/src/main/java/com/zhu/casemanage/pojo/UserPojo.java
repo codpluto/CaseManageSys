@@ -18,7 +18,7 @@ import java.util.Date;
 @TableName(value = "user")
 public class UserPojo {
     @TableId(value = "id",type = IdType.AUTO)
-    private int userId;
+    private Integer userId;
 
     @TableField(value = "user_name")
     private String userName;

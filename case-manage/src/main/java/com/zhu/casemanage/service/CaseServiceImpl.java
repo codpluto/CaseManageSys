@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.zhu.casemanage.dao.CaseDao;
 import com.zhu.casemanage.exception.BusinessException;
 import com.zhu.casemanage.pojo.CasePojo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
+@Slf4j
 public class CaseServiceImpl {
     @Autowired
     private CaseDao caseDao;
@@ -32,7 +34,7 @@ public class CaseServiceImpl {
 //        return casePojo;
 //    }
 
-    //新增病例
+    //新增病例,返回病例号
     public void addCase(CasePojo casePojo){
 //        casePojo.setCaseNumber(snowFlake.nextId());
         try {
@@ -40,6 +42,7 @@ public class CaseServiceImpl {
         } catch (Exception e) {
             throw new BusinessException(e.getMessage());
         }
+//        log.info("caseNumber:{}",casePojo.getCaseNumber());
     }
 
     //根据病例号删除病例
@@ -114,6 +117,16 @@ public class CaseServiceImpl {
             throw new BusinessException("病例不存在");
         }
         return casePojo;
+    }
+
+    /*
+    * 改变病例状态
+    * */
+    public void updateCaseState(Long caseNumber,int caseState){
+        if (caseDao.update(null,new UpdateWrapper<CasePojo>().eq("case_number",caseNumber)
+                .set("case_state",caseState)) == 0){
+            throw new BusinessException("病例不存在");
+        }
     }
 
 }

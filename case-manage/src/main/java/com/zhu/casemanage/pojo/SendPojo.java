@@ -16,10 +16,13 @@ import java.sql.Timestamp;
 @TableName(value = "send")
 public class SendPojo {
     @TableId(value = "id",type = IdType.AUTO)
-    private int sendId;
+    private Integer sendId;
 
     @TableField(value = "case_number")
     private Long caseNumber;
+
+    @TableField(value = "express_type")
+    private int expressType;
 
     @TableField(value = "create_time")
     private Timestamp createTime;

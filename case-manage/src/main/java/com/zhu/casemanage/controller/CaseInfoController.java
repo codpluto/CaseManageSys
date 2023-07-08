@@ -6,9 +6,12 @@ import com.alibaba.fastjson2.JSON;
 import com.zhu.casemanage.pojo.CasePojo;
 import com.zhu.casemanage.pojo.FilePojo;
 import com.zhu.casemanage.pojo.SchemePojo;
+import com.zhu.casemanage.pojo.TrackPojo;
 import com.zhu.casemanage.service.CaseServiceImpl;
 import com.zhu.casemanage.service.FileServiceImpl;
+import com.zhu.casemanage.service.TrackServiceImpl;
 import com.zhu.casemanage.utils.Result;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +19,15 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequestMapping(value = "/platform/cmCaseInfo")
 public class CaseInfoController {
     @Autowired
     private CaseServiceImpl caseService;
     @Autowired
     private FileServiceImpl fileService;
+    @Autowired
+    private TrackServiceImpl trackService;
 
     /*
      * 获取指定病例号的病例信息
@@ -72,7 +78,7 @@ public class CaseInfoController {
 //            @SerializeField(clazz = CasePojo.class, includes = {"birthday","patientName","gender","addressId",
 //                    "doctorId"}),
 //    })
-    public Result getRecordCaseInfoByCaseNumber(@PathVariable("caseNumber") long caseNumber) {
+    public Result getRecordCaseInfoByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
         CasePojo caseByNumber = caseService.getCaseByNumber(caseNumber);
         List<FilePojo> imageList = fileService.getImageListByNumber(caseNumber);
 //        HashMap<String, Object> map = JSON.parseObject(JSON.toJSONString(caseByNumber));
@@ -100,11 +106,16 @@ public class CaseInfoController {
      * */
     @RequestMapping(value = "/record",method = RequestMethod.POST)
     public Result recordCaseInfo(@RequestBody CasePojo newCase) {
+        newCase.setCaseState(1);
         caseService.addCase(newCase);
+        TrackPojo newTrack = new TrackPojo();
+        newTrack.setCaseNumber(newCase.getCaseNumber());
+        newTrack.setStatus(101);
+        trackService.addTrack(newTrack);
         return Result.success();
     }
 
-    //修改病例信息
+    //修改患者信息
     @RequestMapping(value = "/record",method = RequestMethod.PUT)
     public Result updateCaseInfo(@RequestBody CasePojo casePojo) {
         caseService.updateCase(casePojo);

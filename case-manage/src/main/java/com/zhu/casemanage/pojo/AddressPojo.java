@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @TableName(value = "address")
 public class AddressPojo {
     @TableId(value = "id",type = IdType.AUTO)
-    private int addressId;
+    private Integer addressId;
 
     @TableField(value = "clinic")
     private String clinic;

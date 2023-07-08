@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @TableName(value = "scheme")
 public class SchemePojo {
     @TableId(value = "id",type = IdType.AUTO)
-    private int schemeId;
+    private Integer schemeId;
 
     @TableField(value = "preinstall")
     private String preinstall;

@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 @TableName(value = "file")
 public class FilePojo {
     @TableId(value = "id",type = IdType.AUTO)
-    private int fileId;
+    private Integer fileId;
 
     @TableField(value = "file_name")
     private String fileName;

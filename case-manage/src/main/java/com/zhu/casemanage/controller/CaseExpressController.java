@@ -4,6 +4,7 @@ import com.aeert.jfilter.annotation.MoreSerializeField;
 import com.aeert.jfilter.annotation.SerializeField;
 import com.zhu.casemanage.pojo.CasePojo;
 import com.zhu.casemanage.pojo.SchemePojo;
+import com.zhu.casemanage.pojo.SendPojo;
 import com.zhu.casemanage.pojo.TrackPojo;
 import com.zhu.casemanage.service.CaseServiceImpl;
 import com.zhu.casemanage.service.SendServiceImpl;
@@ -32,23 +33,30 @@ public class CaseExpressController {
     /*
      * 根据病例号提交快递信息
      * */
-    @RequestMapping(value = "/caseId/{caseNumber}",method = RequestMethod.POST)
-    public Result updateCaseExpressByCaseNumber(@PathVariable("caseNumber") long caseNumber, @RequestParam int expressId,@RequestParam String expressNum) {
-        sendService.updateCaseExpressByCaseNumber(caseNumber,expressId,expressNum);
+//    @RequestMapping(value = "/caseId/{caseNumber}",method = RequestMethod.POST)
+//    public Result addCaseExpress(@PathVariable("caseNumber") Long caseNumber, @RequestParam int expressId,@RequestParam String expressNum) {
+//        sendService.updateCaseExpressByCaseNumber(caseNumber,expressId,expressNum);
+//        return Result.success();
+//    }
+    @RequestMapping(value = "",method = RequestMethod.POST)
+    public Result addCaseExpress(@RequestBody SendPojo newExpress){
+        newExpress.setExpressType(1);
+        sendService.addCaseExpress(newExpress);
         return Result.success();
     }
+
 
 
     /*
      * 根据病例号获取患者的快递信息
      * */
-    @RequestMapping(value = "/caseId/{caseNumber}",method = RequestMethod.GET)
+    @RequestMapping(value = "/caseNumber/{caseNumber}",method = RequestMethod.GET)
     @MoreSerializeField({
-            @SerializeField(clazz = CasePojo.class, includes = {"caseNumber","expressId","expressNum"}),
+            @SerializeField(clazz = SendPojo.class, includes = {"caseNumber","expressId","expressNum"}),
     })
     public Result getCaseExpressByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
-        CasePojo caseInfo = caseService.getCaseByNumber(caseNumber);
-        return Result.success(caseInfo);
+        SendPojo caseExpress = sendService.getCaseExpressByCaseNumber(caseNumber);
+        return Result.success(caseExpress);
     }
 
     /*
