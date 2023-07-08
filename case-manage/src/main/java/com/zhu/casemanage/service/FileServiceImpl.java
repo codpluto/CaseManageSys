@@ -35,6 +35,11 @@ public class FileServiceImpl {
         return imageList;
     }
 
+    public List<FilePojo> getStlListByNumber(Long caseNumber){
+        List<FilePojo> stlList = fileDao.selectList(new QueryWrapper<FilePojo>().eq("case_number", caseNumber)
+                .between("file_type",14,16));
+        return stlList;
+    }
 
 
 }
