@@ -35,7 +35,7 @@ public class PreferServiceImpl {
     /**
      * 删除偏好
      */
-    public void delPrefer(int preferId){
+    public void delPrefer(Integer preferId){
         if (preferDao.deleteById(preferId) == 0){
             throw new BusinessException("偏好不存在");
         }
@@ -44,8 +44,8 @@ public class PreferServiceImpl {
     /**
      * 根据Id查询偏好
      */
-    public PreferPojo findPreferById(int preferId){
-        PreferPojo preferPojo = preferDao.selectOne(new QueryWrapper<PreferPojo>().eq("id", preferId));
+    public PreferPojo getPreferById(Integer preferId){
+        PreferPojo preferPojo = preferDao.selectById(preferId);
         if (preferPojo == null){
             throw new BusinessException("偏好不存在");
         }
@@ -55,7 +55,7 @@ public class PreferServiceImpl {
     /**
      * 根据userId查询偏好列表
      */
-    public List<PreferPojo> getPerferList(int userId){
+    public List<PreferPojo> getPerferList(Integer userId){
         List<PreferPojo> preferList = preferDao.selectList(new QueryWrapper<PreferPojo>().eq("user_id", userId));
         return preferList;
     }
@@ -63,7 +63,7 @@ public class PreferServiceImpl {
     /*
     * 设置偏好名称
     * */
-    public void setPreinstallName(int preferId,String preinstall){
+    public void setPreinstallName(Integer preferId,String preinstall){
 //        PreferPojo newPrefer = preferDao.selectOne(new QueryWrapper<PreferPojo>().eq("id", prefer.getPreferId()));
 //        newPrefer.setPreinstall(prefer.getPreinstall());
 //        return newPrefer;

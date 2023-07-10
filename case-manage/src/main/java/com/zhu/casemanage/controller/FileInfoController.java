@@ -4,7 +4,10 @@ import com.aeert.jfilter.annotation.MoreSerializeField;
 import com.aeert.jfilter.annotation.SerializeField;
 import com.zhu.casemanage.pojo.FilePojo;
 import com.zhu.casemanage.pojo.SendPojo;
+import com.zhu.casemanage.pojo.TrackPojo;
+import com.zhu.casemanage.service.CaseServiceImpl;
 import com.zhu.casemanage.service.FileServiceImpl;
+import com.zhu.casemanage.service.TrackServiceImpl;
 import com.zhu.casemanage.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,19 +20,35 @@ public class FileInfoController {
 
     @Autowired
     private FileServiceImpl fileService;
+    @Autowired
+    private TrackServiceImpl trackService;
+    @Autowired
+    private CaseServiceImpl caseService;
 
     /*
-     * 上传数字模型或文件压缩包
+     * 上传数字模型或文件压缩包或照片
      * */
-    @RequestMapping(value = "/caseInfo/stl",method = RequestMethod.POST)
-    public Result uploadStl(@RequestBody FilePojo newStl) {
+    @RequestMapping(value = "/caseInfo/file",method = RequestMethod.POST)
+    public Result uploadStl(@RequestBody FilePojo newFile) {
 //        newStl.setFileType();
-        fileService.addFile(newStl);
+        fileService.addFile(newFile);
+        if (newFile.getFileType() >= 14 && newFile.getFileType() <= 16){
+            TrackPojo track = trackService.getTrackByStatus(newFile.getCaseNumber(), 103);
+            if (track == null){
+                TrackPojo newTrack = new TrackPojo();
+                newTrack.setCaseNumber(newFile.getCaseNumber());
+                newTrack.setStatus(103);
+                trackService.addTrack(newTrack);
+                if (caseService.getCaseByNumber(newFile.getCaseNumber()).getCaseState() < 2){
+                    caseService.updateCaseState(newFile.getCaseNumber(), 2);
+                }
+            }
+        }
         return Result.success();
     }
 
     /*
-     * 根据病例号获取该病例的文件信息（数字模型或文件压缩包）
+     * 根据病例号获取该病例的文件信息（数字模型或文件压缩包或照片）
      * */
     @RequestMapping(value = "/{caseNumber}/file",method = RequestMethod.GET)
     @MoreSerializeField({
@@ -60,7 +79,7 @@ public class FileInfoController {
     }
 
     /*
-    * 删除照片
+    * 根据病例号和文件类型删除文件
     * */
     @RequestMapping(value = "/caseNumber/{caseNumber}/fileType/{fileType}",method = RequestMethod.DELETE)
     public Result delCaseImage(@PathVariable("caseNumber") Long caseNumber,

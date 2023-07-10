@@ -39,7 +39,7 @@ public class PreinstallController {
      * 设置预设偏好设定的偏好名称
      * */
     @RequestMapping(value = "/cmPreinstall/valid",method = RequestMethod.POST)
-    public Result addPreinstallName(@RequestParam int preferId,
+    public Result addPreinstallName(@RequestParam Integer preferId,
                                     @RequestParam String preinstall) {
         preferService.setPreinstallName(preferId,preinstall);
         return Result.success();
@@ -48,11 +48,11 @@ public class PreinstallController {
     /*
      * 返回当前登录用户SysUser的偏好设定信息（只返回id和name字段）
      * */
-    @RequestMapping(value = "/cmPreinstall/list",method = RequestMethod.GET)
+    @RequestMapping(value = "/cmPreinstall/list/{userId}",method = RequestMethod.GET)
     @MoreSerializeField({
             @SerializeField(clazz = PreferPojo.class, includes = {"preferId","preinstall"}),
     })
-    public Result getPreinstallList(@RequestParam("userId") int userId) {
+    public Result getPreinstallList(@PathVariable("userId") Integer userId) {
         List<PreferPojo> perferList = preferService.getPerferList(userId);
         return Result.success(perferList);
     }
@@ -60,9 +60,9 @@ public class PreinstallController {
     /*
      * 根据偏好设定id返回该偏好设定的设定情况
      * */
-    @RequestMapping(value = "/cmPreinstall/{id}",method = RequestMethod.GET)
-    public Result getPreinstallInfoById(@PathVariable("id") int id) {
-        PreferPojo preferById = preferService.findPreferById(id);
+    @RequestMapping(value = "/cmPreinstall/{preferId}",method = RequestMethod.GET)
+    public Result getPreinstallInfoById(@PathVariable("preferId") Integer preferId) {
+        PreferPojo preferById = preferService.getPreferById(preferId);
         return Result.success(preferById);
     }
 
@@ -70,7 +70,7 @@ public class PreinstallController {
      * 根据偏好设定id删除该条偏好设定
      * */
     @RequestMapping(value = "/cmPreinstall/{id}",method = RequestMethod.DELETE)
-    public Result deletePreinstallInfoById(@PathVariable("id") int id) {
+    public Result deletePreinstallInfoById(@PathVariable("id") Integer id) {
         preferService.delPrefer(id);
         return Result.success();
     }

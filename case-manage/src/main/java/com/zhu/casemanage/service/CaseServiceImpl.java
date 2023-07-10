@@ -66,7 +66,7 @@ public class CaseServiceImpl {
 //        }
     }
 
-    //跟新病例信息
+    //跟新病例的病患信息
     public void updateCase(CasePojo newCase){
 //        if (caseDao.updateById(newCase) == 0){
 //            throw new BusinessException("病例不存在，修改失败");
@@ -128,5 +128,32 @@ public class CaseServiceImpl {
             throw new BusinessException("病例不存在");
         }
     }
+
+    /*
+    * 为病例分配技工
+    * */
+    public void updateMechanic(Long casNumber,Integer mechanicId){
+        if (caseDao.update(null,new UpdateWrapper<CasePojo>().eq("case_number",casNumber)
+                .set("mechanic_id",mechanicId)) == 0){
+            throw new BusinessException("病例不存在");
+        }
+    }
+
+
+    /*
+    * 获取病例是否能够修改
+    * */
+    public Boolean getLimitByNumber(Long caseNumber){
+        CasePojo casePojo = caseDao.selectById(caseNumber);
+        if (casePojo == null){
+            throw new BusinessException("病例不存在");
+        }
+        if (casePojo.getCaseState() <= 2){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
 }

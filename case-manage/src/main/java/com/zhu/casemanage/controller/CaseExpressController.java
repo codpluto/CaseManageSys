@@ -8,6 +8,8 @@ import com.zhu.casemanage.pojo.SendPojo;
 import com.zhu.casemanage.pojo.TrackPojo;
 import com.zhu.casemanage.service.CaseServiceImpl;
 import com.zhu.casemanage.service.SendServiceImpl;
+import com.zhu.casemanage.service.TrackServiceImpl;
+import com.zhu.casemanage.utils.Constant;
 import com.zhu.casemanage.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,9 @@ public class CaseExpressController {
 
     @Autowired
     private CaseServiceImpl caseService;
+
+    @Autowired
+    private TrackServiceImpl trackService;
 
     /*
      * 根据病例号获取矫治器加工信息
@@ -38,10 +43,22 @@ public class CaseExpressController {
 //        sendService.updateCaseExpressByCaseNumber(caseNumber,expressId,expressNum);
 //        return Result.success();
 //    }
+
+    /*
+    * 提交牙模寄出的快递信息
+    * */
     @RequestMapping(value = "",method = RequestMethod.POST)
     public Result addCaseExpress(@RequestBody SendPojo newExpress){
         newExpress.setExpressType(1);
         sendService.addCaseExpress(newExpress);
+        TrackPojo newTrack = new TrackPojo();
+        newTrack.setCaseNumber(newExpress.getCaseNumber());
+        newTrack.setStatus(102);
+        newTrack.setRemark(Constant.EXPRESS.get(newExpress.getExpressId())+" "+newExpress.getExpressNum());
+        trackService.addTrack(newTrack);
+        if (caseService.getCaseByNumber(newTrack.getCaseNumber()).getCaseState() < 2){
+            caseService.updateCaseState(newExpress.getCaseNumber(), 2);
+        }
         return Result.success();
     }
 
@@ -58,6 +75,19 @@ public class CaseExpressController {
         SendPojo caseExpress = sendService.getCaseExpressByCaseNumber(caseNumber);
         return Result.success(caseExpress);
     }
+
+    /*
+    * 修改牙模寄出的快递信息
+    * */
+    @RequestMapping(value = "",method = RequestMethod.PUT)
+    public Result updateCaseExpress(@RequestBody SendPojo newSend){
+//        newSend.setExpressType(1);
+        sendService.updateCaseExpress(newSend);
+        trackService.updateCaseExpress(newSend);
+        return Result.success();
+    }
+
+
 
     /*
      * 医生对对应病例号的患者进行确认收货操作

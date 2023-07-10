@@ -102,7 +102,7 @@ public class CaseInfoController {
 
 
     /*
-     * 暂存患者信息
+     * 新增患者信息
      * */
     @RequestMapping(value = "/record",method = RequestMethod.POST)
     public Result recordCaseInfo(@RequestBody CasePojo newCase) {
@@ -112,7 +112,9 @@ public class CaseInfoController {
         newTrack.setCaseNumber(newCase.getCaseNumber());
         newTrack.setStatus(101);
         trackService.addTrack(newTrack);
-        return Result.success();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("caseNumber",newCase.getCaseNumber());
+        return Result.success(map);
     }
 
     //修改患者信息
@@ -168,7 +170,7 @@ public class CaseInfoController {
      * */
     @RequestMapping(value = "/clinicalCircumstance/{caseNumber}",method = RequestMethod.GET)
     @MoreSerializeField({
-            @SerializeField(clazz = CasePojo.class, includes = {"diagnosisInfos","caseNumber","doctorRemark"}),
+            @SerializeField(clazz = CasePojo.class, includes = {"diagnosisInfos","doctorRemark"}),
     })
     public Result getClinicalCircumstanceByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
         CasePojo clinicalCircumstance = caseService.getCaseByNumber(caseNumber);

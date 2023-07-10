@@ -3,8 +3,10 @@ package com.zhu.casemanage.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.zhu.casemanage.dao.SchemeDao;
+import com.zhu.casemanage.dao.TDSchemeDao;
 import com.zhu.casemanage.exception.BusinessException;
 import com.zhu.casemanage.pojo.SchemePojo;
+import com.zhu.casemanage.pojo.TDSchemePojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +14,11 @@ import org.springframework.stereotype.Service;
 public class SchemeServiceImpl {
     @Autowired
     private SchemeDao schemeDao;
+    @Autowired
+    private TDSchemeDao tdSchemeDao;
 
     /*
-    * 新增治疗方案
+    * 新增治疗方案/新增排牙设定
     * */
     public void addScheme(SchemePojo newScheme){
         schemeDao.insert(newScheme);
@@ -26,6 +30,8 @@ public class SchemeServiceImpl {
     public SchemePojo getSchemeByNumber(Long caseNumber){
         return schemeDao.selectOne(new QueryWrapper<SchemePojo>().eq("case_number", caseNumber));
     }
+
+
 
     /*
     * 更新排牙设定
@@ -74,5 +80,12 @@ public class SchemeServiceImpl {
         if (schemeDao.update(null,updateWrapper) == 0){
             throw new BusinessException("病例不存在");
         }
+    }
+
+    /*
+    * 新增3d方案
+    * */
+    public void add3dScheme(TDSchemePojo tdSchemePojo){
+        tdSchemeDao.insert(tdSchemePojo);
     }
 }

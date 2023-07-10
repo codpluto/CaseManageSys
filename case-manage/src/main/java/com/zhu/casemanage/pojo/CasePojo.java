@@ -109,9 +109,5 @@ public class CasePojo {
     @TableField(value = "wear_step")
     private int wearStep;
 
-    @TableField(value = "express_id")
-    private int expressId;
 
-    @TableField(value = "express_num")
-    private String expressNum;
 }

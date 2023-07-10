@@ -1,6 +1,7 @@
 package com.zhu.casemanage.controller;
 
 import com.zhu.casemanage.pojo.SchemePojo;
+import com.zhu.casemanage.pojo.TDSchemePojo;
 import com.zhu.casemanage.service.SchemeServiceImpl;
 import com.zhu.casemanage.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class SchemeController {
      * 根据病例号获取其所有的批复记录（列表）
      * */
     @RequestMapping(value = "/audit/list/caseId/{caseNumber}/recNum/{recNum}/seqNum/{seqNum}",method = RequestMethod.GET)
-    public Result getAuditListByCaseNumber(@PathVariable("caseNumber") String caseNumber,@PathVariable("recNum") String recNum,@PathVariable("seqNum") String seqNum) {
+    public Result getAuditListByCaseNumber(@PathVariable("caseNumber") Long caseNumber,@PathVariable("recNum") String recNum,@PathVariable("seqNum") String seqNum) {
         return new Result();
     }
 
@@ -51,6 +52,17 @@ public class SchemeController {
     @RequestMapping(value = "/scheme/addScheme",method = RequestMethod.POST)
     public Result addScheme(@RequestBody SchemePojo newScheme){
         schemeService.addScheme(newScheme);
+        return Result.success();
+    }
+
+
+    /*
+    * 新增3D方案
+    * */
+    @RequestMapping(value = "/3dScheme",method = RequestMethod.POST)
+    public Result add3dScheme(@RequestBody TDSchemePojo tdSchemePojo){
+        schemeService.add3dScheme(tdSchemePojo);
+
         return Result.success();
     }
 
