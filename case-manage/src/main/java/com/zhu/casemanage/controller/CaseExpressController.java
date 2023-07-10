@@ -117,10 +117,16 @@ public class CaseExpressController {
     @RequestMapping(value = "/affirm/{caseNumber}",method = RequestMethod.PUT)
     public Result affirmByDoctor(@PathVariable("caseNumber") Long caseNumber) {
         CasePojo caseInfo = caseService.getCaseByNumber(caseNumber);
-        caseInfo.setCaseState(0);//病例状态待定义，此处修改为“第i此发货完成，等待下一次发货”状态
-        /*
-        * 实现病例状态记录功能（TrackPojo）
-        * */
+        SendPojo sendInfo = sendService.getCaseExpressByCaseNumber(caseNumber);
+        caseInfo.setCaseState(12);//此处修改为“第i此发货完成，等待下一次发货”状态
+        TrackPojo newTrack1 = new TrackPojo();
+        newTrack1.setCaseNumber(caseNumber);
+        newTrack1.setStatus(117);//此处新增为“第i此发货完成，等待下一次发货”
+        TrackPojo newTrack2 = new TrackPojo();
+        newTrack2.setCaseNumber(caseNumber);
+        newTrack2.setStatus(118);//此处新增“已确认收货”
+        newTrack2.setRemark("物流单号："+ sendInfo.getExpressNum());
+        newTrack2.setRemarkEn("Tracking Num:"+sendInfo.getExpressNum());
         return Result.success();
     }
 
@@ -131,10 +137,7 @@ public class CaseExpressController {
     @RequestMapping(value = "/docShipments/{caseNumber}",method = RequestMethod.POST)
     public Result docShipmentsByDoctor(@PathVariable("caseNumber") Long caseNumber) {
         CasePojo caseInfo = caseService.getCaseByNumber(caseNumber);
-        caseInfo.setCaseState(0);//病例状态待定义，此处修改为“准备生产”状态
-        /*
-         * 实现病例状态记录功能（TrackPojo）
-         * */
+        caseInfo.setCaseState(9);//此处修改为“准备生产”状态
         return Result.success();
     }
 
@@ -144,10 +147,10 @@ public class CaseExpressController {
     @RequestMapping(value = "/tecShipments/{caseNumber}",method = RequestMethod.POST)
     public Result tecShipmentsBySupervisor(@PathVariable("caseNumber") Long caseNumber) {
         CasePojo caseInfo = caseService.getCaseByNumber(caseNumber);
-        caseInfo.setCaseState(0);//病例状态待定义，此处修改为“生产中”状态
-        /*
-         * 实现病例状态记录功能（TrackPojo）
-         * */
+        caseInfo.setCaseState(10);//此处修改为“生产中”状态
+        TrackPojo newTrack = new TrackPojo();
+        newTrack.setCaseNumber(caseNumber);
+        newTrack.setStatus(115);//此处新增"安排生产"
         /*
         * 更新caseInfo表的一些数据
         * */
@@ -160,10 +163,17 @@ public class CaseExpressController {
     @RequestMapping(value = "/shipments/{caseNumber}",method = RequestMethod.POST)
     public Result shipmentsBySupervisor(@PathVariable("caseNumber") Long caseNumber) {
         CasePojo caseInfo = caseService.getCaseByNumber(caseNumber);
-        caseInfo.setCaseState(0);//病例状态待定义，此处修改为“发货中”状态
+        caseInfo.setCaseState(11);//此处新增“发货中”状态
         /*
          * 实现病例状态记录功能（TrackPojo）
          * */
+        TrackPojo newTrack = new TrackPojo();
+        newTrack.setCaseNumber(caseNumber);
+        newTrack.setStatus(116);//此处新增"矫治器生产完成"
+        newTrack.setRemark("U:"+ caseInfo.getLowerSentStep() + "/" + caseInfo.getLowerTotalStep()
+                            + " L:" + caseInfo.getUpperSentStep() + "/" + caseInfo.getUpperTotalStep());
+        newTrack.setRemark("U:"+ caseInfo.getLowerSentStep() + "/" + caseInfo.getLowerTotalStep()
+                + " L:" + caseInfo.getUpperSentStep() + "/" + caseInfo.getUpperTotalStep());
         /*
          * send表新增
          * */
