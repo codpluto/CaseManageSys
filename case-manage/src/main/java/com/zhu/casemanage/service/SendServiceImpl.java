@@ -66,4 +66,12 @@ public class SendServiceImpl {
         return sendDao.selectOne(new QueryWrapper<SendPojo>().eq("case_number",caseNumber)
                 .eq("express_type",1));
     }
+
+    /*
+     * 根据病例号查询发货信息
+     * */
+    public List<SendPojo> getSendListByCaseNumber(Long caseNumber){
+        return sendDao.selectList(new QueryWrapper<SendPojo>().eq("case_number",caseNumber)
+                .eq("express_type",2));
+    }
 }

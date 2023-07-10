@@ -19,12 +19,11 @@ public class FileInfoController {
     private FileServiceImpl fileService;
 
     /*
-     * 上传数字模型或文件压缩包
+     * 上传文件（数字模型、文件压缩包、影像照片）
      * */
-    @RequestMapping(value = "/caseInfo/stl",method = RequestMethod.POST)
-    public Result uploadStl(@RequestBody FilePojo newStl) {
-//        newStl.setFileType();
-        fileService.addFile(newStl);
+    @RequestMapping(value = "/caseInfo/file",method = RequestMethod.POST)
+    public Result uploadStl(@RequestBody FilePojo newFile) {
+        fileService.addFile(newFile);
         return Result.success();
     }
 
@@ -53,11 +52,11 @@ public class FileInfoController {
     /*
      * 上传照片
      * */
-    @RequestMapping(value = "/caseInfo/record",method = RequestMethod.POST)
-    public Result addCaseImage(@RequestBody FilePojo img){
-        fileService.addFile(img);
-        return Result.success();
-    }
+//    @RequestMapping(value = "/caseInfo/record",method = RequestMethod.POST)
+//    public Result addCaseImage(@RequestBody FilePojo img){
+//        fileService.addFile(img);
+//        return Result.success();
+//    }
 
     /*
     * 删除照片

@@ -3,7 +3,6 @@ package com.zhu.casemanage.controller;
 import com.aeert.jfilter.annotation.MoreSerializeField;
 import com.aeert.jfilter.annotation.SerializeField;
 import com.zhu.casemanage.pojo.CasePojo;
-import com.zhu.casemanage.pojo.SchemePojo;
 import com.zhu.casemanage.pojo.SendPojo;
 import com.zhu.casemanage.pojo.TrackPojo;
 import com.zhu.casemanage.service.CaseServiceImpl;
@@ -11,6 +10,9 @@ import com.zhu.casemanage.service.SendServiceImpl;
 import com.zhu.casemanage.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/platform/caseExpress")
@@ -26,8 +28,28 @@ public class CaseExpressController {
      * 根据病例号获取矫治器加工信息
      * */
     @RequestMapping(value = "/getCaseSendInfo/{caseNumber}",method = RequestMethod.GET)
-    public Result getCaseSendInfoByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
-        return new Result();
+    public Result getCaseSendInfoByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
+        List<SendPojo> sendList = sendService.getSendListByCaseNumber(caseNumber);
+        int wearRemain = caseService.getCaseByNumber(caseNumber).getWearRemain();
+        int lowerSentStep = caseService.getCaseByNumber(caseNumber).getLowerSentStep();
+        int lowerTotalStep = caseService.getCaseByNumber(caseNumber).getLowerTotalStep();
+        int upperSentStep = caseService.getCaseByNumber(caseNumber).getUpperSentStep();
+        int upperTotalStep = caseService.getCaseByNumber(caseNumber).getUpperTotalStep();
+        int wearStep = caseService.getCaseByNumber(caseNumber).getWearStep();
+        HashMap<String, Object> sendListNew = new HashMap<>();
+        for (SendPojo sendPojo : sendList) {
+            sendListNew.put("item", sendPojo);
+        }
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("sendList",sendList);
+        result.put("wearRemain",wearRemain);
+        result.put("lowerSentStep",lowerSentStep);
+        result.put("lowerTotalStep",lowerTotalStep);
+        result.put("upperSentStep",upperSentStep);
+        result.put("upperTotalStep",upperTotalStep);
+        result.put("wearStep",wearStep);
+        result.put("sendListNew",sendListNew);
+        return Result.success(result);
     }
 
     /*
@@ -40,7 +62,7 @@ public class CaseExpressController {
 //    }
     @RequestMapping(value = "",method = RequestMethod.POST)
     public Result addCaseExpress(@RequestBody SendPojo newExpress){
-        newExpress.setExpressType(1);
+        newExpress.setExpressType(1);//1牙模寄出，2发货
         sendService.addCaseExpress(newExpress);
         return Result.success();
     }

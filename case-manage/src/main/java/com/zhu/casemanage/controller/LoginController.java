@@ -41,18 +41,19 @@ public class LoginController {
         return new Result();
     }
 
-//    /**
-//     *注册
-//     */
-//    @RequestMapping(value = "")
-
     /**
-     * 根据Id获取用户信息
+     * 根据Id查询用户信息
      */
     @RequestMapping(value = "/getUserInfo", method = RequestMethod.GET)
     public Result getUserInfo(@RequestParam("userId") int userId){
         UserPojo userInfoById = userService.getUserInfoById(userId);
         return Result.success(userInfoById);
+    }
+
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public Result register(@RequestBody UserPojo newUser){
+        userService.addUser(newUser);
+        return Result.success();
     }
 
 }
