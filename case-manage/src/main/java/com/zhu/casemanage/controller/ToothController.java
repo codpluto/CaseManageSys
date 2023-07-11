@@ -37,7 +37,7 @@ public class ToothController {
     /*
      * 根据病例号提交患者的排牙设定
      * */
-    @RequestMapping(value = "/toothSet",method = RequestMethod.PUT)
+    @RequestMapping(value = "/toothSet",method = RequestMethod.POST)
     public Result commitToothSetByCaseNumber(@RequestBody SchemePojo toothSet) {
         schemeService.addScheme(toothSet);
         return Result.success();
@@ -71,11 +71,11 @@ public class ToothController {
     /*
      * 根据病例号提交患者的牙位标记
      * */
-    @RequestMapping(value = "/toothTag",method = RequestMethod.PUT)
-    public Result commitToothTagByCaseNumber(@RequestBody SchemePojo toothTag) {
-        schemeService.updateToothTag(toothTag);
-        return Result.success();
-    }
+//    @RequestMapping(value = "/toothTag",method = RequestMethod.PUT)
+//    public Result commitToothTagByCaseNumber(@RequestBody SchemePojo toothTag) {
+//        schemeService.updateToothTag(toothTag);
+//        return Result.success();
+//    }
 
     /*
     * 修改牙位标记

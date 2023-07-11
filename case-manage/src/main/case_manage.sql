@@ -11,7 +11,7 @@
  Target Server Version : 80029
  File Encoding         : 65001
 
- Date: 10/07/2023 20:51:09
+ Date: 11/07/2023 16:49:48
 */
 
 SET NAMES utf8mb4;
@@ -23,14 +23,15 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `3dscheme`;
 CREATE TABLE `3dscheme`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
-  `seq_num` int(0) NULL DEFAULT NULL,
   `scheme_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `scheme_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `is_pass` tinyint(0) NULL DEFAULT NULL,
   `is_to_view` tinyint(0) NULL DEFAULT NULL,
+  `create_time` datetime(0) NULL DEFAULT NULL,
   `update_time` datetime(0) NULL DEFAULT NULL,
   `case_number` bigint(0) NULL DEFAULT NULL,
-  `scheme_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `recnum` int(0) NULL DEFAULT NULL,
+  `seq_num` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
@@ -50,6 +51,7 @@ CREATE TABLE `address`  (
   `consignee_address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `postcode` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `user_id` int(0) NULL DEFAULT NULL,
+  `create_time` datetime(0) NULL DEFAULT NULL,
   `update_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
@@ -57,9 +59,9 @@ CREATE TABLE `address`  (
 -- ----------------------------
 -- Records of address
 -- ----------------------------
-INSERT INTO `address` VALUES (1, '测试诊所', 'zzy', '123456789', '翻斗花园', '210044', 1, NULL);
-INSERT INTO `address` VALUES (2, '测试诊所123', 'xxxy', '114514', '南航', '210044', 1, NULL);
-INSERT INTO `address` VALUES (3, 'Test诊所', '魏', '15867543542', '矿大', '210032', 2, NULL);
+INSERT INTO `address` VALUES (1, '测试诊所', 'zzy', '123456789', '翻斗花园', '210044', 1, NULL, NULL);
+INSERT INTO `address` VALUES (2, '测试诊所123', 'xxxy', '114514', '南航', '210044', 1, NULL, NULL);
+INSERT INTO `address` VALUES (3, 'Test诊所', '魏', '15867543542', '矿大', '210032', 2, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for case_info
@@ -78,7 +80,6 @@ CREATE TABLE `case_info`  (
   `age` int(0) NULL DEFAULT NULL,
   `profession` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `patient_phone` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
   `commit_time` datetime(0) NULL DEFAULT NULL,
   `restart_case_number` bigint(0) NULL DEFAULT NULL,
   `diagnosis_infos` set('is_deep_draping','is_smile_line_not_neat','is_periodontal','is_both_edge','doctor_remark','is_crowded','is_II_II','is_posterior_teeth','is_tmj_problems','is_interval','is_III','is_expanal_dental_arch','is_gagtooth','is_deep_overjet','is_opening_and_closing','is_inflammation','is_tooth_abnormlities','is_anterior_crossbite','is_II_I','is_osteoporosis') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '诊断信息/临床情况',
@@ -97,21 +98,23 @@ CREATE TABLE `case_info`  (
   `upper_total_step` int(0) NULL DEFAULT NULL,
   `wear_step` int(0) NULL DEFAULT NULL,
   `init_case_number` bigint(0) NULL DEFAULT NULL,
+  `create_time` datetime(0) NULL DEFAULT NULL,
+  `update_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`case_number`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of case_info
 -- ----------------------------
-INSERT INTO `case_info` VALUES (100003421, 1, '测试a', 'zzy', 1, '省人民医院', '2023-06-30', '南京航空航天大学', NULL, 22, NULL, '123332123', '2023-07-02 09:06:40', NULL, 0, 'is_deep_draping,is_interval', NULL, 'https://img1.baidu.com/it/u=1240466764,3606188766&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1688490000&t=ac1901bb68b45112f4fd2fa8f0ae6fb3', 1, 0, 1, 0, 1, NULL, 0, 0, 0, 0, 0, 0, NULL);
-INSERT INTO `case_info` VALUES (100003422, 1, '测试b_111', '小智', 2, '省口腔医院', '2023-06-30', '南京', '智齿发炎', 22, '学生', '114514', '2023-07-02 15:06:40', NULL, 0, 'is_deep_draping', NULL, 'https://img1.baidu.com/it/u=1240466764,3606188766&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1688490000&t=ac1901bb68b45112f4fd2fa8f0ae6fb3', 1, 0, 1, 0, 1, NULL, 0, 0, 0, 0, 0, 0, NULL);
-INSERT INTO `case_info` VALUES (100003423, 1, '测试ccc', 'red', 2, '省口腔医院', '2023-06-30', '南京', '智齿发炎', 22, '学生', '114514', '2023-07-02 15:06:40', NULL, 0, 'is_deep_draping,is_II_II', '测试doctorRemark', 'https://img1.baidu.com/it/u=1240466764,3606188766&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1688490000&t=ac1901bb68b45112f4fd2fa8f0ae6fb3', 1, 0, 1, 0, 1, NULL, 0, 0, 0, 0, 0, 0, NULL);
-INSERT INTO `case_info` VALUES (1000034223, 1, '测试bb', 'rem', 2, '省口腔医院', '2023-06-30', '南京', '智齿发炎', 22, '学生', '114514', '2023-07-02 15:06:40', NULL, 0, 'is_deep_draping', NULL, 'https://img1.baidu.com/it/u=1240466764,3606188766&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1688490000&t=ac1901bb68b45112f4fd2fa8f0ae6fb3', 1, 0, 1, 0, 1, NULL, 0, 0, 0, 0, 0, 0, NULL);
-INSERT INTO `case_info` VALUES (1676515889282838530, 1, '测试雪花', 'red', 1, '省口腔医院', '2023-06-30', '南京', '智齿发炎', 22, '学生', '114514', '2023-07-02 15:06:40', NULL, NULL, 'is_II_II,is_III', '备注修改测试', 'https://img1.baidu.com/it/u=1240466764,3606188766&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1688490000&t=ac1901bb68b45112f4fd2fa8f0ae6fb3', 1, NULL, 1, 0, 1, NULL, 0, 0, 0, 0, 0, 0, NULL);
-INSERT INTO `case_info` VALUES (1676515953619267586, 1, '测试雪花1', 'red', 1, '省口腔医院', '2023-06-30', '南京', '智齿发炎', 22, '学生', '114514', '2023-07-02 15:06:40', NULL, NULL, 'is_crowded', NULL, 'https://img1.baidu.com/it/u=1240466764,3606188766&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1688490000&t=ac1901bb68b45112f4fd2fa8f0ae6fb3', 1, NULL, 1, 0, 1, NULL, 0, 0, 0, 0, 0, 0, NULL);
-INSERT INTO `case_info` VALUES (1677612671223025666, 1, '测试雪花', 'zzy', 1, NULL, '2023-06-30', NULL, '智齿发炎', 0, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, 1, NULL, NULL, 0, 1, NULL, 0, 0, 0, 0, 0, 0, NULL);
-INSERT INTO `case_info` VALUES (1677612975628828674, 1, '测试track生成', 'zzy', 1, NULL, '2023-06-30', NULL, '智齿发炎', 0, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, 1, NULL, NULL, 0, 1, NULL, 0, 0, 0, 0, 0, 0, NULL);
-INSERT INTO `case_info` VALUES (1678226507588214786, 6, '新增病例流程测试', 'zzy', 1, NULL, '2023-06-30', NULL, '拔智齿', 22, NULL, '123321', '2023-07-05 20:24:40', NULL, NULL, 'is_periodontal,is_gagtooth,is_tooth_abnormlities', '医生方案', 'sec=1688490000&t=ac1901bb68b45112f4fd2fa8f0ae6fb3', 1, NULL, 1, 1, 1, NULL, 0, 0, 0, 0, 0, 0, NULL);
+INSERT INTO `case_info` VALUES (100003421, 1, '测试a', 'zzy', 1, '省人民医院', '2023-06-30', '南京航空航天大学', NULL, 22, NULL, '123332123', NULL, 0, 'is_deep_draping,is_interval', NULL, 'https://img1.baidu.com/it/u=1240466764,3606188766&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1688490000&t=ac1901bb68b45112f4fd2fa8f0ae6fb3', 1, 0, 1, 0, 1, NULL, 0, 0, 0, 0, 0, 0, NULL, '2023-07-02 09:06:40', NULL);
+INSERT INTO `case_info` VALUES (100003422, 1, '测试b_111', '小智', 2, '省口腔医院', '2023-06-30', '南京', '智齿发炎', 22, '学生', '114514', NULL, 0, 'is_deep_draping', NULL, 'https://img1.baidu.com/it/u=1240466764,3606188766&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1688490000&t=ac1901bb68b45112f4fd2fa8f0ae6fb3', 1, 0, 1, 0, 1, NULL, 0, 0, 0, 0, 0, 0, NULL, '2023-07-02 15:06:40', NULL);
+INSERT INTO `case_info` VALUES (100003423, 1, '测试ccc', 'red', 2, '省口腔医院', '2023-06-30', '南京', '智齿发炎', 22, '学生', '114514', NULL, 0, 'is_deep_draping,is_II_II', '测试doctorRemark', 'https://img1.baidu.com/it/u=1240466764,3606188766&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1688490000&t=ac1901bb68b45112f4fd2fa8f0ae6fb3', 1, 0, 1, 0, 1, NULL, 0, 0, 0, 0, 0, 0, NULL, '2023-07-02 15:06:40', NULL);
+INSERT INTO `case_info` VALUES (1000034223, 1, '测试bb', 'rem', 2, '省口腔医院', '2023-06-30', '南京', '智齿发炎', 22, '学生', '114514', NULL, 0, 'is_deep_draping', NULL, 'https://img1.baidu.com/it/u=1240466764,3606188766&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1688490000&t=ac1901bb68b45112f4fd2fa8f0ae6fb3', 1, 0, 1, 0, 1, NULL, 0, 0, 0, 0, 0, 0, NULL, '2023-07-02 15:06:40', NULL);
+INSERT INTO `case_info` VALUES (1676515889282838530, 1, '测试雪花', 'red', 1, '省口腔医院', '2023-06-30', '南京', '智齿发炎', 22, '学生', '114514', NULL, NULL, 'is_II_II,is_III', '备注修改测试', 'https://img1.baidu.com/it/u=1240466764,3606188766&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1688490000&t=ac1901bb68b45112f4fd2fa8f0ae6fb3', 1, NULL, 1, 0, 1, NULL, 0, 0, 0, 0, 0, 0, NULL, '2023-07-02 15:06:40', NULL);
+INSERT INTO `case_info` VALUES (1676515953619267586, 1, '测试雪花1', 'red', 1, '省口腔医院', '2023-06-30', '南京', '智齿发炎', 22, '学生', '114514', NULL, NULL, 'is_crowded', NULL, 'https://img1.baidu.com/it/u=1240466764,3606188766&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1688490000&t=ac1901bb68b45112f4fd2fa8f0ae6fb3', 1, NULL, 1, 0, 1, NULL, 0, 0, 0, 0, 0, 0, NULL, '2023-07-02 15:06:40', NULL);
+INSERT INTO `case_info` VALUES (1677612671223025666, 1, '测试雪花', 'zzy', 1, NULL, '2023-06-30', NULL, '智齿发炎', 0, NULL, NULL, NULL, NULL, '', NULL, NULL, 1, NULL, NULL, 0, 1, NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL);
+INSERT INTO `case_info` VALUES (1677612975628828674, 1, '测试track生成', 'zzy', 1, NULL, '2023-06-30', NULL, '智齿发炎', 0, NULL, NULL, NULL, NULL, '', NULL, NULL, 1, NULL, NULL, 0, 1, NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL);
+INSERT INTO `case_info` VALUES (1678226507588214786, 6, '新增病例流程测试', 'zzy', 1, NULL, '2023-06-30', NULL, '拔智齿', 22, NULL, '123321', NULL, NULL, 'is_periodontal,is_gagtooth,is_tooth_abnormlities', '医生方案', 'sec=1688490000&t=ac1901bb68b45112f4fd2fa8f0ae6fb3', 1, NULL, 1, 1, 1, NULL, 0, 0, 0, 0, 0, 0, NULL, '2023-07-05 20:24:40', NULL);
 
 -- ----------------------------
 -- Table structure for case_tracking
@@ -120,27 +123,28 @@ DROP TABLE IF EXISTS `case_tracking`;
 CREATE TABLE `case_tracking`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   `create_time` datetime(0) NULL DEFAULT NULL,
+  `update_time` datetime(0) NULL DEFAULT NULL,
   `status` int(0) NULL DEFAULT NULL,
   `remark` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `remark_en` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `case_number` bigint(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of case_tracking
 -- ----------------------------
-INSERT INTO `case_tracking` VALUES (1, '2023-07-03 11:36:02', 1, NULL, NULL, 1);
-INSERT INTO `case_tracking` VALUES (2, NULL, 101, NULL, NULL, 1677612975628828674);
-INSERT INTO `case_tracking` VALUES (3, NULL, 101, NULL, NULL, 1678226507588214786);
-INSERT INTO `case_tracking` VALUES (6, NULL, 103, NULL, NULL, 1678226507588214786);
-INSERT INTO `case_tracking` VALUES (9, NULL, 102, '圆通 123321', NULL, 1678226507588214786);
-INSERT INTO `case_tracking` VALUES (10, NULL, 104, NULL, NULL, 1678226507588214786);
-INSERT INTO `case_tracking` VALUES (11, NULL, 105, '驳回测试', NULL, 1678226507588214786);
-INSERT INTO `case_tracking` VALUES (12, NULL, 104, NULL, NULL, 1678226507588214786);
-INSERT INTO `case_tracking` VALUES (13, NULL, 106, NULL, NULL, 1678226507588214786);
-INSERT INTO `case_tracking` VALUES (14, NULL, 107, '分配技工：pluto', NULL, 1678226507588214786);
-INSERT INTO `case_tracking` VALUES (15, NULL, 108, NULL, NULL, 1678226507588214786);
+INSERT INTO `case_tracking` VALUES (1, '2023-07-03 11:36:02', NULL, 1, NULL, NULL, 1);
+INSERT INTO `case_tracking` VALUES (2, NULL, NULL, 101, NULL, NULL, 1677612975628828674);
+INSERT INTO `case_tracking` VALUES (3, NULL, NULL, 101, NULL, NULL, 1678226507588214786);
+INSERT INTO `case_tracking` VALUES (6, NULL, NULL, 103, NULL, NULL, 1678226507588214786);
+INSERT INTO `case_tracking` VALUES (9, NULL, NULL, 102, '圆通 123321', NULL, 1678226507588214786);
+INSERT INTO `case_tracking` VALUES (10, NULL, NULL, 104, NULL, NULL, 1678226507588214786);
+INSERT INTO `case_tracking` VALUES (11, NULL, NULL, 105, '驳回测试', NULL, 1678226507588214786);
+INSERT INTO `case_tracking` VALUES (12, NULL, NULL, 104, NULL, NULL, 1678226507588214786);
+INSERT INTO `case_tracking` VALUES (13, NULL, NULL, 106, NULL, NULL, 1678226507588214786);
+INSERT INTO `case_tracking` VALUES (14, NULL, NULL, 107, '分配技工：pluto', NULL, 1678226507588214786);
+INSERT INTO `case_tracking` VALUES (15, NULL, NULL, 108, NULL, NULL, 1678226507588214786);
 
 -- ----------------------------
 -- Table structure for file
@@ -152,23 +156,25 @@ CREATE TABLE `file`  (
   `file_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `file_type` int(0) NULL DEFAULT NULL,
   `case_number` bigint(0) NULL DEFAULT NULL,
-  `update_time` datetime(0) NULL DEFAULT NULL,
   `file_net_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `step_num` int(0) NULL DEFAULT NULL,
   `attachment_num` int(0) NULL DEFAULT NULL,
   `scheme_id` int(0) NULL DEFAULT NULL,
+  `update_time` datetime(0) NULL DEFAULT NULL,
+  `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `病例文件唯一性`(`file_type`, `case_number`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of file
 -- ----------------------------
-INSERT INTO `file` VALUES (1, '正面照1', 'C:\\Users\\ZQH\\Desktop\\新建文件夹\\1.jpg', 1, 1676515889282838530, '2023-07-08 13:58:17', NULL, NULL, NULL, NULL);
-INSERT INTO `file` VALUES (2, '正面微笑照1', 'C:\\Users\\ZQH\\Desktop\\新建文件夹\\1.jpg', 2, 1676515889282838530, NULL, NULL, NULL, NULL, 0);
-INSERT INTO `file` VALUES (3, '上颌测试stl1.stl', '100614688330728-3-37cc0007-0487-4f50-b5ca-ac1f3265164e.stl', 14, 1676515889282838530, NULL, NULL, NULL, NULL, 0);
-INSERT INTO `file` VALUES (6, '正面微笑照1', 'C:\\Users\\ZQH\\Desktop\\新建文件夹\\1.jpg', 2, 1678226507588214786, NULL, NULL, NULL, NULL, 0);
-INSERT INTO `file` VALUES (15, '上颌测试stl1.stl', '100614688330728-3-37cc0007-0487-4f50-b5ca-ac1f3265164e.stl', 14, 1678226507588214786, NULL, NULL, NULL, NULL, 0);
+INSERT INTO `file` VALUES (1, '正面照1', 'C:\\Users\\ZQH\\Desktop\\新建文件夹\\1.jpg', 1, 1676515889282838530, NULL, NULL, NULL, NULL, '2023-07-08 13:58:17', NULL);
+INSERT INTO `file` VALUES (2, '正面微笑照1', 'C:\\Users\\ZQH\\Desktop\\新建文件夹\\1.jpg', 2, 1676515889282838530, NULL, NULL, NULL, 0, NULL, NULL);
+INSERT INTO `file` VALUES (3, '上颌测试stl1.stl', '100614688330728-3-37cc0007-0487-4f50-b5ca-ac1f3265164e.stl', 14, 1676515889282838530, NULL, NULL, NULL, 0, NULL, NULL);
+INSERT INTO `file` VALUES (6, '正面微笑照1', 'C:\\Users\\ZQH\\Desktop\\新建文件夹\\1.jpg', 2, 1678226507588214786, NULL, NULL, NULL, 0, NULL, NULL);
+INSERT INTO `file` VALUES (15, '上颌测试stl1.stl', '100614688330728-3-37cc0007-0487-4f50-b5ca-ac1f3265164e.stl', 14, 1678226507588214786, NULL, NULL, NULL, 0, NULL, NULL);
+INSERT INTO `file` VALUES (16, '下颌测试stl1.stl', '100614688330728-3-37cc0007-0487-4f50-b5ca-ac1f3265164e.stl', 15, 1678226507588214786, NULL, NULL, NULL, 0, '2023-07-11 11:31:29', '2023-07-11 11:31:29');
 
 -- ----------------------------
 -- Table structure for preference
@@ -204,17 +210,19 @@ CREATE TABLE `preference`  (
   `adjacent_glaze` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `is_excessive` tinyint(0) NULL DEFAULT NULL,
   `demand` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `create_time` datetime(0) NULL DEFAULT NULL,
+  `update_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of preference
 -- ----------------------------
-INSERT INTO `preference` VALUES (1, '偏好1', 1, '测试偏好a', 1, '1', 1, 1, 1, NULL, 1, 1, 1, 1, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '备注');
-INSERT INTO `preference` VALUES (2, '偏好2', 1, '测试偏好b', 1, '1', 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 0, NULL);
-INSERT INTO `preference` VALUES (5, '偏好3', 1, '测试偏好b', 1, '1', 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 0, NULL);
-INSERT INTO `preference` VALUES (6, '偏好11', 2, '测试偏好b', 1, '1', 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 0, NULL);
-INSERT INTO `preference` VALUES (7, '偏好22', 2, '测试偏好b', 1, '1', 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 0, NULL);
+INSERT INTO `preference` VALUES (1, '偏好1', 1, '测试偏好a', 1, '1', 1, 1, 1, NULL, 1, 1, 1, 1, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '备注', NULL, NULL);
+INSERT INTO `preference` VALUES (2, '偏好2', 1, '测试偏好b', 1, '1', 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL);
+INSERT INTO `preference` VALUES (5, '偏好3', 1, '测试偏好b', 1, '1', 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL);
+INSERT INTO `preference` VALUES (6, '偏好11', 2, '测试偏好b', 1, '1', 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL);
+INSERT INTO `preference` VALUES (7, '偏好22', 2, '测试偏好b', 1, '1', 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for scheme
@@ -250,13 +258,15 @@ CREATE TABLE `scheme`  (
   `adjacent_glaze` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `is_excessive` tinyint(0) NULL DEFAULT NULL,
   `demand` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `create_time` datetime(0) NULL DEFAULT NULL,
+  `update_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of scheme
 -- ----------------------------
-INSERT INTO `scheme` VALUES (1, '测试', 1676515889282838530, 1, 1, NULL, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, NULL, NULL, 2, 2, 0, 2, '---', '2-3--', '3---4', '-2-2-', 1, '测试备注');
+INSERT INTO `scheme` VALUES (1, '测试', 1676515889282838530, 1, 1, NULL, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, NULL, NULL, 2, 2, 0, 2, '---', '2-3--', '3---4', '-2-2-', 1, '测试备注', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for send
@@ -269,6 +279,7 @@ CREATE TABLE `send`  (
   `express_id` int(0) NULL DEFAULT NULL,
   `express_num` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `create_time` datetime(0) NULL DEFAULT NULL,
+  `update_time` datetime(0) NULL DEFAULT NULL,
   `lower_num` int(0) NULL DEFAULT NULL,
   `steps_low_start` int(0) NULL DEFAULT NULL,
   `steps_low_over` int(0) NULL DEFAULT NULL,
@@ -277,14 +288,14 @@ CREATE TABLE `send`  (
   `steps_up_over` int(0) NULL DEFAULT NULL,
   `total_num` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of send
 -- ----------------------------
-INSERT INTO `send` VALUES (1, 1676515889282838530, 2, 2, '123334563124', NULL, 0, 0, 0, 0, 0, 0, 0);
-INSERT INTO `send` VALUES (2, 1676515889282838530, 1, 3, '1233345632', NULL, 0, 0, 0, 0, 0, 0, 0);
-INSERT INTO `send` VALUES (6, 1678226507588214786, 1, 3, '123321', NULL, 0, 0, 0, 0, 0, 0, 0);
+INSERT INTO `send` VALUES (1, 1676515889282838530, 2, 2, '123334563124', NULL, NULL, 0, 0, 0, 0, 0, 0, 0);
+INSERT INTO `send` VALUES (2, 1676515889282838530, 1, 3, '1233345632', NULL, NULL, 0, 0, 0, 0, 0, 0, 0);
+INSERT INTO `send` VALUES (6, 1678226507588214786, 1, 3, '123321', NULL, NULL, 0, 0, 0, 0, 0, 0, 0);
 
 -- ----------------------------
 -- Table structure for user
@@ -310,5 +321,6 @@ CREATE TABLE `user`  (
 INSERT INTO `user` VALUES (1, 'pluto', '233244500', '123456', 3, 'https://img0.baidu.com/it/u=2428376041,903084291&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1688490000&t=e24a69c81cef2fe853fdefc5c5ba3f89', '114514', '13333@qq.com', '2023-06-27 08:46:22', NULL);
 INSERT INTO `user` VALUES (2, 'wei', '123445566', '1234', 1, '', '233333', '23333@163.com', '2023-07-04 09:47:00', NULL);
 INSERT INTO `user` VALUES (6, 'pluto_zzy', '15190755755', '123456', 2, 'https://img0.baidu.com/it/u=2428376041,903084291&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1688490000&t=e24a69c81cef2fe853fdefc5c5ba3f89', '114514', '13333@qq.com', NULL, NULL);
+INSERT INTO `user` VALUES (7, 'pluto_zz', '233244511', '123456', 2, 'https://img0.baidu.com/it/u=2428376041,903084291&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1688490000&t=e24a69c81cef2fe853fdefc5c5ba3f89', '114514', '13333@qq.com', '2023-07-11 11:28:05', '2023-07-11 11:28:05');
 
 SET FOREIGN_KEY_CHECKS = 1;
