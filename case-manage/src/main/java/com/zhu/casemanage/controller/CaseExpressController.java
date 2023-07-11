@@ -103,12 +103,10 @@ public class CaseExpressController {
     * */
     @RequestMapping(value = "",method = RequestMethod.PUT)
     public Result updateCaseExpress(@RequestBody SendPojo newSend){
-//        newSend.setExpressType(1);
         sendService.updateCaseExpress(newSend);
         trackService.updateCaseExpress(newSend);
         return Result.success();
     }
-
 
 
     /*
@@ -116,17 +114,21 @@ public class CaseExpressController {
      * */
     @RequestMapping(value = "/affirm/{caseNumber}",method = RequestMethod.PUT)
     public Result affirmByDoctor(@PathVariable("caseNumber") Long caseNumber) {
-        CasePojo caseInfo = caseService.getCaseByNumber(caseNumber);
         SendPojo sendInfo = sendService.getCaseExpressByCaseNumber(caseNumber);
-        caseInfo.setCaseState(12);//此处修改为“第i此发货完成，等待下一次发货”状态
+        long count = trackService.countStatus(caseNumber,117) + 1;//记录本次是第几次发货
+        caseService.updateCaseState(caseNumber,12);//此处修改为“第i此发货完成，等待下一次发货”状态
         TrackPojo newTrack1 = new TrackPojo();
         newTrack1.setCaseNumber(caseNumber);
         newTrack1.setStatus(117);//此处新增为“第i此发货完成，等待下一次发货”
+        newTrack1.setRemark(Long.toString(count));
+        newTrack1.setRemarkEn(Long.toString(count));
         TrackPojo newTrack2 = new TrackPojo();
         newTrack2.setCaseNumber(caseNumber);
         newTrack2.setStatus(118);//此处新增“已确认收货”
         newTrack2.setRemark("物流单号："+ sendInfo.getExpressNum());
         newTrack2.setRemarkEn("Tracking Num:"+sendInfo.getExpressNum());
+        trackService.addTrack(newTrack1);
+        trackService.addTrack(newTrack2);
         return Result.success();
     }
 
@@ -136,8 +138,7 @@ public class CaseExpressController {
      * */
     @RequestMapping(value = "/docShipments/{caseNumber}",method = RequestMethod.POST)
     public Result docShipmentsByDoctor(@PathVariable("caseNumber") Long caseNumber) {
-        CasePojo caseInfo = caseService.getCaseByNumber(caseNumber);
-        caseInfo.setCaseState(9);//此处修改为“准备生产”状态
+        caseService.updateCaseState(caseNumber,9);//此处修改为“准备生产”状态
         return Result.success();
     }
 
@@ -145,15 +146,19 @@ public class CaseExpressController {
      * 主管对对应病例号的患者进行生产操作
      * */
     @RequestMapping(value = "/tecShipments/{caseNumber}",method = RequestMethod.POST)
-    public Result tecShipmentsBySupervisor(@PathVariable("caseNumber") Long caseNumber) {
+    public Result tecShipmentsBySupervisor(@PathVariable("caseNumber") Long caseNumber,@RequestBody SendPojo newSend) {
         CasePojo caseInfo = caseService.getCaseByNumber(caseNumber);
-        caseInfo.setCaseState(10);//此处修改为“生产中”状态
+        caseService.updateCaseState(caseNumber,10);//此处修改为“生产中”状态
         TrackPojo newTrack = new TrackPojo();
         newTrack.setCaseNumber(caseNumber);
         newTrack.setStatus(115);//此处新增"安排生产"
-        /*
-        * 更新caseInfo表的一些数据
-        * */
+        trackService.addTrack(newTrack);
+        if (newSend.getStepsLowOver() > caseInfo.getLowerSentStep()) {
+            caseService.updateLowerSentStep(caseNumber,newSend.getStepsLowOver());
+        }
+        if (newSend.getStepsUpOver() > caseInfo.getUpperSentStep()) {
+            caseService.updateUpperSentStep(caseNumber,newSend.getStepsLowOver());
+        }
         return Result.success();
     }
 
@@ -161,22 +166,18 @@ public class CaseExpressController {
      * 主管对对应病例号的患者进行发货操作
      * */
     @RequestMapping(value = "/shipments/{caseNumber}",method = RequestMethod.POST)
-    public Result shipmentsBySupervisor(@PathVariable("caseNumber") Long caseNumber) {
-        CasePojo caseInfo = caseService.getCaseByNumber(caseNumber);
-        caseInfo.setCaseState(11);//此处新增“发货中”状态
-        /*
-         * 实现病例状态记录功能（TrackPojo）
-         * */
+    public Result shipmentsBySupervisor(@PathVariable("caseNumber") Long caseNumber,@RequestBody SendPojo newSend) {
+        caseService.updateCaseState(caseNumber,11);//此处修改为“发货中”状态
         TrackPojo newTrack = new TrackPojo();
         newTrack.setCaseNumber(caseNumber);
         newTrack.setStatus(116);//此处新增"矫治器生产完成"
-        newTrack.setRemark("U:"+ caseInfo.getLowerSentStep() + "/" + caseInfo.getLowerTotalStep()
-                            + " L:" + caseInfo.getUpperSentStep() + "/" + caseInfo.getUpperTotalStep());
-        newTrack.setRemark("U:"+ caseInfo.getLowerSentStep() + "/" + caseInfo.getLowerTotalStep()
-                + " L:" + caseInfo.getUpperSentStep() + "/" + caseInfo.getUpperTotalStep());
-        /*
-         * send表新增
-         * */
+        newTrack.setRemark("U:"+ newSend.getStepsLowStart() + "/" + newSend.getStepsLowOver()
+                            + " L:" + newSend.getStepsUpStart() + "/" + newSend.getStepsUpOver());
+        newTrack.setRemarkEn("U:"+ newSend.getStepsLowStart() + "/" + newSend.getStepsLowOver()
+                + " L:" + newSend.getStepsUpStart() + "/" + newSend.getStepsUpOver());
+        trackService.addTrack(newTrack);
+        newSend.setExpressType(2);
+        sendService.addCaseExpress(newSend);
         return Result.success();
     }
 

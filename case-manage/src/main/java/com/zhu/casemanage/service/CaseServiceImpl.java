@@ -132,8 +132,8 @@ public class CaseServiceImpl {
     /*
     * 为病例分配技工
     * */
-    public void updateMechanic(Long casNumber,Integer mechanicId){
-        if (caseDao.update(null,new UpdateWrapper<CasePojo>().eq("case_number",casNumber)
+    public void updateMechanic(Long caseNumber,Integer mechanicId){
+        if (caseDao.update(null,new UpdateWrapper<CasePojo>().eq("case_number",caseNumber)
                 .set("mechanic_id",mechanicId)) == 0){
             throw new BusinessException("病例不存在");
         }
@@ -155,5 +155,17 @@ public class CaseServiceImpl {
         }
     }
 
+    public void updateLowerSentStep(Long caseNumber,Integer stepsLowOver){
+        if (caseDao.update(null,new UpdateWrapper<CasePojo>().eq("case_number",caseNumber)
+                .set("lower_sent_step",stepsLowOver)) == 0){
+            throw new BusinessException("病例不存在");
+        }
+    }
 
+    public void updateUpperSentStep(Long caseNumber,Integer stepsUpOver){
+        if (caseDao.update(null,new UpdateWrapper<CasePojo>().eq("case_number",caseNumber)
+                .set("lower_sent_step",stepsUpOver)) == 0){
+            throw new BusinessException("病例不存在");
+        }
+    }
 }

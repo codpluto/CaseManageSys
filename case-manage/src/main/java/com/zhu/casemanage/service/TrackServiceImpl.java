@@ -43,4 +43,7 @@ public class TrackServiceImpl {
                 .eq("status",status));
     }
 
+    public Long countStatus(Long caseNumber,int status){
+        return trackDao.selectCount(new QueryWrapper<TrackPojo>().eq("case_number",caseNumber).eq("status",status));
+    }
 }
