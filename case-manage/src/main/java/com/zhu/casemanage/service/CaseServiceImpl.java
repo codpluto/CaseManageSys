@@ -2,6 +2,8 @@ package com.zhu.casemanage.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhu.casemanage.dao.CaseDao;
 import com.zhu.casemanage.exception.BusinessException;
 import com.zhu.casemanage.pojo.CasePojo;
@@ -9,6 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -132,8 +138,8 @@ public class CaseServiceImpl {
     /*
     * 为病例分配技工
     * */
-    public void updateMechanic(Long caseNumber,Integer mechanicId){
-        if (caseDao.update(null,new UpdateWrapper<CasePojo>().eq("case_number",caseNumber)
+    public void updateMechanic(Long casNumber,Integer mechanicId){
+        if (caseDao.update(null,new UpdateWrapper<CasePojo>().eq("case_number",casNumber)
                 .set("mechanic_id",mechanicId)) == 0){
             throw new BusinessException("病例不存在");
         }
@@ -160,6 +166,17 @@ public class CaseServiceImpl {
                 .set("lower_sent_step",stepsLowOver)) == 0){
             throw new BusinessException("病例不存在");
         }
+    }
+    /*
+    * 返回全部病例的第pageNum页
+    * */
+    public Map<String,Object> showCaseInfoPage(int pageNum,int pageSize){
+        Page<CasePojo> casePojoPage = new Page<>(pageNum,pageSize);
+        IPage<CasePojo> caseIPage = caseDao.selectPage(casePojoPage,null);
+        List<CasePojo> records = caseIPage.getRecords();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("list",records);
+        return map;
     }
 
     public void updateUpperSentStep(Long caseNumber,Integer stepsUpOver){

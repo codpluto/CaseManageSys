@@ -1,13 +1,11 @@
 package com.zhu.casemanage.pojo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -51,11 +49,14 @@ public class CasePojo {
     @TableField(value = "patient_phone")
     private String patientPhone;
 
-    @TableField(value = "create_time")
-    private Date createTime;
+    @TableField(value = "create_time",fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    @TableField(value = "update_time",fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 
     @TableField(value = "commit_time")
-    private Date commitTime;
+    private LocalDateTime commitTime;
 
     @TableField(value = "case_state")
     private int caseState;

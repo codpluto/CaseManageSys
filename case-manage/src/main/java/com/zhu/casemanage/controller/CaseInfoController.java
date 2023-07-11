@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -130,7 +131,8 @@ public class CaseInfoController {
      * */
     @RequestMapping(value = "/cmCaseInfo/{pageNum}/{pageSize}",method = RequestMethod.GET)
     public Result showCaseInfo(@PathVariable("pageNum") int pageNum, @PathVariable("pageSize") int pageSize) {
-        return new Result();
+        Map<String, Object> map = caseService.showCaseInfoPage(pageNum, pageSize);
+        return Result.success(map);
     }
 
     /*
