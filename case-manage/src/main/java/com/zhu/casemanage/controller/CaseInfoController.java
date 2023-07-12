@@ -130,42 +130,29 @@ public class CaseInfoController {
      * 返回全部病例的第pageNum页（默认状态为全部）
      * */
     @RequestMapping(value = "/cmCaseInfo/{pageNum}/{pageSize}",method = RequestMethod.GET)
-    public Result showCaseInfo(@PathVariable("pageNum") int pageNum, @PathVariable("pageSize") int pageSize) {
-        Map<String, Object> map = caseService.showCaseInfoPage(pageNum, pageSize);
+    public Result showCaseInfo(@PathVariable("pageNum") int pageNum, @PathVariable("pageSize") int pageSize,
+                               @RequestParam(value = "selectStatus", defaultValue = "-1") int selectStatus,
+                               @RequestParam(value = "selectParam",defaultValue = "") String selectParam) {
+        Map<String, Object> map = caseService.showCaseInfoPage(pageNum, pageSize,selectStatus,selectParam);
         return Result.success(map);
     }
 
-    /*
-     * 返回按所选状态(selectStatus)的全部病例的第pageNum页
-     * */
-//    @RequestMapping(value = "/cmCaseInfo/dispose/{pageNum}/{pageSize}",method = RequestMethod.GET)
-//    public Result showCaseInfoBySelectStatus(@PathVariable("pageNum") int pageNum,@PathVariable("selectStatus") int selectStatus ,@PathVariable("pageSize") int pageSize) {
-//        return new Result();
-//    }
+
 
     /*
-     * 返回按关键字搜索(selectParam)的全部病例的第pageNum页
+     * 返回待处理病例筛选后的第pageNum页
      * */
-//    @RequestMapping(value = "/cmCaseInfo/dispose/{pageNum}/{pageSize}",method = RequestMethod.GET)
-//    public Result showCaseInfoBySelectParam(@PathVariable("pageNum") int pageNum,@PathVariable("selectParam") int selectStatus ,@PathVariable("pageSize") int pageSize) {
-//        return new Result();
-//    }
+    @RequestMapping(value = "/cmCaseInfo/dispose/{pageNum}/{pageSize}",method = RequestMethod.GET)
+    public Result showDisposeCaseInfo(@PathVariable("pageNum") int pageNum,@PathVariable("pageSize") int pageSize,
+                                      @RequestParam(value = "selectStatus", defaultValue = "-1") int selectStatus,
+                                      @RequestParam(value = "selectParam",defaultValue = "") String selectParam,
+                                      @RequestParam("userType") int userType) {
+        Map<String, Object> map = caseService.showCaseInfoPageByUserType(pageNum, pageSize,userType, selectStatus, selectParam);
 
-    /*
-     * 返回待处理病例的第pageNum页（默认状态为全部）
-     * */
-//    @RequestMapping(value = "/cmCaseInfo/dispose/{pageNum}/{pageSize}",method = RequestMethod.GET)
-//    public Result showDisposeCaseInfo(@PathVariable("pageNum") int pageNum,@PathVariable("pageSize") int pageSize) {
-//        return new Result();
-//    }
+        return Result.success(map);
+    }
 
-    /*
-     * 返回按所选状态的待处理病例的第pageNum页
-     * */
-//    @RequestMapping(value = "/cmCaseInfo/dispose/{pageNum}/{pageSize}",method = RequestMethod.GET)
-//    public Result showDisposeCaseInfoBySelectStatus(@PathVariable("pageNum") int pageNum,@PathVariable("selectStatus") int selectStatus,@PathVariable("pageSize") int pageSize) {
-//        return new Result();
-//    }
+
 
     /*
      * 根据病例号获取患者的临床信息

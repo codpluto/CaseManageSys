@@ -1,5 +1,6 @@
 package com.zhu.casemanage.service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -162,15 +163,137 @@ public class CaseServiceImpl {
     }
 
     /*
-    * 返回全部病例的第pageNum页
+    * 返回筛选后病例的第pageNum页
     * */
-    public Map<String,Object> showCaseInfoPage(int pageNum,int pageSize){
+    public Map<String,Object> showCaseInfoPage(int pageNum,int pageSize,int status,String param){
         Page<CasePojo> casePojoPage = new Page<>(pageNum,pageSize);
-        IPage<CasePojo> caseIPage = caseDao.selectPage(casePojoPage,null);
+        QueryWrapper<CasePojo> wrapper = new QueryWrapper<>();
+        if (status != -1){
+            wrapper.eq("case_state",status);
+        }
+        if (!param.isBlank()){
+            wrapper.and(Wrapper -> Wrapper.like("patient_name",param).or().like("case_number",param).or().like("clinic",param));
+        }
+        IPage<CasePojo> caseIPage = caseDao.selectPage(casePojoPage,wrapper);
         List<CasePojo> records = caseIPage.getRecords();
         HashMap<String, Object> map = new HashMap<>();
         map.put("list",records);
+        map.put("endRow",records.size());
+        map.put("firstPage",1);
+        map.put("lastPage",pageSize);
+        map.put("pageNum",pageNum);
+        map.put("pageSize",pageSize);
+        map.put("pages",caseIPage.getPages());
+        map.put("prePage",pageNum-1);
+        map.put("total",caseIPage.getTotal());
+        if (pageNum == 1){
+            map.put("isFirstPage",true);
+        } else {
+            map.put("isFirstPage",false);
+        }
+        if (pageNum == caseIPage.getPages()){
+            map.put("isLastPage",true);
+            map.put("hasNextPage",false);
+            map.put("nextPage",0);
+        } else {
+            map.put("isLastPage",false);
+            map.put("hasNextPage",true);
+            map.put("nextPage",pageNum+1);
+        }
         return map;
     }
+
+    /*
+     * 返回按用户类型筛选后的待处理病例的第pageNum页
+     * */
+    public Map<String,Object> showCaseInfoPageByUserType(int pageNum,int pageSize,int userType,int status,String param){
+        Page<CasePojo> casePojoPage = new Page<>(pageNum,pageSize);
+        QueryWrapper<CasePojo> wrapper = new QueryWrapper<>();
+        switch (userType){
+            case 1 -> wrapper.and(Wrapper -> Wrapper.eq("case_state",1)
+                    .or().eq("case_state",2)
+                    .or().eq("case_state",8)
+                    .or().eq("case_state",11)
+                    .or().eq("case_state",12)
+                    .or().eq("case_state",14));
+            case 2 -> wrapper.and(Wrapper -> Wrapper.eq("case_state",7));
+            case 3 -> wrapper.and(Wrapper -> Wrapper.eq("case_state",3)
+                    .or().eq("case_state",4)
+                    .or().eq("case_state",5)
+                    .or().eq("case_state",6)
+                    .or().eq("case_state",9)
+                    .or().eq("case_state",10));
+            case 4 -> wrapper.and(Wrapper -> Wrapper.eq("case_state",6));
+        }
+        if (status != -1){
+            wrapper.and(Wrapper -> Wrapper.eq("case_state",status));
+        }
+        if (!param.isBlank()){
+            wrapper.and(Wrapper -> Wrapper.like("patient_name",param).or().like("case_number",param).or().like("clinic",param));
+        }
+        IPage<CasePojo> caseIPage = caseDao.selectPage(casePojoPage,wrapper);
+        List<CasePojo> records = caseIPage.getRecords();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("list",records);
+        map.put("endRow",records.size());
+        map.put("firstPage",1);
+        map.put("lastPage",pageSize);
+        map.put("pageNum",pageNum);
+        map.put("pageSize",pageSize);
+        map.put("pages",caseIPage.getPages());
+        map.put("prePage",pageNum-1);
+        map.put("total",caseIPage.getTotal());
+        if (pageNum == 1){
+            map.put("isFirstPage",true);
+        } else {
+            map.put("isFirstPage",false);
+        }
+        if (pageNum == caseIPage.getPages()){
+            map.put("isLastPage",true);
+            map.put("hasNextPage",false);
+            map.put("nextPage",0);
+        } else {
+            map.put("isLastPage",false);
+            map.put("hasNextPage",true);
+            map.put("nextPage",pageNum+1);
+        }
+        return map;
+    }
+
+    /*
+     * 返回按关键字搜索(selectParam)的全部病例的第pageNum页
+     * */
+//    public Map<String,Object> showCaseInfoPageByParam(int pageNum,int pageSize,String param){
+//        Page<CasePojo> casePojoPage = new Page<>(pageNum,pageSize);
+//        IPage<CasePojo> caseIPage = caseDao.selectPage(casePojoPage,new QueryWrapper<CasePojo>().like("patient_name",param)
+//                .or().like("case_number",param)
+//                .or().like("clinic",param));
+//        List<CasePojo> records = caseIPage.getRecords();
+//        HashMap<String, Object> map = new HashMap<>();
+//        map.put("list",records);
+//        map.put("endRow",records.size());
+//        map.put("firstPage",1);
+//        map.put("lastPage",pageSize);
+//        map.put("pageNum",pageNum);
+//        map.put("pageSize",pageSize);
+//        map.put("pages",caseIPage.getPages());
+//        map.put("prePage",pageNum-1);
+//        map.put("total",caseIPage.getTotal());
+//        if (pageNum == 1){
+//            map.put("isFirstPage",true);
+//        } else {
+//            map.put("isFirstPage",false);
+//        }
+//        if (pageNum == caseIPage.getPages()){
+//            map.put("isLastPage",true);
+//            map.put("hasNextPage",false);
+//            map.put("nextPage",0);
+//        } else {
+//            map.put("isLastPage",false);
+//            map.put("hasNextPage",true);
+//            map.put("nextPage",pageNum+1);
+//        }
+//        return map;
+//    }
 
 }
