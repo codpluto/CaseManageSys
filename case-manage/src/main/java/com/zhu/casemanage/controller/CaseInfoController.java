@@ -2,10 +2,8 @@ package com.zhu.casemanage.controller;
 
 import com.aeert.jfilter.annotation.MoreSerializeField;
 import com.aeert.jfilter.annotation.SerializeField;
-import com.alibaba.fastjson2.JSON;
 import com.zhu.casemanage.pojo.CasePojo;
 import com.zhu.casemanage.pojo.FilePojo;
-import com.zhu.casemanage.pojo.SchemePojo;
 import com.zhu.casemanage.pojo.TrackPojo;
 import com.zhu.casemanage.service.CaseServiceImpl;
 import com.zhu.casemanage.service.FileServiceImpl;
@@ -35,23 +33,8 @@ public class CaseInfoController {
      * */
     @RequestMapping(value = "/{caseNumber}",method = RequestMethod.GET)
     public Result getCaseInfoByCaseNumber(@PathVariable("caseNumber") long caseNumber) {
-        return new Result();
-    }
-
-    /*
-     * 获取指定病例号的3D病例信息
-     * */
-    @RequestMapping(value = "3dcmCaseInfo/{caseNumber}",method = RequestMethod.GET)
-    public Result get3DCaseInfoByCaseNumber(@PathVariable("caseNumber") long caseNumber) {
-        return new Result();
-    }
-
-    /*
-     * 获取指定病例号的pdf病例信息
-     * */
-    @RequestMapping(value = "pdfCaseInfo/{caseNumber}",method = RequestMethod.GET)
-    public Result getPDFCaseInfoByCaseNumber(@PathVariable("caseNumber") long caseNumber) {
-        return new Result();
+        CasePojo caseInfo = caseService.getCaseByNumber(caseNumber);
+        return Result.success(caseInfo);
     }
 
     /*
@@ -63,7 +46,6 @@ public class CaseInfoController {
         return Result.success();
     }
 
-    //
 //    @RequestMapping(value = "/{caseNumber}",method = RequestMethod.DELETE)
 //    public Result deleteCaseInfoByCaseNumber(@PathVariable("caseNumber") long caseNumber) {
 //        caseService.delKeepCase(caseNumber);
@@ -75,14 +57,9 @@ public class CaseInfoController {
      * 根据病例号获取暂存的患者信息
      * */
     @RequestMapping(value = "/record/{caseNumber}",method = RequestMethod.GET)
-//    @MoreSerializeField({
-//            @SerializeField(clazz = CasePojo.class, includes = {"birthday","patientName","gender","addressId",
-//                    "doctorId"}),
-//    })
     public Result getRecordCaseInfoByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
         CasePojo caseByNumber = caseService.getCaseByNumber(caseNumber);
         List<FilePojo> imageList = fileService.getImageListByNumber(caseNumber);
-//        HashMap<String, Object> map = JSON.parseObject(JSON.toJSONString(caseByNumber));
         HashMap<String, Object> map = new HashMap<>();
         map.put("caseNumber",caseByNumber.getCaseNumber());
         map.put("patientName",caseByNumber.getPatientName());

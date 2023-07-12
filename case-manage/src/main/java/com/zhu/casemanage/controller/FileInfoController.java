@@ -29,7 +29,7 @@ public class FileInfoController {
      * 上传数字模型或文件压缩包或照片
      * */
     @RequestMapping(value = "/caseInfo/file",method = RequestMethod.POST)
-    public Result uploadStl(@RequestBody FilePojo newFile) {
+    public Result uploadFile(@RequestBody FilePojo newFile) {
 //        newStl.setFileType();
         fileService.addFile(newFile);
         if (newFile.getFileType() >= 14 && newFile.getFileType() <= 16){

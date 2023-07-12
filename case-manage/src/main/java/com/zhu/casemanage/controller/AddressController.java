@@ -44,18 +44,24 @@ public class AddressController {
     /*
      * 根据主治医生id获取其全部的邮寄地址
      * */
-//    @RequestMapping(value = "/cmAddress/doctor/{id}",method = RequestMethod.POST)
-//    public Result getAllAddressById(@PathVariable("id") int id) {
+    @RequestMapping(value = "/cmAddress/doctor/{id}",method = RequestMethod.GET)
+    public Result getAllAddressById(@PathVariable("id") int id) {
+        List<AddressPojo> addressList = null;
+        try {
+            addressList = addressService.findUserAddressList(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return Result.success(addressList);
+    }
+
+//    /*
+//     * 根据地址id获取该病例号的主治医生的地址信息
+//     * */
+//    @RequestMapping(value = "/cmAddress/{caseNumber}/{id}",method = RequestMethod.POST)
+//    public Result getAddressByCaseNumberAndId(@PathVariable("caseNumber") Long caseNumber,@PathVariable("id") int id) {
 //        return new Result();
 //    }
-
-    /*
-     * 根据地址id获取该病例号的主治医生的地址信息
-     * */
-    @RequestMapping(value = "/cmAddress/{caseNumber}/{id}",method = RequestMethod.POST)
-    public Result getAddressByCaseNumberAndId(@PathVariable("caseNumber") Long caseNumber,@PathVariable("id") int id) {
-        return new Result();
-    }
 
 
 

@@ -116,6 +116,26 @@ public class CaseServiceImpl {
     }
 
     /*
+     * 更新病例的上颌已生产步数
+     * */
+    public void updateLowerSentStep(Long caseNumber, int stepsLowOver) {
+        if (caseDao.update(null,new UpdateWrapper<CasePojo>().eq("case_number",caseNumber)
+                .set("lower_sent_step",stepsLowOver)) == 0){
+            throw new BusinessException("病例不存在");
+        }
+    }
+
+    /*
+     * 更新病例的下颌已生产步数
+     * */
+    public void updateUpperSentStep(Long caseNumber, int stepsLowOver) {
+        if (caseDao.update(null,new UpdateWrapper<CasePojo>().eq("case_number",caseNumber)
+                .set("upper_sent_step",stepsLowOver)) == 0){
+            throw new BusinessException("病例不存在");
+        }
+    }
+
+    /*
     * 根据病例号获取排牙设定
     * */
     public CasePojo getToothSetByNumber(Long caseNumber){
@@ -259,6 +279,9 @@ public class CaseServiceImpl {
         }
         return map;
     }
+
+
+
 
     /*
      * 返回按关键字搜索(selectParam)的全部病例的第pageNum页

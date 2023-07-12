@@ -115,20 +115,28 @@ public class CaseExpressController {
     @RequestMapping(value = "/affirm/{caseNumber}",method = RequestMethod.PUT)
     public Result affirmByDoctor(@PathVariable("caseNumber") Long caseNumber) {
         SendPojo sendInfo = sendService.getCaseExpressByCaseNumber(caseNumber);
-        long count = trackService.countStatus(caseNumber,117) + 1;//记录本次是第几次发货
-        caseService.updateCaseState(caseNumber,12);//此处修改为“第i此发货完成，等待下一次发货”状态
-        TrackPojo newTrack1 = new TrackPojo();
-        newTrack1.setCaseNumber(caseNumber);
-        newTrack1.setStatus(117);//此处新增为“第i此发货完成，等待下一次发货”
-        newTrack1.setRemark(Long.toString(count));
-        newTrack1.setRemarkEn(Long.toString(count));
-        TrackPojo newTrack2 = new TrackPojo();
-        newTrack2.setCaseNumber(caseNumber);
-        newTrack2.setStatus(118);//此处新增“已确认收货”
-        newTrack2.setRemark("物流单号："+ sendInfo.getExpressNum());
-        newTrack2.setRemarkEn("Tracking Num:"+sendInfo.getExpressNum());
-        trackService.addTrack(newTrack1);
-        trackService.addTrack(newTrack2);
+        CasePojo caseInfo = caseService.getCaseByNumber(caseNumber);
+        if (caseInfo.getLowerSentStep() == caseInfo.getLowerTotalStep() && caseInfo.getUpperSentStep() == caseInfo.getUpperTotalStep()) {
+            caseService.updateCaseState(caseNumber,14);
+            TrackPojo newTrack = new TrackPojo();
+            newTrack.setCaseNumber(caseNumber);
+            newTrack.setStatus(120);}
+        else {
+            long count = trackService.countStatus(caseNumber,117) + 1;//记录本次是第几次发货
+            caseService.updateCaseState(caseNumber,12);//此处修改为“第i此发货完成，等待下一次发货”状态
+            TrackPojo newTrack1 = new TrackPojo();
+            newTrack1.setCaseNumber(caseNumber);
+            newTrack1.setStatus(117);//此处新增为“第i此发货完成，等待下一次发货”
+            newTrack1.setRemark(Long.toString(count));
+            newTrack1.setRemarkEn(Long.toString(count));
+            TrackPojo newTrack2 = new TrackPojo();
+            newTrack2.setCaseNumber(caseNumber);
+            newTrack2.setStatus(118);//此处新增“已确认收货”
+            newTrack2.setRemark("物流单号："+ sendInfo.getExpressNum());
+            newTrack2.setRemarkEn("Tracking Num:"+sendInfo.getExpressNum());
+            trackService.addTrack(newTrack1);
+            trackService.addTrack(newTrack2);
+        }
         return Result.success();
     }
 
@@ -157,7 +165,7 @@ public class CaseExpressController {
             caseService.updateLowerSentStep(caseNumber,newSend.getStepsLowOver());
         }
         if (newSend.getStepsUpOver() > caseInfo.getUpperSentStep()) {
-            caseService.updateUpperSentStep(caseNumber,newSend.getStepsLowOver());
+            caseService.updateUpperSentStep(caseNumber,newSend.getStepsUpOver());
         }
         return Result.success();
     }
