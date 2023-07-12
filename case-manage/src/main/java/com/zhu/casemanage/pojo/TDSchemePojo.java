@@ -37,5 +37,14 @@ public class TDSchemePojo {
     @TableField(value = "scheme_url")
     private String schemeUrl;
 
+    @TableField(value = "remark")
+    private String remark;
+
+    @TableField(value = "auditor_type")
+    private int auditorType;
+
+    @TableField(value = "auditor_id")
+    private int auditorId;
+
 
 }

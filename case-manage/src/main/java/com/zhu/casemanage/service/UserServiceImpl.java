@@ -62,7 +62,7 @@ public class UserServiceImpl {
         return token;
     }
 
-    /**
+    /*
      *
      * 根据查询用户信息
      */
@@ -83,10 +83,18 @@ public class UserServiceImpl {
         }
     }
 
-    /**
+    /*
      * 获取某种类型的用户列表
      */
     public List<UserPojo> getUserListByType(int type){
         return userDao.selectList(new QueryWrapper<UserPojo>().eq("user_type", type));
     }
+
+    /*
+    * 根据用户id返回用户类型
+    * */
+    public int getUserTypeById(int userId){
+        return userDao.selectById(userId).getUserType();
+    }
+
 }

@@ -10,6 +10,8 @@ import com.zhu.casemanage.pojo.TDSchemePojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SchemeServiceImpl {
     @Autowired
@@ -87,5 +89,40 @@ public class SchemeServiceImpl {
     * */
     public void add3dScheme(TDSchemePojo tdSchemePojo){
         tdSchemeDao.insert(tdSchemePojo);
+    }
+
+    /*
+    * 查询某病例最新的3d方案（还未被审核的那个）
+    * */
+    public TDSchemePojo getLastTDScheme(Long caseNumber){
+        TDSchemePojo tdSchemeLast = tdSchemeDao.selectOne(new QueryWrapper<TDSchemePojo>().eq("case_number", caseNumber).eq("is_to_view", 0));
+        if (tdSchemeLast == null){
+            throw new BusinessException("3d治疗方案不存在");
+        }
+        return tdSchemeLast;
+    }
+
+    /*
+    * 审核3d方案（修改是否通过和是否审核）
+    * */
+    public void update3dScheme(TDSchemePojo tdSchemePojo){
+        UpdateWrapper<TDSchemePojo> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("case_number",tdSchemePojo.getCaseNumber()).eq("is_to_view",1)
+                .set("is_to_view",0).set("is_pass",tdSchemePojo.getIsPass()).set("remark",tdSchemePojo.getRemark())
+                .set("auditor_id",tdSchemePojo.getAuditorId());
+        if (tdSchemeDao.update(null,updateWrapper) == 0){
+            throw new BusinessException("3d治疗方案不存在");
+        }
+    }
+
+    /*
+    * 根据病例号返回3d方案列表
+    * */
+    public List<TDSchemePojo> get3dSchemeList(Long caseNumber){
+        List<TDSchemePojo> schemePojoList = tdSchemeDao.selectList(new QueryWrapper<TDSchemePojo>().eq("case_number", caseNumber));
+        if (schemePojoList.size() == 0){
+            throw new BusinessException("未上传3d方案");
+        }
+        return schemePojoList;
     }
 }

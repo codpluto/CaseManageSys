@@ -1,7 +1,9 @@
 package com.zhu.casemanage.controller;
 
+import com.zhu.casemanage.pojo.TDSchemePojo;
 import com.zhu.casemanage.pojo.TrackPojo;
 import com.zhu.casemanage.service.CaseServiceImpl;
+import com.zhu.casemanage.service.SchemeServiceImpl;
 import com.zhu.casemanage.service.TrackServiceImpl;
 import com.zhu.casemanage.service.UserServiceImpl;
 import com.zhu.casemanage.utils.Result;
@@ -18,6 +20,8 @@ public class CaseStatusController {
     private CaseServiceImpl caseService;
     @Autowired
     private UserServiceImpl userService;
+    @Autowired
+    private SchemeServiceImpl schemeService;
 
     /*
      * 根据病例号获取该患者的所有病例状态（变化记录，数组）
@@ -125,16 +129,58 @@ public class CaseStatusController {
      * 医生评审治疗方案
      * */
     @RequestMapping(value = "/audit/doctor",method = RequestMethod.PUT)
-    public Result auditByDoctor() {
-        return new Result();
+    public Result auditByDoctor(@RequestBody TDSchemePojo tdSchemePojo) {
+        TrackPojo newTrack = new TrackPojo();
+        newTrack.setCaseNumber(tdSchemePojo.getCaseNumber());
+        if (tdSchemePojo.getIsPass()){
+            caseService.updateCaseState(tdSchemePojo.getCaseNumber(), 9);
+            newTrack.setStatus(110);
+        } else {
+            caseService.updateCaseState(tdSchemePojo.getCaseNumber(), 6);
+            newTrack.setStatus(111);
+        }
+        trackService.addTrack(newTrack);
+        schemeService.update3dScheme(tdSchemePojo);
+        return Result.success();
     }
 
     /*
      * 专家评审治疗方案
      * */
     @RequestMapping(value = "/audit/specialist",method = RequestMethod.PUT)
-    public Result auditBySpecialist() {
-        return new Result();
+    public Result auditBySpecialist(@RequestBody TDSchemePojo tdSchemePojo) {
+        TrackPojo newTrack = new TrackPojo();
+        newTrack.setCaseNumber(tdSchemePojo.getCaseNumber());
+        if (tdSchemePojo.getIsPass()){
+            caseService.updateCaseState(tdSchemePojo.getCaseNumber(), 9);
+            newTrack.setStatus(112);
+        } else {
+            caseService.updateCaseState(tdSchemePojo.getCaseNumber(), 6);
+            newTrack.setStatus(113);
+        }
+        trackService.addTrack(newTrack);
+        schemeService.update3dScheme(tdSchemePojo);
+        return Result.success();
     }
+
+    /*
+    * 上传3d方案
+    * */
+    @RequestMapping(value = "/3dScheme",method = RequestMethod.POST)
+    public Result add3dScheme(@RequestBody TDSchemePojo tdSchemePojo){
+        tdSchemePojo.setIsToViem(true);
+        schemeService.add3dScheme(tdSchemePojo);
+        TrackPojo newTrack = new TrackPojo();
+        newTrack.setCaseNumber(tdSchemePojo.getCaseNumber());
+        newTrack.setStatus(109);
+        trackService.addTrack(newTrack);
+        switch (tdSchemePojo.getAuditorType()){
+            case 1 -> caseService.updateCaseState(tdSchemePojo.getCaseNumber(), 7);
+            case 2 -> caseService.updateCaseState(tdSchemePojo.getCaseNumber(), 8);
+        }
+        return Result.success();
+    }
+
+
 
 }
