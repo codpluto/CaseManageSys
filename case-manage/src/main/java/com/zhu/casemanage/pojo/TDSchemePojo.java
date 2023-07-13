@@ -22,8 +22,8 @@ public class TDSchemePojo {
     @TableField(value = "is_pass")
     private Boolean isPass;
 
-    @TableField(value = "is_to_view")
-    private Boolean isToViem;
+    @TableField(value = "is_viewed")
+    private Boolean isViewed;
 
     @TableField(value = "create_time",fill = FieldFill.INSERT)
     private LocalDateTime createTime;

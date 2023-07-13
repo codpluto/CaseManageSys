@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhu.casemanage.dao.CaseDao;
 import com.zhu.casemanage.exception.BusinessException;
 import com.zhu.casemanage.pojo.CasePojo;
+import com.zhu.casemanage.utils.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,13 +44,9 @@ public class CaseServiceImpl {
 
     //新增病例,返回病例号
     public void addCase(CasePojo casePojo){
-//        casePojo.setCaseNumber(snowFlake.nextId());
-        try {
-            caseDao.insert(casePojo);
-        } catch (Exception e) {
-            throw new BusinessException(e.getMessage());
-        }
-//        log.info("caseNumber:{}",casePojo.getCaseNumber());
+        casePojo.setFacePhoto(Constant.FACEPHOTO);
+//        casePojo.setIsDeleted(false);
+        caseDao.insert(casePojo);
     }
 
     //根据病例号删除病例
@@ -279,6 +276,18 @@ public class CaseServiceImpl {
         }
         return map;
     }
+
+
+    /*
+    * 更新病例的头像
+    * */
+    public void updateCaseFacePhoto(Long caseNumber,String facePhoto){
+        UpdateWrapper<CasePojo> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("case_number",caseNumber).set("face_photo",facePhoto);
+        caseDao.update(null,updateWrapper);
+    }
+
+
 
 
 

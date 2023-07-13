@@ -107,8 +107,8 @@ public class SchemeServiceImpl {
     * */
     public void update3dScheme(TDSchemePojo tdSchemePojo){
         UpdateWrapper<TDSchemePojo> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("case_number",tdSchemePojo.getCaseNumber()).eq("is_to_view",1)
-                .set("is_to_view",0).set("is_pass",tdSchemePojo.getIsPass()).set("remark",tdSchemePojo.getRemark())
+        updateWrapper.eq("case_number",tdSchemePojo.getCaseNumber()).eq("is_viewed",0)
+                .set("is_viewed",1).set("is_pass",tdSchemePojo.getIsPass()).set("remark",tdSchemePojo.getRemark())
                 .set("auditor_id",tdSchemePojo.getAuditorId());
         if (tdSchemeDao.update(null,updateWrapper) == 0){
             throw new BusinessException("3d治疗方案不存在");

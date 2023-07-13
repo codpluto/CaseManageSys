@@ -8,6 +8,7 @@ import com.zhu.casemanage.pojo.TrackPojo;
 import com.zhu.casemanage.service.CaseServiceImpl;
 import com.zhu.casemanage.service.FileServiceImpl;
 import com.zhu.casemanage.service.TrackServiceImpl;
+import com.zhu.casemanage.utils.Constant;
 import com.zhu.casemanage.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +31,10 @@ public class FileInfoController {
      * */
     @RequestMapping(value = "/caseInfo/file",method = RequestMethod.POST)
     public Result uploadFile(@RequestBody FilePojo newFile) {
-//        newStl.setFileType();
         fileService.addFile(newFile);
+        if (newFile.getFileType() == 1){
+            caseService.updateCaseFacePhoto(newFile.getCaseNumber(), newFile.getFileUrl());
+        }
         if (newFile.getFileType() >= 14 && newFile.getFileType() <= 16){
             TrackPojo track = trackService.getTrackByStatus(newFile.getCaseNumber(), 103);
             if (track == null){
@@ -85,6 +88,9 @@ public class FileInfoController {
     public Result delCaseImage(@PathVariable("caseNumber") Long caseNumber,
                                @PathVariable("fileType") int fileType){
         fileService.delFileByType(caseNumber,fileType);
+        if (fileType == 1){
+            caseService.updateCaseFacePhoto(caseNumber, Constant.FACEPHOTO);
+        }
         return Result.success();
     }
 }

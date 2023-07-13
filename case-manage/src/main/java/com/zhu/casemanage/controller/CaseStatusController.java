@@ -71,7 +71,7 @@ public class CaseStatusController {
             TrackPojo newTrack = new TrackPojo();
             newTrack.setCaseNumber(caseNumber);
             newTrack.setStatus(105);
-            newTrack.setRemark(reason);
+            newTrack.setRemark("理由："+reason);
             trackService.addTrack(newTrack);
         }
         return Result.success();
@@ -168,7 +168,6 @@ public class CaseStatusController {
     * */
     @RequestMapping(value = "/3dScheme",method = RequestMethod.POST)
     public Result add3dScheme(@RequestBody TDSchemePojo tdSchemePojo){
-        tdSchemePojo.setIsToViem(true);
         schemeService.add3dScheme(tdSchemePojo);
         TrackPojo newTrack = new TrackPojo();
         newTrack.setCaseNumber(tdSchemePojo.getCaseNumber());

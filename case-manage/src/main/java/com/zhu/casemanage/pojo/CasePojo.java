@@ -79,9 +79,9 @@ public class CasePojo {
     @TableField(value = "init_case_number")
     private Long initCaseNumber;
 
-
-    @TableField(value = "is_valid")
-    private Boolean isValid;
+    @TableLogic
+    @TableField(value = "is_deleted")
+    private Boolean isDeleted;
 
     @TableField(value = "mechanic_id")
     private int mechanicId;

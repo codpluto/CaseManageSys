@@ -46,4 +46,7 @@ public class UserPojo {
     @TableField(value = "create_time",fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
+    @TableLogic
+    @TableField(value = "is_deleted")
+    private Boolean isDeleted;
 }
