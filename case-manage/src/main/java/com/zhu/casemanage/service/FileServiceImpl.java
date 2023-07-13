@@ -55,11 +55,10 @@ public class FileServiceImpl {
     }
 
     /*
-    * 根据病例号查询数字模型和压缩包
+    * 根据病例号查询数字模型和压缩包或照片
     * */
     public List<FilePojo> getFileListByCaseNumber(Long caseNumber){
-        List<FilePojo> fileList = fileDao.selectList(new QueryWrapper<FilePojo>().eq("case_number", caseNumber)
-                .between("file_type",14,16));
+        List<FilePojo> fileList = fileDao.selectList(new QueryWrapper<FilePojo>().eq("case_number", caseNumber));
         if (fileList.size() == 0){
             throw new BusinessException("文件不存在");
         }

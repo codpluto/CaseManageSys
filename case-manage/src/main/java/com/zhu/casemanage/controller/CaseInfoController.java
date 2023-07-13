@@ -2,12 +2,9 @@ package com.zhu.casemanage.controller;
 
 import com.aeert.jfilter.annotation.MoreSerializeField;
 import com.aeert.jfilter.annotation.SerializeField;
-import com.zhu.casemanage.pojo.CasePojo;
-import com.zhu.casemanage.pojo.FilePojo;
-import com.zhu.casemanage.pojo.TrackPojo;
-import com.zhu.casemanage.service.CaseServiceImpl;
-import com.zhu.casemanage.service.FileServiceImpl;
-import com.zhu.casemanage.service.TrackServiceImpl;
+import com.zhu.casemanage.pojo.*;
+import com.zhu.casemanage.service.*;
+import com.zhu.casemanage.utils.Constant;
 import com.zhu.casemanage.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +24,10 @@ public class CaseInfoController {
     private FileServiceImpl fileService;
     @Autowired
     private TrackServiceImpl trackService;
+    @Autowired
+    private SchemeServiceImpl schemeService;
+    @Autowired
+    private SendServiceImpl sendService;
 
     /*
      * 获取指定病例号的病例信息
@@ -157,9 +158,74 @@ public class CaseInfoController {
     /*
      * 重启病例(阶段调整)，修改旧的病例号为新的病例号
      * */
-    @RequestMapping(value = "/restart/{oldCaseNumber}/{newCaseNumber}",method = RequestMethod.POST)
-    public Result restartCase(@PathVariable("oldCaseNumber") long oldCaseNumber,@PathVariable("newCaseNumber") long newCaseNumber) {
-        return new Result();
+    @RequestMapping(value = "/restart/{oldCaseNumber}",method = RequestMethod.POST)
+    public Result restartCase(@PathVariable("oldCaseNumber") Long oldCaseNumber) {
+        caseService.updateCaseState(oldCaseNumber,13);
+        TrackPojo newTrack = new TrackPojo();
+        newTrack.setCaseNumber(oldCaseNumber);
+        newTrack.setStatus(119);
+
+        CasePojo newCase = caseService.restartCase(oldCaseNumber);
+
+        newTrack.setRemark("新病例号："+newCase.getCaseNumber().toString());
+        trackService.addTrack(newTrack);
+
+        SchemePojo oldCaseScheme = schemeService.getSchemeByNumber(oldCaseNumber);
+        if (oldCaseScheme != null){
+            oldCaseScheme.setCaseNumber(newCase.getCaseNumber());
+            oldCaseScheme.setSchemeId(null);
+            schemeService.addScheme(oldCaseScheme);
+        }
+
+
+
+        List<FilePojo> oldCaseFiles = fileService.getFileListByCaseNumber(oldCaseNumber);
+        if (oldCaseFiles.size() > 0){
+            for (FilePojo file:
+                    oldCaseFiles) {
+                file.setCaseNumber(newCase.getCaseNumber());
+                file.setFileId(null);
+                fileService.addFile(file);
+                if (file.getFileType() == 1){
+                    caseService.updateCaseFacePhoto(file.getCaseNumber(), file.getFileUrl());
+                }
+                if (file.getFileType() >= 14 && file.getFileType() <= 16){
+                    TrackPojo track = trackService.getTrackByStatus(file.getCaseNumber(), 103);
+                    if (track == null){
+                        TrackPojo newTrack1 = new TrackPojo();
+                        newTrack1.setCaseNumber(file.getCaseNumber());
+                        newTrack1.setStatus(103);
+                        trackService.addTrack(newTrack1);
+                        if (caseService.getCaseByNumber(file.getCaseNumber()).getCaseState() < 2){
+                            caseService.updateCaseState(file.getCaseNumber(), 2);
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        SendPojo oldCaseExpress1 = sendService.getCaseExpressByCaseNumber(oldCaseNumber);
+        if (oldCaseExpress1 != null){
+            oldCaseExpress1.setCaseNumber(newCase.getCaseNumber());
+            oldCaseExpress1.setSendId(null);
+            sendService.addCaseExpress(oldCaseExpress1);
+            TrackPojo newTrack1 = new TrackPojo();
+            newTrack1.setCaseNumber(oldCaseExpress1.getCaseNumber());
+            newTrack1.setStatus(102);
+            newTrack1.setRemark(Constant.EXPRESS.get(oldCaseExpress1.getExpressId())+" "+oldCaseExpress1.getExpressNum());
+            trackService.addTrack(newTrack1);
+            if (caseService.getCaseByNumber(newTrack1.getCaseNumber()).getCaseState() < 2){
+                caseService.updateCaseState(oldCaseExpress1.getCaseNumber(), 2);
+            }
+        }
+
+
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("newCaseNumber",newCase.getCaseNumber());
+        return Result.success(map);
     }
 
 
