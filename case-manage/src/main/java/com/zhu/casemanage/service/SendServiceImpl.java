@@ -68,6 +68,19 @@ public class SendServiceImpl {
     }
 
     /*
+    * 根据病例号查询最近一次发货信息
+    * */
+    public SendPojo getLastCaseExpress(Long caseNumber){
+        QueryWrapper<SendPojo> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc("create_time");
+        SendPojo sendPojo = sendDao.selectOne(wrapper);
+        if (sendPojo == null){
+            throw new BusinessException("该病例无发货记录");
+        }
+        return sendPojo;
+    }
+
+    /*
     * 更新牙模寄出的快递信息
     * */
     public void updateCaseExpress(SendPojo newSend){
