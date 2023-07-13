@@ -5,8 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.zhu.casemanage.dao.CaseDao;
 import com.zhu.casemanage.dao.SendDao;
 import com.zhu.casemanage.exception.BusinessException;
-import com.zhu.casemanage.pojo.CasePojo;
-import com.zhu.casemanage.pojo.PreferPojo;
 import com.zhu.casemanage.pojo.SendPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,14 +68,14 @@ public class SendServiceImpl {
     /*
     * 根据病例号查询最近一次发货信息
     * */
-    public SendPojo getLastCaseExpress(Long caseNumber){
+    public List<SendPojo> CaseExpressDesc(Long caseNumber){
         QueryWrapper<SendPojo> wrapper = new QueryWrapper<>();
         wrapper.orderByDesc("create_time");
-        SendPojo sendPojo = sendDao.selectOne(wrapper);
-        if (sendPojo == null){
+        List<SendPojo> sendList = sendDao.selectList(wrapper);
+        if (sendList == null){
             throw new BusinessException("该病例无发货记录");
         }
-        return sendPojo;
+        return sendList;
     }
 
     /*

@@ -35,6 +35,7 @@ public class CaseExpressController {
     @RequestMapping(value = "/getCaseSendInfo/{caseNumber}",method = RequestMethod.GET)
     public Result getCaseSendInfoByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
         List<SendPojo> sendList = sendService.getSendListByCaseNumber(caseNumber);
+        List<SendPojo> lastSendList = sendService.CaseExpressDesc(caseNumber);
         int wearRemain = caseService.getCaseByNumber(caseNumber).getWearRemain();
         int lowerSentStep = caseService.getCaseByNumber(caseNumber).getLowerSentStep();
         int lowerTotalStep = caseService.getCaseByNumber(caseNumber).getLowerTotalStep();
@@ -42,9 +43,7 @@ public class CaseExpressController {
         int upperTotalStep = caseService.getCaseByNumber(caseNumber).getUpperTotalStep();
         int wearStep = caseService.getCaseByNumber(caseNumber).getWearStep();
         HashMap<String, Object> sendListNew = new HashMap<>();
-        for (SendPojo sendPojo : sendList) {
-            sendListNew.put("item", sendPojo);
-        }
+        sendListNew.put("item", lastSendList.get(0));
         HashMap<String, Object> result = new HashMap<>();
         result.put("sendList",sendList);
         result.put("wearRemain",wearRemain);
@@ -114,7 +113,7 @@ public class CaseExpressController {
      * */
     @RequestMapping(value = "/affirm/{caseNumber}",method = RequestMethod.PUT)
     public Result affirmByDoctor(@PathVariable("caseNumber") Long caseNumber) {
-        SendPojo sendInfo = sendService.getLastCaseExpress(caseNumber);
+        SendPojo sendInfo = sendService.CaseExpressDesc(caseNumber).get(0);
         CasePojo caseInfo = caseService.getCaseByNumber(caseNumber);
         if (caseInfo.getLowerSentStep() >= caseInfo.getLowerTotalStep() && caseInfo.getUpperSentStep() >= caseInfo.getUpperTotalStep()) {
             caseService.updateCaseState(caseNumber,14);

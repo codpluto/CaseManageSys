@@ -31,6 +31,7 @@ public class FileInfoController {
      * */
     @RequestMapping(value = "/caseInfo/file",method = RequestMethod.POST)
     public Result uploadFile(@RequestBody FilePojo newFile) {
+//        newStl.setFileType();
         fileService.addFile(newFile);
         if (newFile.getFileType() == 1){
             caseService.updateCaseFacePhoto(newFile.getCaseNumber(), newFile.getFileUrl());
@@ -47,11 +48,11 @@ public class FileInfoController {
                 }
             }
         }
-        return Result.success();
+        return Result.success(newFile.getFileUrl());
     }
 
     /*
-     * 根据病例号获取该病例的文件信息（数字模型或文件压缩包或照片）
+     * 根据病例号获取该病例的文件信息（数字模型或文件压缩包）
      * */
     @RequestMapping(value = "/{caseNumber}/file",method = RequestMethod.GET)
     @MoreSerializeField({
