@@ -8,7 +8,7 @@ import com.zhu.casemanage.pojo.UserPojo;
 import com.zhu.casemanage.utils.JwtUtil;
 import com.zhu.casemanage.utils.RedisUtil;
 import com.zhu.casemanage.utils.Result;
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +57,9 @@ public class UserServiceImpl {
         //登录成功，生产token
         log.info("login success,account={}",account);
         String token = jwtUtil.createToken(user.getAccount());
-        //redis存token,2h有效期
-        redisUtil.set(UserConstant.getTokenKey(user.getAccount()),token);
+        //redis存token,30min有效期
+//        redisUtil.setMinute(UserConstant.getTokenKey(user.getAccount()),token,30);
+        redisUtil.set(UserConstant.getTokenKey(user.getAccount()),token,TimeUnit.MINUTES.toSeconds(30));
         return token;
     }
 

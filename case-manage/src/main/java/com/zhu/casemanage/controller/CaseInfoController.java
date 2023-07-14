@@ -177,8 +177,6 @@ public class CaseInfoController {
             schemeService.addScheme(oldCaseScheme);
         }
 
-
-
         List<FilePojo> oldCaseFiles = fileService.getFileListByCaseNumber(oldCaseNumber);
         if (oldCaseFiles.size() > 0){
             for (FilePojo file:
@@ -204,8 +202,6 @@ public class CaseInfoController {
             }
         }
 
-
-
         SendPojo oldCaseExpress1 = sendService.getCaseExpressByCaseNumber(oldCaseNumber);
         if (oldCaseExpress1 != null){
             oldCaseExpress1.setCaseNumber(newCase.getCaseNumber());
@@ -220,8 +216,6 @@ public class CaseInfoController {
                 caseService.updateCaseState(oldCaseExpress1.getCaseNumber(), 2);
             }
         }
-
-
 
         HashMap<String, Object> map = new HashMap<>();
         map.put("newCaseNumber",newCase.getCaseNumber());

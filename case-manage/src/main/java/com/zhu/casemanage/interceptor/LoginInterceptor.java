@@ -4,12 +4,19 @@ import com.zhu.casemanage.constant.UserConstant;
 import com.zhu.casemanage.exception.BusinessException;
 import com.zhu.casemanage.utils.JwtUtil;
 import com.zhu.casemanage.utils.RedisUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+<<<<<<< Updated upstream
+=======
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
+>>>>>>> Stashed changes
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
@@ -18,6 +25,8 @@ public class LoginInterceptor implements HandlerInterceptor {
     private JwtUtil jwtUtil;
     @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
 
 
@@ -33,6 +42,8 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (tokenCache == null){
             throw new BusinessException("token已过期");
         }
+        redisTemplate.expire(UserConstant.getTokenKey(account),30,TimeUnit.MINUTES);
+        log.info("token过期时间：{}",redisTemplate.getExpire(UserConstant.getTokenKey(account)));
         return true;
     }
 }

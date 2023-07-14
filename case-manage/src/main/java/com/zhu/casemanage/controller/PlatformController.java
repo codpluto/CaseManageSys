@@ -79,4 +79,8 @@ public class PlatformController {
         return Result.success(userList);
     }
 
+    /*
+    * 更新token持续时间
+    * */
+
 }

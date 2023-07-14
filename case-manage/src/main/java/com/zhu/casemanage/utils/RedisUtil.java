@@ -43,6 +43,21 @@ public class RedisUtil {
         }
     }
 
+    //普通缓存放入并设置时间（minute）
+    public boolean setMinute(String key,Object value,long time){
+        try {
+            if (time > 0){
+                redisTemplate.opsForValue().set(key, value, time, TimeUnit.MINUTES);
+            } else {
+                set(key, value);
+            }
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     //普通缓存获取
     public  Object get(String key){

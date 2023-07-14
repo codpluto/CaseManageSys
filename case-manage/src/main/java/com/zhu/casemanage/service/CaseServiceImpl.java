@@ -227,20 +227,20 @@ public class CaseServiceImpl {
         Page<CasePojo> casePojoPage = new Page<>(pageNum,pageSize);
         QueryWrapper<CasePojo> wrapper = new QueryWrapper<>();
         switch (userType){
-            case 1 -> wrapper.and(Wrapper -> Wrapper.eq("case_state",1)
+            case 1 : wrapper.and(Wrapper -> Wrapper.eq("case_state",1)
                     .or().eq("case_state",2)
                     .or().eq("case_state",8)
                     .or().eq("case_state",11)
                     .or().eq("case_state",12)
-                    .or().eq("case_state",14));
-            case 2 -> wrapper.and(Wrapper -> Wrapper.eq("case_state",7));
-            case 3 -> wrapper.and(Wrapper -> Wrapper.eq("case_state",3)
+                    .or().eq("case_state",14));break;
+            case 2 : wrapper.and(Wrapper -> Wrapper.eq("case_state",7));break;
+            case 3 : wrapper.and(Wrapper -> Wrapper.eq("case_state",3)
                     .or().eq("case_state",4)
                     .or().eq("case_state",5)
                     .or().eq("case_state",6)
                     .or().eq("case_state",9)
-                    .or().eq("case_state",10));
-            case 4 -> wrapper.and(Wrapper -> Wrapper.eq("case_state",6));
+                    .or().eq("case_state",10));break;
+            case 4 : wrapper.and(Wrapper -> Wrapper.eq("case_state",6));break;
         }
         if (status != -1){
             wrapper.and(Wrapper -> Wrapper.eq("case_state",status));

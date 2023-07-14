@@ -174,8 +174,8 @@ public class CaseStatusController {
         newTrack.setStatus(109);
         trackService.addTrack(newTrack);
         switch (tdSchemePojo.getAuditorType()){
-            case 1 -> caseService.updateCaseState(tdSchemePojo.getCaseNumber(), 7);
-            case 2 -> caseService.updateCaseState(tdSchemePojo.getCaseNumber(), 8);
+            case 1 : caseService.updateCaseState(tdSchemePojo.getCaseNumber(), 7);break;
+            case 2 : caseService.updateCaseState(tdSchemePojo.getCaseNumber(), 8);break;
         }
         return Result.success();
     }
