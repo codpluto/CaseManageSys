@@ -1,7 +1,6 @@
 package com.zhu.casemanage.controller;
 
-import com.aeert.jfilter.annotation.MoreSerializeField;
-import com.aeert.jfilter.annotation.SerializeField;
+
 import com.zhu.casemanage.pojo.CasePojo;
 import com.zhu.casemanage.pojo.PreferPojo;
 import com.zhu.casemanage.service.PreferServiceImpl;
@@ -9,7 +8,10 @@ import com.zhu.casemanage.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/platform")
@@ -49,12 +51,17 @@ public class PreinstallController {
      * 返回当前登录用户SysUser的偏好设定信息（只返回id和name字段）
      * */
     @RequestMapping(value = "/cmPreinstall/list/{userId}",method = RequestMethod.GET)
-    @MoreSerializeField({
-            @SerializeField(clazz = PreferPojo.class, includes = {"preferId","preinstall"}),
-    })
     public Result getPreinstallList(@PathVariable("userId") Integer userId) {
         List<PreferPojo> perferList = preferService.getPerferList(userId);
-        return Result.success(perferList);
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (PreferPojo prefer:
+             perferList) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("preferId",prefer.getPreferId());
+            map.put("preinstall",prefer.getPreinstall());
+            list.add(map);
+        }
+        return Result.success(list);
     }
 
     /*

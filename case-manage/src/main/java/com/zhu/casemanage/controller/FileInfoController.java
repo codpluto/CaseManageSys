@@ -1,7 +1,6 @@
 package com.zhu.casemanage.controller;
 
-import com.aeert.jfilter.annotation.MoreSerializeField;
-import com.aeert.jfilter.annotation.SerializeField;
+
 import com.zhu.casemanage.pojo.FilePojo;
 import com.zhu.casemanage.pojo.SendPojo;
 import com.zhu.casemanage.pojo.TrackPojo;
@@ -13,7 +12,10 @@ import com.zhu.casemanage.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/platform/cmFileInfo")
@@ -55,12 +57,18 @@ public class FileInfoController {
      * 根据病例号获取该病例的文件信息（数字模型或文件压缩包）
      * */
     @RequestMapping(value = "/{caseNumber}/file",method = RequestMethod.GET)
-    @MoreSerializeField({
-            @SerializeField(clazz = FilePojo.class, includes = {"fileName","fileType","fileUrl"}),
-    })
     public Result getFileListByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
         List<FilePojo> fileList = fileService.getFileListByCaseNumber(caseNumber);
-        return Result.success(fileList);
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (FilePojo file:
+             fileList) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("fileName",file.getFileName());
+            map.put("fileType",file.getFileType());
+            map.put("fileUrl",file.getFileUrl());
+            list.add(map);
+        }
+        return Result.success(list);
     }
 
     /*

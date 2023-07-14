@@ -1,7 +1,6 @@
 package com.zhu.casemanage.controller;
 
-import com.aeert.jfilter.annotation.MoreSerializeField;
-import com.aeert.jfilter.annotation.SerializeField;
+
 import com.zhu.casemanage.pojo.*;
 import com.zhu.casemanage.service.*;
 import com.zhu.casemanage.utils.Constant;
@@ -73,11 +72,6 @@ public class CaseInfoController {
         return Result.success(map);
     }
 
-//    @RequestMapping(value = "/record/{caseId}",method = RequestMethod.GET)
-//    public Result getRecordCaseInfoByCaseNumber(@PathVariable("caseId") int caseId) {
-//        CasePojo caseById = caseService.findCaseById(caseId);
-//        return Result.success(caseById);
-//    }
 
 
     /*
@@ -136,12 +130,12 @@ public class CaseInfoController {
      * 根据病例号获取患者的临床信息
      * */
     @RequestMapping(value = "/clinicalCircumstance/{caseNumber}",method = RequestMethod.GET)
-    @MoreSerializeField({
-            @SerializeField(clazz = CasePojo.class, includes = {"diagnosisInfos","doctorRemark"}),
-    })
     public Result getClinicalCircumstanceByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
         CasePojo clinicalCircumstance = caseService.getCaseByNumber(caseNumber);
-        return Result.success(clinicalCircumstance);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("diagnosisInfos",clinicalCircumstance.getDiagnosisInfos());
+        map.put("doctorRemark",clinicalCircumstance.getDoctorRemark());
+        return Result.success(map);
     }
 
     /*

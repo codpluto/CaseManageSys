@@ -82,13 +82,6 @@
 		</dependency>
 
 
-		<!-- https://mvnrepository.com/artifact/com.aeert/jfilter -->
-		<dependency>
-			<groupId>com.aeert</groupId>
-			<artifactId>jfilter</artifactId>
-			<version>2.3.0.RELEASE</version>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

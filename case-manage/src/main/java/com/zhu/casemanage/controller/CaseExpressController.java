@@ -1,7 +1,6 @@
 package com.zhu.casemanage.controller;
 
-import com.aeert.jfilter.annotation.MoreSerializeField;
-import com.aeert.jfilter.annotation.SerializeField;
+
 import com.zhu.casemanage.pojo.CasePojo;
 import com.zhu.casemanage.pojo.SendPojo;
 import com.zhu.casemanage.pojo.TrackPojo;
@@ -89,12 +88,16 @@ public class CaseExpressController {
      * 根据病例号获取患者的快递信息
      * */
     @RequestMapping(value = "/caseNumber/{caseNumber}",method = RequestMethod.GET)
-    @MoreSerializeField({
-            @SerializeField(clazz = SendPojo.class, includes = {"caseNumber","expressId","expressNum"}),
-    })
+//    @MoreSerializeField({
+//            @SerializeField(clazz = SendPojo.class, includes = {"caseNumber","expressId","expressNum"}),
+//    })
     public Result getCaseExpressByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
         SendPojo caseExpress = sendService.getCaseExpressByCaseNumber(caseNumber);
-        return Result.success(caseExpress);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("caseNumber",caseExpress.getCaseNumber());
+        map.put("expressId",caseExpress.getExpressId());
+        map.put("expressNum",caseExpress.getExpressNum());
+        return Result.success(map);
     }
 
     /*
