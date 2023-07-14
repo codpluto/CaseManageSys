@@ -287,6 +287,30 @@ public class CaseServiceImpl {
         caseDao.update(null,updateWrapper);
     }
 
+    /*
+    * 根据旧病例信息返回一个新病例
+    * */
+    public CasePojo restartCase(Long oldCaseNumber){
+        CasePojo oldCase = getCaseByNumber(oldCaseNumber);
+        CasePojo newCase = new CasePojo();
+        newCase.setInitCaseNumber(oldCaseNumber);
+        newCase.setPatientName(oldCase.getPatientName());
+        newCase.setCaseState(1);
+        newCase.setGender(oldCase.getGender());
+        newCase.setBirthday(oldCase.getBirthday());
+        newCase.setDoctorId(oldCase.getDoctorId());
+        newCase.setDoctorName(oldCase.getDoctorName());
+        newCase.setClinic(oldCase.getClinic());
+        newCase.setAddressId(oldCase.getAddressId());
+        newCase.setPatientComplaint(oldCase.getPatientComplaint());
+        newCase.setDiagnosisInfos(oldCase.getDiagnosisInfos());
+        newCase.setDoctorRemark(oldCase.getDoctorRemark());
+        newCase.setFacePhoto(oldCase.getFacePhoto());
+        addCase(newCase);
+        caseDao.update(null,new UpdateWrapper<CasePojo>().eq("case_number",oldCaseNumber).set("restart_case_number",newCase.getCaseNumber()));
+        return newCase;
+    }
+
 
 
 
