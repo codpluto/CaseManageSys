@@ -58,6 +58,16 @@ public class SchemeController {
         return Result.success();
     }
 
+    /*
+    * 根据病例号查询治疗方案
+    * */
+    @RequestMapping(value = "/scheme/{caseNumber}",method = RequestMethod.GET)
+    public Result getScheme(@PathVariable("caseNumber") Long caseNumber) {
+        SchemePojo caseScheme = schemeService.getSchemeByNumber(caseNumber);
+        return Result.success(caseScheme);
+    }
+
+
 
     /*
     * 根据病例号获取3d方案列表
@@ -78,6 +88,7 @@ public class SchemeController {
         schemeService.add3dScheme(tdSchemePojo);
         return Result.success();
     }
+
 
     /*
     * 修改3D方案
