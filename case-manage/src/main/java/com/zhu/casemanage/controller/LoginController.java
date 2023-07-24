@@ -23,9 +23,8 @@ public class LoginController {
     * 登录
     * */
     @RequestMapping(value = "/token", method = RequestMethod.POST)
-    public Result login(@RequestParam("account") String account,
-                        @RequestParam("password") String password) {
-        String token = userService.login(account, password);
+    public Result login(@RequestBody UserPojo user) {
+        String token = userService.login(user.getAccount(), user.getPassword());
         return Result.success(token);
     }
 
