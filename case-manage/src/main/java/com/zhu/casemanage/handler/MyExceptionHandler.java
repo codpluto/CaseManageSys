@@ -19,7 +19,5 @@ public class MyExceptionHandler {
         return Result.failed(e.getMessage());
     }
 
-
-
 }
 

@@ -1,7 +1,7 @@
 spring:
   datasource:
     username: root
-    password: shabihaha123wwwWWW
+    password: Weixiaolei123
     url: jdbc:mysql://nj-cynosdbmysql-grp-r87qqusx.sql.tencentcdb.com:20530/case_manage?useUnicode=true&characterEncoding=utf-8&useSSL=false
     driver-class-name: com.mysql.cj.jdbc.Driver
 

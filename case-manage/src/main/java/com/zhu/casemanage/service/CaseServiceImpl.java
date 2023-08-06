@@ -82,7 +82,9 @@ public class CaseServiceImpl {
                 .set("gender",newCase.getGender())
                 .set("patient_name",newCase.getPatientName())
                 .set("doctor_id",newCase.getDoctorId())
-                .set("patient_complaint",newCase.getPatientComplaint());
+                .set("patient_complaint",newCase.getPatientComplaint())
+                .set("doctor_name",newCase.getDoctorName())
+                .set("clinic",newCase.getClinic());
         if (caseDao.update(null,updateWrapper) == 0){
             throw new BusinessException("病例不存在");
         }

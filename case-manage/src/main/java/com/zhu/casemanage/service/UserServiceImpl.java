@@ -37,7 +37,7 @@ public class UserServiceImpl {
     }
 
 
-    public void addUser(@RequestBody UserPojo newUser){
+    public void addUser(UserPojo newUser){
         if (userDao.selectOne(new QueryWrapper<UserPojo>().eq("account",newUser.getAccount())) != null){
             throw new BusinessException("账号已存在");
         }

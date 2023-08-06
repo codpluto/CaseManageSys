@@ -1,6 +1,8 @@
 package com.zhu.casemanage.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhu.casemanage.pojo.*;
 import com.zhu.casemanage.service.*;
 import com.zhu.casemanage.utils.Constant;
@@ -27,6 +29,9 @@ public class CaseInfoController {
     private SchemeServiceImpl schemeService;
     @Autowired
     private SendServiceImpl sendService;
+    @Autowired
+    private ObjectMapper objectMapper;
+
 
     /*
      * 获取指定病例号的病例信息
@@ -78,15 +83,32 @@ public class CaseInfoController {
      * 新增患者信息
      * */
     @RequestMapping(value = "/record",method = RequestMethod.POST)
-    public Result recordCaseInfo(@RequestBody CasePojo newCase) {
-        newCase.setCaseState(1);
-        caseService.addCase(newCase);
+//    public Result recordCaseInfo(@RequestBody CasePojo newCase) {
+    public Result recordCaseInfo(@RequestBody Map<String,Object> newCase) throws JsonProcessingException {
+        //map转对象
+        String json = objectMapper.writeValueAsString(newCase.get("userInfo"));
+        CasePojo newCaseInfo = objectMapper.readValue(json, CasePojo.class);
+        //新增病例
+        newCaseInfo.setCaseState(1);
+        caseService.addCase(newCaseInfo);
         TrackPojo newTrack = new TrackPojo();
-        newTrack.setCaseNumber(newCase.getCaseNumber());
+        newTrack.setCaseNumber(newCaseInfo.getCaseNumber());
         newTrack.setStatus(101);
         trackService.addTrack(newTrack);
         HashMap<String, Object> map = new HashMap<>();
-        map.put("caseNumber",newCase.getCaseNumber());
+        map.put("caseNumber",newCaseInfo.getCaseNumber());
+        //新增图片
+        if (newCase.get("imageList") != null){
+            String jsonImage = objectMapper.writeValueAsString(newCase.get("imageList"));
+            List<FilePojo> imageList = objectMapper.readValue(jsonImage, objectMapper.getTypeFactory().constructCollectionType(List.class, FilePojo.class));
+
+            for (FilePojo image:
+                    imageList) {
+                image.setCaseNumber(newCaseInfo.getCaseNumber());
+                fileService.addFile(image);
+            }
+//            map.put("containsImage",true);
+        }
         return Result.success(map);
     }
 
