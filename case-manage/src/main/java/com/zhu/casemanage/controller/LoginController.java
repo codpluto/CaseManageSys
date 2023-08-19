@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping(value = "/login")
 public class LoginController {
@@ -24,8 +26,9 @@ public class LoginController {
     * */
     @RequestMapping(value = "/token", method = RequestMethod.POST)
     public Result login(@RequestBody UserPojo user) {
-        String token = userService.login(user.getAccount(), user.getPassword());
-        return Result.success(token);
+        Map<String,Object> map = userService.login(user.getAccount(), user.getPassword());
+//        String token = userService.login(user.getAccount(), user.getPassword());
+        return Result.success(map);
     }
 
     /*

@@ -1,10 +1,13 @@
 package com.zhu.casemanage.controller;
 
+import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.zhu.casemanage.pojo.AddressPojo;
 import com.zhu.casemanage.service.AddressServiceImpl;
 import com.zhu.casemanage.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
 
@@ -18,14 +21,14 @@ public class AddressController {
      * 返回当前登录用户SysUser的邮寄地址信息
      * */
     @RequestMapping(value = "/cmAddress",method = RequestMethod.GET)
-    public Result getAddressList(@RequestParam("userId") int userId) {
-        List<AddressPojo> userAddressList = null;
-        try {
-            userAddressList = addressService.findUserAddressList(userId);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return Result.success(userAddressList);
+    public Result getAddressList() {
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        Assert.notNull(servletRequestAttributes, "header 获取异常");
+        // 获取请求头中的商户id
+        String token = servletRequestAttributes.getRequest().getHeader("token");
+        Assert.notNull(token, "token获取失败");
+        List<AddressPojo> sysUserAddressList = addressService.getSysUserAddressList(token);
+        return Result.success(sysUserAddressList);
     }
 
     /*

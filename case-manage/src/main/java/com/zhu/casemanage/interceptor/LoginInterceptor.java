@@ -38,6 +38,8 @@ public class LoginInterceptor implements HandlerInterceptor {
         String tokenCache = (String) redisUtil.get(UserConstant.getTokenKey(account));
         if (tokenCache == null){
             throw new BusinessException("token已过期");
+        } else if (!tokenCache.equals(token)){
+            throw new BusinessException("token已过期");
         }
         redisTemplate.expire(UserConstant.getTokenKey(account),30,TimeUnit.MINUTES);
         log.info("token过期时间：{}",redisTemplate.getExpire(UserConstant.getTokenKey(account)));

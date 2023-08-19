@@ -3,6 +3,7 @@ package com.zhu.casemanage.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.zhu.casemanage.pojo.UserPojo;
 import com.zhu.casemanage.service.UserServiceImpl;
 import com.zhu.casemanage.utils.Result;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,8 +31,13 @@ public class PlatformController {
      * 查询登录平台的用户信息
      * */
     @RequestMapping(value = "/sysUser",method = RequestMethod.GET)
-    public Result getSysUser(@RequestParam String account) {
-        UserPojo user = userService.findUserByAccount(account);
+    public Result getSysUser() {
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        Assert.notNull(servletRequestAttributes, "header 获取异常");
+        // 获取请求头中的商户id
+        String token = servletRequestAttributes.getRequest().getHeader("token");
+        Assert.notNull(token, "token获取失败");
+        UserPojo user = userService.getUserByToken(token);
         return Result.success(user);
     }
 
@@ -101,5 +109,13 @@ public class PlatformController {
         return Result.success(list);
     }
 
+    /**
+     * 根据Id查询用户信息
+     */
+    @RequestMapping(value = "/getUserInfo", method = RequestMethod.GET)
+    public Result getUserInfo(@RequestParam("userId") int userId){
+        UserPojo userInfoById = userService.getUserInfoById(userId);
+        return Result.success(userInfoById);
+    }
 
 }

@@ -1,6 +1,8 @@
 package com.zhu.casemanage.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.zhu.casemanage.constant.UserConstant;
 import com.zhu.casemanage.dao.UserDao;
 import com.zhu.casemanage.exception.BusinessException;
@@ -15,8 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -36,15 +42,33 @@ public class UserServiceImpl {
         return user;
     }
 
+    /*
+    * 根据token查询用户信息
+    * */
+    public UserPojo getUserByToken(String token){
+        String account = jwtUtil.parseToken(token);
+        String tokenCache = (String) redisUtil.get(UserConstant.getTokenKey(account));
+        if (tokenCache == null){
+            throw new BusinessException("token已过期");
+        } else if (!tokenCache.equals(token)){
+            throw new BusinessException("token已过期");
+        }
+        UserPojo userPojo = userDao.selectOne(new LambdaQueryWrapper<UserPojo>().eq(UserPojo::getAccount, account));
+        if (userPojo == null){
+            throw new BusinessException("用户不存在");
+        }
+        return userPojo;
+    }
+
 
     public void addUser(UserPojo newUser){
         if (userDao.selectOne(new QueryWrapper<UserPojo>().eq("account",newUser.getAccount())) != null){
-            throw new BusinessException("账号已存在");
+            throw new BusinessException("账号已注册");
         }
         userDao.insert(newUser);
     }
 
-    public String login(String account,String password){
+    public Map<String,Object> login(String account,String password){
         UserPojo user = this.findUserByAccount(account);
         if (user == null){
 //            return Result.failed("账号或密码错误");
@@ -60,7 +84,10 @@ public class UserServiceImpl {
         //redis存token,30min有效期
 //        redisUtil.setMinute(UserConstant.getTokenKey(user.getAccount()),token,30);
         redisUtil.set(UserConstant.getTokenKey(user.getAccount()),token,TimeUnit.MINUTES.toSeconds(30));
-        return token;
+        Map<String,Object> map = new HashMap<>();
+        map.put("token",token);
+        map.put("userId",user.getUserId());
+        return map;
     }
 
     /*

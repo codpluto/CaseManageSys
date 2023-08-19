@@ -1,12 +1,15 @@
 package com.zhu.casemanage.controller;
 
 
+import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.zhu.casemanage.pojo.CasePojo;
 import com.zhu.casemanage.pojo.PreferPojo;
 import com.zhu.casemanage.service.PreferServiceImpl;
 import com.zhu.casemanage.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +27,12 @@ public class PreinstallController {
      * */
     @RequestMapping(value = "/cmPreinstall",method = RequestMethod.POST)
     public Result addPreinstall(@RequestBody PreferPojo newPrefer) {
-        preferService.addPrefer(newPrefer);
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        Assert.notNull(servletRequestAttributes, "header 获取异常");
+        // 获取请求头中的商户id
+        String token = servletRequestAttributes.getRequest().getHeader("token");
+        Assert.notNull(token, "token获取失败");
+        preferService.addPrefer(newPrefer,token);
         return Result.success();
     }
 
@@ -33,7 +41,12 @@ public class PreinstallController {
      * */
     @RequestMapping(value = "/cmPreinstall",method = RequestMethod.PUT)
     public Result commitPreinstall(@RequestBody PreferPojo newPrefer) {
-        preferService.updatePrefer(newPrefer);
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        Assert.notNull(servletRequestAttributes, "header 获取异常");
+        // 获取请求头中的商户id
+        String token = servletRequestAttributes.getRequest().getHeader("token");
+        Assert.notNull(token, "token获取失败");
+        preferService.updatePrefer(newPrefer,token);
         return Result.success();
     }
 
@@ -50,9 +63,15 @@ public class PreinstallController {
     /*
      * 返回当前登录用户SysUser的偏好设定信息（只返回id和name字段）
      * */
-    @RequestMapping(value = "/cmPreinstall/list/{userId}",method = RequestMethod.GET)
-    public Result getPreinstallList(@PathVariable("userId") Integer userId) {
-        List<PreferPojo> perferList = preferService.getPerferList(userId);
+    @RequestMapping(value = "/cmPreinstall/list",method = RequestMethod.GET)
+    public Result getPreinstallList() {
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        Assert.notNull(servletRequestAttributes, "header 获取异常");
+        // 获取请求头中的商户id
+        String token = servletRequestAttributes.getRequest().getHeader("token");
+        Assert.notNull(token, "token获取失败");
+
+        List<PreferPojo> perferList = preferService.getPerferListByToken(token);
         List<Map<String, Object>> list = new ArrayList<>();
         for (PreferPojo prefer:
              perferList) {
