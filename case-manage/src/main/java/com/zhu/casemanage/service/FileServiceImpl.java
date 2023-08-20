@@ -1,5 +1,6 @@
 package com.zhu.casemanage.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zhu.casemanage.dao.FileDao;
 import com.zhu.casemanage.exception.BusinessException;
@@ -9,12 +10,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.nio.file.Files;
 import java.util.List;
 
 @Service
 public class FileServiceImpl {
     @Autowired
     private FileDao fileDao;
+
+//    /**
+//     * 根据MD5查询文件
+//     * @param md5
+//     * @return
+//     */
+//    public FilePojo getFileByMd5(String md5) {
+//        LambdaQueryWrapper<FilePojo> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(FilePojo::getMd5, md5);
+//        List<FilePojo> list = fileDao.selectList(queryWrapper);
+//        return list.size() == 0 ? null : list.get(0);
+//    }
+
 
     /*
      * 添加文件

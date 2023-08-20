@@ -103,6 +103,28 @@ public class UserServiceImpl {
     }
 
     /*
+    * 根据用户手机号查询用户信息
+    * */
+    public UserPojo getUserInfoByPhone(String phone){
+        UserPojo userPojo = userDao.selectOne(new LambdaQueryWrapper<UserPojo>().eq(UserPojo::getUserPhone, phone));
+        return userPojo;
+    }
+
+    /*
+    * 根据account获取用户手机号
+    * */
+    public String getUserPhoneByAccount(String account){
+        LambdaQueryWrapper<UserPojo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(UserPojo::getAccount,account)
+                .select(UserPojo::getUserPhone);
+        UserPojo userPojo = userDao.selectOne(wrapper);
+        if (userPojo == null){
+            throw new BusinessException("用户不存在");
+        }
+        return userPojo.getUserPhone();
+    }
+
+    /*
     * 删除用户
     * */
     public void delUserByAccount(String account){
