@@ -21,7 +21,8 @@ import java.util.List;
 @Configuration
 @Slf4j
 public class MyWebMvcConfig implements WebMvcConfigurer {
-    private static final List<String> excludePathList = Arrays.asList("/login/token","/login/register","/login/forgetPassword/**");
+    private static final List<String> excludePathList = Arrays.asList("/login/token","/login/register","/login/forgetPassword/**",
+            "/uploadFile/**");
 
     @Autowired
     private LoginInterceptor loginInterceptor;
