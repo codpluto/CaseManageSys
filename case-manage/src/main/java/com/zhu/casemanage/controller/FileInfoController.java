@@ -121,23 +121,24 @@ public class FileInfoController {
     @RequestMapping(value = "/caseInfo/file",method = RequestMethod.POST)
     public Result uploadFile(@RequestBody FilePojo newFile) {
 //        newStl.setFileType();
-        fileService.addFile(newFile);
-        if (newFile.getFileType() == 1){
-            caseService.updateCaseFacePhoto(newFile.getCaseNumber(), newFile.getFileUrl());
-        }
-        if (newFile.getFileType() >= 14 && newFile.getFileType() <= 16){
-            TrackPojo track = trackService.getTrackByStatus(newFile.getCaseNumber(), 103);
-            if (track == null){
-                TrackPojo newTrack = new TrackPojo();
-                newTrack.setCaseNumber(newFile.getCaseNumber());
-                newTrack.setStatus(103);
-                trackService.addTrack(newTrack);
-                if (caseService.getCaseByNumber(newFile.getCaseNumber()).getCaseState() < 2){
-                    caseService.updateCaseState(newFile.getCaseNumber(), 2);
+        if (fileService.addFile(newFile)){
+            if (newFile.getFileType() == 1){
+                caseService.updateCaseFacePhoto(newFile.getCaseNumber(), newFile.getFileUrl());
+            }
+            if (newFile.getFileType() >= 14 && newFile.getFileType() <= 16){
+                TrackPojo track = trackService.getTrackByStatus(newFile.getCaseNumber(), 103);
+                if (track == null){
+                    TrackPojo newTrack = new TrackPojo();
+                    newTrack.setCaseNumber(newFile.getCaseNumber());
+                    newTrack.setStatus(103);
+                    trackService.addTrack(newTrack);
+                    if (caseService.getCaseByNumber(newFile.getCaseNumber()).getCaseState() < 2){
+                        caseService.updateCaseState(newFile.getCaseNumber(), 2);
+                    }
                 }
             }
         }
-        return Result.success(newFile.getFileUrl());
+        return Result.success();
     }
 
 

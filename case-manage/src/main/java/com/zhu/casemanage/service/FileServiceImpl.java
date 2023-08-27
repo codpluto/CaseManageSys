@@ -2,6 +2,7 @@ package com.zhu.casemanage.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhu.casemanage.dao.FileDao;
 import com.zhu.casemanage.exception.BusinessException;
 import com.zhu.casemanage.pojo.FilePojo;
@@ -34,8 +35,16 @@ public class FileServiceImpl {
     /*
      * 添加文件
      * */
-    public void addFile(FilePojo newFile){
-        fileDao.insert(newFile);
+    public Boolean addFile(FilePojo newFile){
+        LambdaUpdateWrapper<FilePojo> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(FilePojo::getFileType, newFile.getFileType()).eq(FilePojo::getCaseNumber, newFile.getCaseNumber())
+                .set(FilePojo::getFileName,newFile.getFileName())
+                .set(FilePojo::getFileUrl,newFile.getFileUrl());
+        if (fileDao.update(null,wrapper) == 0){
+            fileDao.insert(newFile);
+            return true;
+        }
+        return false;
     }
 
     /*
