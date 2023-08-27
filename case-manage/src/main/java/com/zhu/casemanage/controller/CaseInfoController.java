@@ -96,7 +96,7 @@ public class CaseInfoController {
         newTrack.setStatus(101);
         trackService.addTrack(newTrack);
         HashMap<String, Object> map = new HashMap<>();
-        map.put("caseNumber",newCaseInfo.getCaseNumber());
+        map.put("caseNumber",newCaseInfo.getCaseNumber().toString());
         //新增图片
         if (newCase.get("imageList") != null){
             String jsonImage = objectMapper.writeValueAsString(newCase.get("imageList"));

@@ -21,7 +21,6 @@ public class CasePojo {
 //    private int caseId;
 
     @TableId(value = "case_number",type = IdType.ASSIGN_ID)
-    @JsonSerialize(using = ToStringSerializer.class)
     private Long caseNumber;
 
     @TableField(value = "patient_name")
