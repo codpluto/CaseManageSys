@@ -1,9 +1,13 @@
 package com.zhu.casemanage.pojo;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -17,6 +21,7 @@ public class CasePojo {
 //    private int caseId;
 
     @TableId(value = "case_number",type = IdType.ASSIGN_ID)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long caseNumber;
 
     @TableField(value = "patient_name")
