@@ -33,7 +33,7 @@ public class CaseExpressController {
      * */
     @RequestMapping(value = "/getCaseSendInfo/{caseNumber}",method = RequestMethod.GET)
     public Result getCaseSendInfoByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
-        List<SendPojo> sendList = sendService.getSendListByCaseNumber(caseNumber);
+//        List<SendPojo> sendList = sendService.getSendListByCaseNumber(caseNumber);
         List<SendPojo> lastSendList = sendService.CaseExpressDesc(caseNumber);
         CasePojo casePojo = caseService.getCaseByNumber(caseNumber);
         int wearRemain = casePojo.getWearRemain();
@@ -42,17 +42,17 @@ public class CaseExpressController {
         int upperSentStep = casePojo.getUpperSentStep();
         int upperTotalStep = casePojo.getUpperTotalStep();
         int wearStep = casePojo.getWearStep();
-        HashMap<String, Object> sendListNew = new HashMap<>();
-        sendListNew.put("item", lastSendList.get(0));
+//        HashMap<String, Object> sendListNew = new HashMap<>();
+//        sendListNew.put("item", lastSendList.get(0));
         HashMap<String, Object> result = new HashMap<>();
-        result.put("sendList",sendList);
+        result.put("sendList",lastSendList);
+
         result.put("wearRemain",wearRemain);
         result.put("lowerSentStep",lowerSentStep);
         result.put("lowerTotalStep",lowerTotalStep);
         result.put("upperSentStep",upperSentStep);
         result.put("upperTotalStep",upperTotalStep);
         result.put("wearStep",wearStep);
-        result.put("sendListNew",sendListNew);
         return Result.success(result);
     }
 
