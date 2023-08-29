@@ -114,5 +114,4 @@ public class CasePojo {
     @TableField(value = "wear_step")
     private int wearStep;
 
-
 }

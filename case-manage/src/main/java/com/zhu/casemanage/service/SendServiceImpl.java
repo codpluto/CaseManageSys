@@ -70,9 +70,10 @@ public class SendServiceImpl {
     * */
     public List<SendPojo> CaseExpressDesc(Long caseNumber){
         QueryWrapper<SendPojo> wrapper = new QueryWrapper<>();
-        wrapper.orderByDesc("create_time");
+        wrapper.eq("case_number",caseNumber).
+                orderByDesc("create_time");
         List<SendPojo> sendList = sendDao.selectList(wrapper);
-        if (sendList == null){
+        if (sendList.size() == 0){
             throw new BusinessException("该病例无发货记录");
         }
         return sendList;

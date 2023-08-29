@@ -35,12 +35,13 @@ public class CaseExpressController {
     public Result getCaseSendInfoByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
         List<SendPojo> sendList = sendService.getSendListByCaseNumber(caseNumber);
         List<SendPojo> lastSendList = sendService.CaseExpressDesc(caseNumber);
-        int wearRemain = caseService.getCaseByNumber(caseNumber).getWearRemain();
-        int lowerSentStep = caseService.getCaseByNumber(caseNumber).getLowerSentStep();
-        int lowerTotalStep = caseService.getCaseByNumber(caseNumber).getLowerTotalStep();
-        int upperSentStep = caseService.getCaseByNumber(caseNumber).getUpperSentStep();
-        int upperTotalStep = caseService.getCaseByNumber(caseNumber).getUpperTotalStep();
-        int wearStep = caseService.getCaseByNumber(caseNumber).getWearStep();
+        CasePojo casePojo = caseService.getCaseByNumber(caseNumber);
+        int wearRemain = casePojo.getWearRemain();
+        int lowerSentStep = casePojo.getLowerSentStep();
+        int lowerTotalStep = casePojo.getLowerTotalStep();
+        int upperSentStep = casePojo.getUpperSentStep();
+        int upperTotalStep = casePojo.getUpperTotalStep();
+        int wearStep = casePojo.getWearStep();
         HashMap<String, Object> sendListNew = new HashMap<>();
         sendListNew.put("item", lastSendList.get(0));
         HashMap<String, Object> result = new HashMap<>();

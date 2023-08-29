@@ -32,15 +32,17 @@ public class AddressController {
     }
 
     /*
-     * 新增一个邮寄地址
+     * 新增当前用户的一个邮寄地址
      * */
     @RequestMapping(value = "/cmAddress",method = RequestMethod.POST)
     public Result addAddress(@RequestBody AddressPojo newAddress) {
-        try {
-            addressService.addAddress(newAddress);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        Assert.notNull(servletRequestAttributes, "header 获取异常");
+        // 获取请求头中的商户id
+        String token = servletRequestAttributes.getRequest().getHeader("token");
+        Assert.notNull(token, "token获取失败");
+        addressService.addAddress(newAddress,token);
+
         return Result.success();
     }
 

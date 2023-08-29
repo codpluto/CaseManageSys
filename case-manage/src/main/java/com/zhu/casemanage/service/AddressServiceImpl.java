@@ -31,7 +31,16 @@ public class AddressServiceImpl {
         return addressPojos;
     }
 
-    public void addAddress(AddressPojo newAddress){
+    public void addAddress(AddressPojo newAddress,String token){
+        String account = jwtUtil.parseToken(token);
+        String tokenCache = (String) redisUtil.get(UserConstant.getTokenKey(account));
+        if (tokenCache == null){
+            throw new BusinessException("token已过期");
+        } else if (!tokenCache.equals(token)){
+            throw new BusinessException("token已过期");
+        }
+        UserPojo userPojo = userDao.selectOne(new LambdaQueryWrapper<UserPojo>().eq(UserPojo::getAccount, account));
+        newAddress.setUserId(userPojo.getUserId());
         addressDao.insert(newAddress);
     }
 

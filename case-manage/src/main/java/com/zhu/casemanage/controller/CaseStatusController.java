@@ -1,5 +1,8 @@
 package com.zhu.casemanage.controller;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.zhu.casemanage.dao.CaseDao;
+import com.zhu.casemanage.pojo.CasePojo;
 import com.zhu.casemanage.pojo.TDSchemePojo;
 import com.zhu.casemanage.pojo.TrackPojo;
 import com.zhu.casemanage.service.CaseServiceImpl;
@@ -22,6 +25,8 @@ public class CaseStatusController {
     private UserServiceImpl userService;
     @Autowired
     private SchemeServiceImpl schemeService;
+    @Autowired
+    private CaseDao caseDao;
 
     /*
      * 根据病例号获取该患者的所有病例状态（变化记录，数组）
@@ -41,6 +46,7 @@ public class CaseStatusController {
         newTrack.setCaseNumber(caseNumber);
         newTrack.setStatus(104);
         trackService.addTrack(newTrack);
+        caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,caseNumber).set(CasePojo::getCommitTime,newTrack.getCreateTime()));
         return Result.success();
     }
 
