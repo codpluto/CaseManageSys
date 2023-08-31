@@ -1,17 +1,28 @@
 package com.zhu.casemanage.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Assert;
+import com.zhu.casemanage.constant.UserConstant;
 import com.zhu.casemanage.dao.CaseDao;
+import com.zhu.casemanage.dao.TDSchemeDao;
+import com.zhu.casemanage.dao.UserDao;
+import com.zhu.casemanage.exception.BusinessException;
 import com.zhu.casemanage.pojo.CasePojo;
 import com.zhu.casemanage.pojo.TDSchemePojo;
 import com.zhu.casemanage.pojo.TrackPojo;
+import com.zhu.casemanage.pojo.UserPojo;
 import com.zhu.casemanage.service.CaseServiceImpl;
 import com.zhu.casemanage.service.SchemeServiceImpl;
 import com.zhu.casemanage.service.TrackServiceImpl;
 import com.zhu.casemanage.service.UserServiceImpl;
+import com.zhu.casemanage.utils.JwtUtil;
+import com.zhu.casemanage.utils.RedisUtil;
 import com.zhu.casemanage.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @RestController
 @RequestMapping(value = "/platform/caseStatus")
@@ -27,6 +38,14 @@ public class CaseStatusController {
     private SchemeServiceImpl schemeService;
     @Autowired
     private CaseDao caseDao;
+    @Autowired
+    private TDSchemeDao tdSchemeDao;
+    @Autowired
+    private JwtUtil jwtUtil;
+    @Autowired
+    private RedisUtil redisUtil;
+    @Autowired
+    private UserDao userDao;
 
     /*
      * 根据病例号获取该患者的所有病例状态（变化记录，数组）
@@ -136,14 +155,42 @@ public class CaseStatusController {
      * */
     @RequestMapping(value = "/audit/doctor",method = RequestMethod.PUT)
     public Result auditByDoctor(@RequestBody TDSchemePojo tdSchemePojo) {
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        Assert.notNull(servletRequestAttributes, "header 获取异常");
+        // 获取请求头中的token
+        String token = servletRequestAttributes.getRequest().getHeader("token");
+        Assert.notNull(token, "token获取失败");
+        String account = jwtUtil.parseToken(token);
+        String tokenCache = (String) redisUtil.get(UserConstant.getTokenKey(account));
+        if (tokenCache == null){
+            throw new BusinessException("token已过期");
+        } else if (!tokenCache.equals(token)){
+            throw new BusinessException("token已过期");
+        }
+        UserPojo userPojo = userDao.selectOne(new LambdaQueryWrapper<UserPojo>().eq(UserPojo::getAccount, account));
+        tdSchemePojo.setAuditorId(userPojo.getUserId());
+        tdSchemePojo.setAuditorType(userPojo.getUserType());
+
+        TDSchemePojo tdSchemePojo1 = tdSchemeDao.selectById(tdSchemePojo.getTdSchemeId());
+        if (tdSchemePojo == null){
+            throw new BusinessException("该3D方案不存在");
+        }
         TrackPojo newTrack = new TrackPojo();
-        newTrack.setCaseNumber(tdSchemePojo.getCaseNumber());
+        newTrack.setCaseNumber(tdSchemePojo1.getCaseNumber());
         if (tdSchemePojo.getIsPass()){
-            caseService.updateCaseState(tdSchemePojo.getCaseNumber(), 9);
+            caseService.updateCaseState(tdSchemePojo1.getCaseNumber(), 9);
             newTrack.setStatus(110);
+            String stateInfo = "(U:" + tdSchemePojo1.getUpperTotalStep() + "/L:" + tdSchemePojo1.getLowerTotalStep() + ")";
+            caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,tdSchemePojo1.getCaseNumber())
+                    .set(CasePojo::getLowerTotalStep,tdSchemePojo1.getLowerTotalStep())
+                    .set(CasePojo::getUpperTotalStep,tdSchemePojo1.getUpperTotalStep())
+                    .set(CasePojo::getStateInfo,stateInfo));
+
         } else {
-            caseService.updateCaseState(tdSchemePojo.getCaseNumber(), 6);
+            caseService.updateCaseState(tdSchemePojo1.getCaseNumber(), 6);
             newTrack.setStatus(111);
+            caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,tdSchemePojo1.getCaseNumber())
+                    .set(CasePojo::getStateInfo,"已驳回"));
         }
         trackService.addTrack(newTrack);
         schemeService.update3dScheme(tdSchemePojo);
@@ -155,14 +202,42 @@ public class CaseStatusController {
      * */
     @RequestMapping(value = "/audit/specialist",method = RequestMethod.PUT)
     public Result auditBySpecialist(@RequestBody TDSchemePojo tdSchemePojo) {
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        Assert.notNull(servletRequestAttributes, "header 获取异常");
+        // 获取请求头中的token
+        String token = servletRequestAttributes.getRequest().getHeader("token");
+        Assert.notNull(token, "token获取失败");
+        String account = jwtUtil.parseToken(token);
+        String tokenCache = (String) redisUtil.get(UserConstant.getTokenKey(account));
+        if (tokenCache == null){
+            throw new BusinessException("token已过期");
+        } else if (!tokenCache.equals(token)){
+            throw new BusinessException("token已过期");
+        }
+        UserPojo userPojo = userDao.selectOne(new LambdaQueryWrapper<UserPojo>().eq(UserPojo::getAccount, account));
+        tdSchemePojo.setAuditorId(userPojo.getUserId());
+        tdSchemePojo.setAuditorType(userPojo.getUserType());
+
+        TDSchemePojo tdSchemePojo1 = tdSchemeDao.selectById(tdSchemePojo.getTdSchemeId());
+        if (tdSchemePojo == null){
+            throw new BusinessException("该3D方案不存在");
+        }
         TrackPojo newTrack = new TrackPojo();
-        newTrack.setCaseNumber(tdSchemePojo.getCaseNumber());
+        newTrack.setCaseNumber(tdSchemePojo1.getCaseNumber());
         if (tdSchemePojo.getIsPass()){
-            caseService.updateCaseState(tdSchemePojo.getCaseNumber(), 9);
+            caseService.updateCaseState(tdSchemePojo1.getCaseNumber(), 9);
             newTrack.setStatus(112);
+            String stateInfo = "(U:" + tdSchemePojo1.getUpperTotalStep() + "/L:" + tdSchemePojo1.getLowerTotalStep() + ")";
+            caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,tdSchemePojo1.getCaseNumber())
+                    .set(CasePojo::getLowerTotalStep,tdSchemePojo1.getLowerTotalStep())
+                    .set(CasePojo::getUpperTotalStep,tdSchemePojo1.getUpperTotalStep())
+                    .set(CasePojo::getStateInfo,stateInfo));
+
         } else {
-            caseService.updateCaseState(tdSchemePojo.getCaseNumber(), 6);
+            caseService.updateCaseState(tdSchemePojo1.getCaseNumber(), 6);
             newTrack.setStatus(113);
+            caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,tdSchemePojo1.getCaseNumber())
+                    .set(CasePojo::getStateInfo,"已驳回"));
         }
         trackService.addTrack(newTrack);
         schemeService.update3dScheme(tdSchemePojo);

@@ -14,7 +14,7 @@ import java.util.Date;
 @TableName(value = "3dscheme")
 public class TDSchemePojo {
     @TableId(value = "id",type = IdType.AUTO)
-    private Integer tDschemeId;
+    private Integer tdSchemeId;
 
     @TableField(value = "scheme_name")
     private String schemeName;
@@ -46,5 +46,22 @@ public class TDSchemePojo {
     @TableField(value = "auditor_id")
     private int auditorId;
 
+    @TableField(value = "lower_sent_step")
+    private int lowerSentStep;
+
+    @TableField(value = "lower_total_step")
+    private int lowerTotalStep;
+
+    @TableField(value = "upper_sent_step")
+    private int upperSentStep;
+
+    @TableField(value = "upper_total_step")
+    private int upperTotalStep;
+
+    @TableField(value = "wear_step")
+    private int wearStep;
+
+    @TableField(value = "wear_remain")
+    private int wearRemain;
 
 }

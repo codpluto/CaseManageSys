@@ -107,7 +107,7 @@ public class SchemeServiceImpl {
     * */
     public void update3dScheme(TDSchemePojo tdSchemePojo){
         UpdateWrapper<TDSchemePojo> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("case_number",tdSchemePojo.getCaseNumber()).eq("is_viewed",0)
+        updateWrapper.eq("id",tdSchemePojo.getTdSchemeId())
                 .set("is_viewed",1).set("is_pass",tdSchemePojo.getIsPass()).set("remark",tdSchemePojo.getRemark())
                 .set("auditor_id",tdSchemePojo.getAuditorId());
         if (tdSchemeDao.update(null,updateWrapper) == 0){
