@@ -172,7 +172,7 @@ public class CaseStatusController {
         tdSchemePojo.setAuditorType(userPojo.getUserType());
 
         TDSchemePojo tdSchemePojo1 = tdSchemeDao.selectById(tdSchemePojo.getTdSchemeId());
-        if (tdSchemePojo == null){
+        if (tdSchemePojo1 == null){
             throw new BusinessException("该3D方案不存在");
         }
         TrackPojo newTrack = new TrackPojo();
