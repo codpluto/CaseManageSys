@@ -20,5 +20,11 @@ public class Constant {
 
     public static final String FACEPHOTO = "https://img0.baidu.com/it/u=974141393,2336151801&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500";
 
+    public static final class USERTYPE{
+        public static final Integer DOCTOR = 1;
+        public static final Integer EXPERT = 2;
+        public static final Integer TECHNICIAN = 3;
+        public static final Integer SUPERVISOR = 4;
 
+    }
 }

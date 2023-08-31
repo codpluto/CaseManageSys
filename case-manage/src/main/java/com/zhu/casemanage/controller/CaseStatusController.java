@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/platform/caseStatus")
 public class CaseStatusController {
@@ -51,8 +53,9 @@ public class CaseStatusController {
      * 根据病例号获取该患者的所有病例状态（变化记录，数组）
      * */
     @RequestMapping(value = "/tracking/{caseNumber}",method = RequestMethod.GET)
-    public Result getTrackingByCaseNumber(@PathVariable("caseNumber") String caseNumber) {
-        return new Result();
+    public Result getTrackingByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
+        List<TrackPojo> caseTrackList = trackService.getCaseTrackList(caseNumber);
+        return Result.success(caseTrackList);
     }
 
     /*
@@ -103,16 +106,34 @@ public class CaseStatusController {
     }
 
 
-//    /*
-//     * 由当前医生自己领取相应病例号的病例（原系统用的align，改为allocate）
-//     * */
-//    @RequestMapping(value = "/allocate/{caseNumber}",method = RequestMethod.PUT)
-//    public Result allocateCase(@PathVariable("caseNumber") Long caseNumber) {
-//
-//
-//
-//        return new Result();
-//    }
+    /*
+     * 由当前主管自己领取相应病例号的病例（原系统用的align，改为allocate）
+     * */
+    @RequestMapping(value = "/allocate/{caseNumber}",method = RequestMethod.PUT)
+    public Result allocateCase(@PathVariable("caseNumber") Long caseNumber) {
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        Assert.notNull(servletRequestAttributes, "header 获取异常");
+        // 获取请求头中的token
+        String token = servletRequestAttributes.getRequest().getHeader("token");
+        Assert.notNull(token, "token获取失败");
+        String account = jwtUtil.parseToken(token);
+        String tokenCache = (String) redisUtil.get(UserConstant.getTokenKey(account));
+        if (tokenCache == null){
+            throw new BusinessException("token已过期");
+        } else if (!tokenCache.equals(token)){
+            throw new BusinessException("token已过期");
+        }
+        UserPojo userPojo = userDao.selectOne(new LambdaQueryWrapper<UserPojo>().eq(UserPojo::getAccount, account));
+
+        caseService.updateMechanic(caseNumber,userPojo.getUserId());
+        caseService.updateCaseState(caseNumber,5);
+        TrackPojo newTrack = new TrackPojo();
+        newTrack.setCaseNumber(caseNumber);
+        newTrack.setStatus(107);
+        newTrack.setRemark("分配技工主管："+userPojo.getUserName());
+        trackService.addTrack(newTrack);
+        return Result.success();
+    }
 
     /*
      * 把相应病例号的病例分配病例给相应的技工

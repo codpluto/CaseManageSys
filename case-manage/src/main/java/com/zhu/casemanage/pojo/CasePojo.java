@@ -83,7 +83,7 @@ public class CasePojo {
     @TableField(value = "init_case_number")
     private Long initCaseNumber;
 
-    @TableLogic
+//    @TableLogic
     @TableField(value = "is_deleted")
     private Boolean isDeleted;
 

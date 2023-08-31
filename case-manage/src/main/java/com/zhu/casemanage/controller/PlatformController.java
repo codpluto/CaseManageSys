@@ -38,6 +38,7 @@ public class PlatformController {
         String token = servletRequestAttributes.getRequest().getHeader("token");
         Assert.notNull(token, "token获取失败");
         UserPojo user = userService.getUserByToken(token);
+        user.setPassword(null);
         return Result.success(user);
     }
 
@@ -115,6 +116,7 @@ public class PlatformController {
     @RequestMapping(value = "/getUserInfo", method = RequestMethod.GET)
     public Result getUserInfo(@RequestParam("userId") int userId){
         UserPojo userInfoById = userService.getUserInfoById(userId);
+        userInfoById.setPassword(null);
         return Result.success(userInfoById);
     }
 

@@ -1,5 +1,6 @@
 package com.zhu.casemanage.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.zhu.casemanage.dao.TrackDao;
@@ -9,6 +10,8 @@ import com.zhu.casemanage.pojo.TrackPojo;
 import com.zhu.casemanage.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TrackServiceImpl {
@@ -34,6 +37,21 @@ public class TrackServiceImpl {
             throw new BusinessException("该病例记录不存在");
         }
     }
+
+    /*
+    * 根据病例号查询病例进度列表
+    * */
+    public List<TrackPojo> getCaseTrackList(Long caseNumber){
+        LambdaQueryWrapper<TrackPojo> wrapper = new LambdaQueryWrapper<TrackPojo>();
+        wrapper.eq(TrackPojo::getCaseNumber,caseNumber)
+                        .orderByDesc(TrackPojo::getCreateTime);
+        List<TrackPojo> trackPojos = trackDao.selectList(wrapper);
+        if (trackPojos.size() == 0){
+            throw new BusinessException("该病例暂无病例进度");
+        }
+        return trackPojos;
+    }
+
 
     /*
     * 根据病例号和状态查询病例记录

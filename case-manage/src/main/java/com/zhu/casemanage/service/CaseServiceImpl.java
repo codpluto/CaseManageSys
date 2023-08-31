@@ -174,7 +174,7 @@ public class CaseServiceImpl {
         if (casePojo == null){
             throw new BusinessException("病例不存在");
         }
-        if (casePojo.getCaseState() <= 2){
+        if (casePojo.getCaseState() <= 4){
             return true;
         } else {
             return false;

@@ -171,6 +171,14 @@ public class CaseInfoController {
         return Result.success();
     }
 
+    @RequestMapping(value = "/clinicalCircumstance/{caseNumber}",method = RequestMethod.POST)
+    public Result postClinicalCircumstanceByCaseNumber(@PathVariable("caseNumber") Long caseNumber,
+                                                         @RequestParam String diagnosisInfos,
+                                                         @RequestParam String doctorRemark) {
+        caseService.updateClinicalCircumstance(caseNumber,diagnosisInfos,doctorRemark);
+        return Result.success();
+    }
+
     /*
      * 重启病例(阶段调整)，修改旧的病例号为新的病例号
      * */
