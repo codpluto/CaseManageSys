@@ -57,7 +57,7 @@ public class PreferServiceImpl {
         }
         UserPojo userPojo = userDao.selectOne(new LambdaQueryWrapper<UserPojo>().eq(UserPojo::getAccount, account));
         newPrefer.setUserId(userPojo.getUserId());
-        if (preferDao.update(newPrefer,new QueryWrapper<PreferPojo>().eq("id",newPrefer.getPreferId())) == 0){
+        if (preferDao.updateById(newPrefer) == 0){
             throw new BusinessException("偏好不存在");
         }
     }

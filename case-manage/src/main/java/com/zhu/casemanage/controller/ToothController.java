@@ -32,6 +32,7 @@ public class ToothController {
         map.put("preinstall",scheme.getPreinstall());
         map.put("orthodonticArch",scheme.getOrthodonticArch());
         map.put("extTooth",scheme.getExtTooth());
+        map.put("tooth_extraction",scheme.getToothExtraction());
         map.put("anchorageLeft",scheme.getAnchorageLeft());
         map.put("anchorageRight",scheme.getAnchorageRight());
         map.put("centerlineChoiceUp",scheme.getCenterlineChoiceUp());
