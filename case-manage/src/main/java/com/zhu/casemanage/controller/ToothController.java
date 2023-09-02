@@ -28,11 +28,14 @@ public class ToothController {
     @RequestMapping(value = "/toothSet/caseNumber/{caseNumber}",method = RequestMethod.GET)
     public Result getToothSetByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
         SchemePojo scheme = schemeService.getSchemeByNumber(caseNumber);
+        if (scheme == null){
+            return Result.success();
+        }
         HashMap<String, Object> map = new HashMap<>();
         map.put("preinstall",scheme.getPreinstall());
         map.put("orthodonticArch",scheme.getOrthodonticArch());
         map.put("extTooth",scheme.getExtTooth());
-        map.put("tooth_extraction",scheme.getToothExtraction());
+        map.put("toothExtraction",scheme.getToothExtraction());
         map.put("anchorageLeft",scheme.getAnchorageLeft());
         map.put("anchorageRight",scheme.getAnchorageRight());
         map.put("centerlineChoiceUp",scheme.getCenterlineChoiceUp());
@@ -79,7 +82,7 @@ public class ToothController {
     public Result getToothTagByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
         SchemePojo scheme = schemeService.getSchemeByNumber(caseNumber);
         if (scheme == null){
-            throw new BusinessException("病例不存在");
+            return Result.success();
         }
         HashMap<String, Object> map = new HashMap<>();
         map.put("unmovableTeeth",scheme.getUnmovableTeeth());

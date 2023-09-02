@@ -5,6 +5,12 @@ spring:
     url: jdbc:mysql://nj-cynosdbmysql-grp-r87qqusx.sql.tencentcdb.com:20530/case_manage?useUnicode=true&characterEncoding=utf-8&useSSL=false
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  jackson:
+
+    date-format: yyyy-MM-dd HH:mm:ss  #时间戳统一转换为指定格式
+
+    time-zone: GMT+8  # 时区修改为东8区 作者：CSLShare https://www.bilibili.com/read/cv16593259/ 出处：bilibili
+
   data:
     redis:
       host: localhost

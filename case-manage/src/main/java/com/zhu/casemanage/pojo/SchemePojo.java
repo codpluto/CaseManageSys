@@ -1,6 +1,7 @@
 package com.zhu.casemanage.pojo;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -91,7 +92,7 @@ public class SchemePojo {
     private String adjacentGlaze;
 
     @TableField(value = "is_excessive")
-    private Boolean isExcessive;
+    private int isExcessive;
 
     @TableField(value = "demand")
     private String demand;
@@ -100,8 +101,10 @@ public class SchemePojo {
     private Long caseNumber;
 
     @TableField(value = "create_time",fill = FieldFill.INSERT)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss",locale = "zh",timezone="GMT+8")
     private LocalDateTime createTime;
 
     @TableField(value = "update_time",fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss",locale = "zh",timezone="GMT+8")
     private LocalDateTime updateTime;
 }

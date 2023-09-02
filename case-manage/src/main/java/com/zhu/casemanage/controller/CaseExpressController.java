@@ -1,6 +1,9 @@
 package com.zhu.casemanage.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zhu.casemanage.dao.SendDao;
 import com.zhu.casemanage.pojo.CasePojo;
 import com.zhu.casemanage.pojo.SendPojo;
 import com.zhu.casemanage.pojo.TrackPojo;
@@ -27,6 +30,8 @@ public class CaseExpressController {
 
     @Autowired
     private TrackServiceImpl trackService;
+    @Autowired
+    private SendDao sendDao;
 
     /*
      * 根据病例号获取矫治器加工信息
@@ -70,15 +75,21 @@ public class CaseExpressController {
     * */
     @RequestMapping(value = "",method = RequestMethod.POST)
     public Result addCaseExpress(@RequestBody SendPojo newExpress){
-        newExpress.setExpressType(1);//1牙模寄出，2发货
-        sendService.addCaseExpress(newExpress);
-        TrackPojo newTrack = new TrackPojo();
-        newTrack.setCaseNumber(newExpress.getCaseNumber());
-        newTrack.setStatus(102);
-        newTrack.setRemark(Constant.EXPRESS.get(newExpress.getExpressId())+" "+newExpress.getExpressNum());
-        trackService.addTrack(newTrack);
-        if (caseService.getCaseByNumber(newTrack.getCaseNumber()).getCaseState() < 2){
-            caseService.updateCaseState(newExpress.getCaseNumber(), 2);
+        SendPojo sendPojo = sendDao.selectOne(new LambdaQueryWrapper<SendPojo>().eq(SendPojo::getCaseNumber, newExpress.getCaseNumber()).eq(SendPojo::getExpressType,1));
+        if (sendPojo == null){
+            newExpress.setExpressType(1);//1牙模寄出，2发货
+            sendService.addCaseExpress(newExpress);
+            TrackPojo newTrack = new TrackPojo();
+            newTrack.setCaseNumber(newExpress.getCaseNumber());
+            newTrack.setStatus(102);
+            newTrack.setRemark(Constant.EXPRESS.get(newExpress.getExpressId())+" "+newExpress.getExpressNum());
+            trackService.addTrack(newTrack);
+            if (caseService.getCaseByNumber(newTrack.getCaseNumber()).getCaseState() < 2){
+                caseService.updateCaseState(newExpress.getCaseNumber(), 2);
+            }
+        } else {
+            sendService.updateCaseExpress(newExpress);
+            trackService.updateCaseExpress(newExpress);
         }
         return Result.success();
     }
@@ -94,6 +105,9 @@ public class CaseExpressController {
 //    })
     public Result getCaseExpressByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
         SendPojo caseExpress = sendService.getCaseExpressByCaseNumber(caseNumber);
+        if (caseExpress == null){
+            return Result.success();
+        }
         HashMap<String, Object> map = new HashMap<>();
         map.put("caseNumber",caseExpress.getCaseNumber());
         map.put("expressId",caseExpress.getExpressId());

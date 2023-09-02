@@ -36,7 +36,7 @@ public class CasePojo {
     private String clinic;
 
     @TableField(value = "birthday")
-    private Date birthday;
+    private String birthday;
 
     @TableField(value = "address")
     private String address;
@@ -54,12 +54,15 @@ public class CasePojo {
     private String patientPhone;
 
     @TableField(value = "create_time",fill = FieldFill.INSERT)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",locale = "zh",timezone="GMT+8")
     private LocalDateTime createTime;
 
     @TableField(value = "update_time",fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss",locale = "zh",timezone="GMT+8")
     private LocalDateTime updateTime;
 
     @TableField(value = "commit_time")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss",locale = "zh",timezone="GMT+8")
     private LocalDateTime commitTime;
 
     @TableField(value = "case_state")
@@ -94,7 +97,7 @@ public class CasePojo {
     private int doctorId;
 
     @TableField(value = "treatment_date")
-    private Date treatmentDate;
+    private String treatmentDate;
 
     @TableField(value = "lower_sent_step")
     private int lowerSentStep;

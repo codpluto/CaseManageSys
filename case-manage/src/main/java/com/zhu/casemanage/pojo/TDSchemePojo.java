@@ -1,6 +1,7 @@
 package com.zhu.casemanage.pojo;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,15 +21,17 @@ public class TDSchemePojo {
     private String schemeName;
 
     @TableField(value = "is_pass")
-    private Boolean isPass;
+    private int isPass;
 
     @TableField(value = "is_viewed")
-    private Boolean isViewed;
+    private int isViewed;
 
     @TableField(value = "create_time",fill = FieldFill.INSERT)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss",locale = "zh",timezone="GMT+8")
     private LocalDateTime createTime;
 
     @TableField(value = "update_time",fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss",locale = "zh",timezone="GMT+8")
     private LocalDateTime updateTime;
 
     @TableField(value = "case_number")

@@ -63,7 +63,7 @@ public class SchemeServiceImpl {
                 .set("angle",toothSet.getAngle())
                 .set("preinstall",toothSet.getPreinstall());
         if (schemeDao.update(null,updateWrapper) == 0){
-            throw new BusinessException("病例不存在");
+            schemeDao.insert(toothSet);
         }
     }
 

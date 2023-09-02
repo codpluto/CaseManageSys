@@ -198,7 +198,7 @@ public class CaseStatusController {
         }
         TrackPojo newTrack = new TrackPojo();
         newTrack.setCaseNumber(tdSchemePojo1.getCaseNumber());
-        if (tdSchemePojo.getIsPass()){
+        if (tdSchemePojo.getIsPass() == 1){
             caseService.updateCaseState(tdSchemePojo1.getCaseNumber(), 9);
             newTrack.setStatus(110);
             String stateInfo = "(U:" + tdSchemePojo1.getUpperTotalStep() + "/L:" + tdSchemePojo1.getLowerTotalStep() + ")";
@@ -240,12 +240,12 @@ public class CaseStatusController {
         tdSchemePojo.setAuditorType(userPojo.getUserType());
 
         TDSchemePojo tdSchemePojo1 = tdSchemeDao.selectById(tdSchemePojo.getTdSchemeId());
-        if (tdSchemePojo == null){
+        if (tdSchemePojo1 == null){
             throw new BusinessException("该3D方案不存在");
         }
         TrackPojo newTrack = new TrackPojo();
         newTrack.setCaseNumber(tdSchemePojo1.getCaseNumber());
-        if (tdSchemePojo.getIsPass()){
+        if (tdSchemePojo.getIsPass() == 1){
             caseService.updateCaseState(tdSchemePojo1.getCaseNumber(), 9);
             newTrack.setStatus(112);
             String stateInfo = "(U:" + tdSchemePojo1.getUpperTotalStep() + "/L:" + tdSchemePojo1.getLowerTotalStep() + ")";
