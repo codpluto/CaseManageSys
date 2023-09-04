@@ -141,11 +141,12 @@ public class LoginController {
     * 验证验证码
     * */
     @RequestMapping(value = "/forgetPassword/checkCode",method = RequestMethod.POST)
-    public Result checkCode(@RequestParam("code") String code,
-                                 @RequestParam(value = "phone",defaultValue = "",required = false) String phone,
-                                 @RequestParam(value = "account",defaultValue = "",required = false) String account){
+    public Result checkCode(@RequestBody Map<String,Object> map){
+        String code = (String) map.get("code");
+        String account = (String) map.get("account");
+        String phone = (String) map.get("phone");
         String targetPhone;
-        if (phone.length() == 0){
+        if (phone == null){
             targetPhone = userService.getUserPhoneByAccount(account);
         } else {
             targetPhone = phone;
@@ -162,10 +163,11 @@ public class LoginController {
     * 修改密码
     * */
     @RequestMapping(value = "/forgetPassword/updatePassword",method = RequestMethod.PUT)
-    public Result updatePassword(@RequestParam(value = "newPassword") String newPassword,
-                                 @RequestParam(value = "phone",defaultValue = "",required = false) String phone,
-                                 @RequestParam(value = "account",defaultValue = "",required = false) String account){
-        if (phone.length() > 0){
+    public Result updatePassword(@RequestBody Map<String,Object> map){
+        String newPassword = (String) map.get("newPassword");
+        String phone = (String) map.get("phone");
+        String account = (String) map.get("account");
+        if (phone != null){
             LambdaUpdateWrapper<UserPojo> wrapper = new LambdaUpdateWrapper<>();
             wrapper.eq(UserPojo::getUserPhone,phone)
                     .set(UserPojo::getPassword,newPassword);

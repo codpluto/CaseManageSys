@@ -148,6 +148,9 @@ public class FileInfoController {
     @RequestMapping(value = "/{caseNumber}/file",method = RequestMethod.GET)
     public Result getFileListByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
         List<FilePojo> fileList = fileService.getFileListByCaseNumber(caseNumber);
+        if (fileList.size() == 0){
+            return Result.success();
+        }
         List<Map<String, Object>> list = new ArrayList<>();
         for (FilePojo file:
              fileList) {
@@ -166,8 +169,10 @@ public class FileInfoController {
     @RequestMapping(value = "/{caseNumber}/image",method = RequestMethod.GET)
     public Result getImageByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
         List<FilePojo> imageList = fileService.getImageListByNumber(caseNumber);
-
-        return Result.success(imageList);
+        if (imageList.size() > 0){
+            return Result.success(imageList);
+        }
+        return Result.success();
     }
 
     /*

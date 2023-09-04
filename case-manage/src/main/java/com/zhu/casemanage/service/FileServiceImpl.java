@@ -83,9 +83,9 @@ public class FileServiceImpl {
     * */
     public List<FilePojo> getFileListByCaseNumber(Long caseNumber){
         List<FilePojo> fileList = fileDao.selectList(new QueryWrapper<FilePojo>().eq("case_number", caseNumber));
-        if (fileList.size() == 0){
-            throw new BusinessException("文件不存在");
-        }
+//        if (fileList.size() == 0){
+//            throw new BusinessException("文件不存在");
+//        }
         return fileList;
     }
 
