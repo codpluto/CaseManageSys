@@ -25,6 +25,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/platform/caseStatus")
@@ -85,9 +86,13 @@ public class CaseStatusController {
      * 接收或者驳回病例
      * */
     @RequestMapping(value = "/reception",method = RequestMethod.PUT)
-    public Result caseReception(@RequestParam("caseNumber") Long caseNumber,
-                                @RequestParam("isPass") Boolean isPass,
-                                @RequestParam(value = "reason",defaultValue = "") String reason) {
+    public Result caseReception(@RequestBody Map<String,Object> map) {
+        Boolean isPass = (Boolean) map.get("isPass");
+        Long caseNumber = Long.valueOf((String) map.get("caseNumber"));
+        String reason = (String) map.get("reason");
+        if (reason == null){
+            reason = "";
+        }
         if (isPass){
             caseService.updateCaseState(caseNumber,4);
             TrackPojo newTrack = new TrackPojo();
