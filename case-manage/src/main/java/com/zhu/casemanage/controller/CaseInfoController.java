@@ -3,6 +3,7 @@ package com.zhu.casemanage.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zhu.casemanage.constant.UserConstant;
 import com.zhu.casemanage.pojo.*;
 import com.zhu.casemanage.service.*;
 import com.zhu.casemanage.utils.Constant;
@@ -94,6 +95,7 @@ public class CaseInfoController {
         TrackPojo newTrack = new TrackPojo();
         newTrack.setCaseNumber(newCaseInfo.getCaseNumber());
         newTrack.setStatus(101);
+        newTrack.setStatusName(UserConstant.TRACK.STATUS101);
         trackService.addTrack(newTrack);
         HashMap<String, Object> map = new HashMap<>();
         map.put("caseNumber",newCaseInfo.getCaseNumber().toString());
@@ -188,7 +190,7 @@ public class CaseInfoController {
         TrackPojo newTrack = new TrackPojo();
         newTrack.setCaseNumber(oldCaseNumber);
         newTrack.setStatus(119);
-
+        newTrack.setStatusName(UserConstant.TRACK.STATUS119);
         CasePojo newCase = caseService.restartCase(oldCaseNumber);
 
         newTrack.setRemark("新病例号："+newCase.getCaseNumber().toString());
@@ -217,6 +219,7 @@ public class CaseInfoController {
                         TrackPojo newTrack1 = new TrackPojo();
                         newTrack1.setCaseNumber(file.getCaseNumber());
                         newTrack1.setStatus(103);
+                        newTrack1.setStatusName(UserConstant.TRACK.STATUS103);
                         trackService.addTrack(newTrack1);
                         if (caseService.getCaseByNumber(file.getCaseNumber()).getCaseState() < 2){
                             caseService.updateCaseState(file.getCaseNumber(), 2);
@@ -234,6 +237,7 @@ public class CaseInfoController {
             TrackPojo newTrack1 = new TrackPojo();
             newTrack1.setCaseNumber(oldCaseExpress1.getCaseNumber());
             newTrack1.setStatus(102);
+            newTrack1.setStatusName(UserConstant.TRACK.STATUS102);
             newTrack1.setRemark(Constant.EXPRESS.get(oldCaseExpress1.getExpressId())+" "+oldCaseExpress1.getExpressNum());
             trackService.addTrack(newTrack1);
             if (caseService.getCaseByNumber(newTrack1.getCaseNumber()).getCaseState() < 2){

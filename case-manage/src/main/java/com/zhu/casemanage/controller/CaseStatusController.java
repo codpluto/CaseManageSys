@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.zhu.casemanage.constant.UserConstant;
 import com.zhu.casemanage.dao.CaseDao;
 import com.zhu.casemanage.dao.TDSchemeDao;
+import com.zhu.casemanage.dao.TrackDao;
 import com.zhu.casemanage.dao.UserDao;
 import com.zhu.casemanage.exception.BusinessException;
 import com.zhu.casemanage.pojo.CasePojo;
@@ -49,6 +50,8 @@ public class CaseStatusController {
     private RedisUtil redisUtil;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private TrackDao trackDao;
 
     /*
      * 根据病例号获取该患者的所有病例状态（变化记录，数组）
@@ -68,6 +71,7 @@ public class CaseStatusController {
         TrackPojo newTrack = new TrackPojo();
         newTrack.setCaseNumber(caseNumber);
         newTrack.setStatus(104);
+        newTrack.setStatusName(UserConstant.TRACK.STATUS104);
         trackService.addTrack(newTrack);
         caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,caseNumber).set(CasePojo::getCommitTime,newTrack.getCreateTime()));
         return Result.success();
@@ -98,12 +102,14 @@ public class CaseStatusController {
             TrackPojo newTrack = new TrackPojo();
             newTrack.setCaseNumber(caseNumber);
             newTrack.setStatus(106);
+            newTrack.setStatusName(UserConstant.TRACK.STATUS106);
             trackService.addTrack(newTrack);
         } else {
             caseService.updateCaseState(caseNumber,2);
             TrackPojo newTrack = new TrackPojo();
             newTrack.setCaseNumber(caseNumber);
             newTrack.setStatus(105);
+            newTrack.setStatusName(UserConstant.TRACK.STATUS105);
             newTrack.setRemark("理由："+reason);
             trackService.addTrack(newTrack);
         }
@@ -135,6 +141,7 @@ public class CaseStatusController {
         TrackPojo newTrack = new TrackPojo();
         newTrack.setCaseNumber(caseNumber);
         newTrack.setStatus(107);
+        newTrack.setStatusName(UserConstant.TRACK.STATUS107);
         newTrack.setRemark("分配技工主管："+userPojo.getUserName());
         trackService.addTrack(newTrack);
         return Result.success();
@@ -150,6 +157,7 @@ public class CaseStatusController {
         TrackPojo newTrack = new TrackPojo();
         newTrack.setCaseNumber(caseNumber);
         newTrack.setStatus(107);
+        newTrack.setStatusName(UserConstant.TRACK.STATUS107);
         newTrack.setRemark("分配技工："+userService.getUserInfoById(mechanicId).getUserName());
         trackService.addTrack(newTrack);
         return Result.success();
@@ -164,6 +172,7 @@ public class CaseStatusController {
         TrackPojo newTrack = new TrackPojo();
         newTrack.setCaseNumber(caseNumber);
         newTrack.setStatus(108);
+        newTrack.setStatusName(UserConstant.TRACK.STATUS108);
         trackService.addTrack(newTrack);
         return Result.success();
     }
@@ -206,6 +215,7 @@ public class CaseStatusController {
         if (tdSchemePojo.getIsPass() == 1){
             caseService.updateCaseState(tdSchemePojo1.getCaseNumber(), 9);
             newTrack.setStatus(110);
+            newTrack.setStatusName(UserConstant.TRACK.STATUS110);
             String stateInfo = "(U:" + tdSchemePojo1.getUpperTotalStep() + "/L:" + tdSchemePojo1.getLowerTotalStep() + ")";
             caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,tdSchemePojo1.getCaseNumber())
                     .set(CasePojo::getLowerTotalStep,tdSchemePojo1.getLowerTotalStep())
@@ -215,6 +225,7 @@ public class CaseStatusController {
         } else {
             caseService.updateCaseState(tdSchemePojo1.getCaseNumber(), 6);
             newTrack.setStatus(111);
+            newTrack.setStatusName(UserConstant.TRACK.STATUS111);
             caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,tdSchemePojo1.getCaseNumber())
                     .set(CasePojo::getStateInfo,"已驳回"));
         }
@@ -253,6 +264,7 @@ public class CaseStatusController {
         if (tdSchemePojo.getIsPass() == 1){
             caseService.updateCaseState(tdSchemePojo1.getCaseNumber(), 9);
             newTrack.setStatus(112);
+            newTrack.setStatusName(UserConstant.TRACK.STATUS112);
             String stateInfo = "(U:" + tdSchemePojo1.getUpperTotalStep() + "/L:" + tdSchemePojo1.getLowerTotalStep() + ")";
             caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,tdSchemePojo1.getCaseNumber())
                     .set(CasePojo::getLowerTotalStep,tdSchemePojo1.getLowerTotalStep())
@@ -262,6 +274,7 @@ public class CaseStatusController {
         } else {
             caseService.updateCaseState(tdSchemePojo1.getCaseNumber(), 6);
             newTrack.setStatus(113);
+            newTrack.setStatusName(UserConstant.TRACK.STATUS113);
             caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,tdSchemePojo1.getCaseNumber())
                     .set(CasePojo::getStateInfo,"已驳回"));
         }
@@ -279,6 +292,7 @@ public class CaseStatusController {
         TrackPojo newTrack = new TrackPojo();
         newTrack.setCaseNumber(tdSchemePojo.getCaseNumber());
         newTrack.setStatus(109);
+        newTrack.setStatusName(UserConstant.TRACK.STATUS109);
         trackService.addTrack(newTrack);
         switch (tdSchemePojo.getAuditorType()){
             case 1 : caseService.updateCaseState(tdSchemePojo.getCaseNumber(), 7);break;
@@ -286,7 +300,5 @@ public class CaseStatusController {
         }
         return Result.success();
     }
-
-
 
 }

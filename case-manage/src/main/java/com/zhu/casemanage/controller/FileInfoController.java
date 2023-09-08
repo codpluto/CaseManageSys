@@ -4,6 +4,7 @@ package com.zhu.casemanage.controller;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import com.zhu.casemanage.constant.UserConstant;
 import com.zhu.casemanage.exception.BusinessException;
 import com.zhu.casemanage.pojo.FilePojo;
 import com.zhu.casemanage.pojo.SendPojo;
@@ -131,6 +132,7 @@ public class FileInfoController {
                     TrackPojo newTrack = new TrackPojo();
                     newTrack.setCaseNumber(newFile.getCaseNumber());
                     newTrack.setStatus(103);
+                    newTrack.setStatusName(UserConstant.TRACK.STATUS103);
                     trackService.addTrack(newTrack);
                     if (caseService.getCaseByNumber(newFile.getCaseNumber()).getCaseState() < 2){
                         caseService.updateCaseState(newFile.getCaseNumber(), 2);

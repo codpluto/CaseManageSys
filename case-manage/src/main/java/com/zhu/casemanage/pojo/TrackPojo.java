@@ -38,4 +38,7 @@ public class TrackPojo {
     @TableField(value = "case_number")
     private Long caseNumber;
 
+    @TableField(value = "status_name")
+    private String statusName;
+
 }

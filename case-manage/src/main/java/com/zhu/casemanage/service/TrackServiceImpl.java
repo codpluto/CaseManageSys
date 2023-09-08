@@ -46,9 +46,9 @@ public class TrackServiceImpl {
         wrapper.eq(TrackPojo::getCaseNumber,caseNumber)
                         .orderByDesc(TrackPojo::getCreateTime);
         List<TrackPojo> trackPojos = trackDao.selectList(wrapper);
-        if (trackPojos.size() == 0){
-            throw new BusinessException("该病例暂无病例进度");
-        }
+//        if (trackPojos.size() == 0){
+//            throw new BusinessException("该病例暂无病例进度");
+//        }
         return trackPojos;
     }
 

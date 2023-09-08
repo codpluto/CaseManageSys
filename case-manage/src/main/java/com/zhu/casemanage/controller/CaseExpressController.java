@@ -3,6 +3,7 @@ package com.zhu.casemanage.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zhu.casemanage.constant.UserConstant;
 import com.zhu.casemanage.dao.SendDao;
 import com.zhu.casemanage.pojo.CasePojo;
 import com.zhu.casemanage.pojo.SendPojo;
@@ -82,6 +83,7 @@ public class CaseExpressController {
             TrackPojo newTrack = new TrackPojo();
             newTrack.setCaseNumber(newExpress.getCaseNumber());
             newTrack.setStatus(102);
+            newTrack.setStatusName(UserConstant.TRACK.STATUS102);
             newTrack.setRemark(Constant.EXPRESS.get(newExpress.getExpressId())+" "+newExpress.getExpressNum());
             trackService.addTrack(newTrack);
             if (caseService.getCaseByNumber(newTrack.getCaseNumber()).getCaseState() < 2){
@@ -138,11 +140,13 @@ public class CaseExpressController {
             TrackPojo newTrack1 = new TrackPojo();
             newTrack1.setCaseNumber(caseNumber);
             newTrack1.setStatus(117);
+            newTrack1.setStatusName(UserConstant.TRACK.STATUS117);
             newTrack1.setRemark("物流单号："+ sendInfo.getExpressNum());
             newTrack1.setRemarkEn("Tracking Num:"+sendInfo.getExpressNum());
             TrackPojo newTrack2 = new TrackPojo();
             newTrack2.setCaseNumber(caseNumber);
             newTrack2.setStatus(120);
+            newTrack2.setStatusName(UserConstant.TRACK.STATUS120);
             trackService.addTrack(newTrack1);
             trackService.addTrack(newTrack2);
         }
@@ -152,11 +156,13 @@ public class CaseExpressController {
             TrackPojo newTrack1 = new TrackPojo();
             newTrack1.setCaseNumber(caseNumber);
             newTrack1.setStatus(117);//此处新增“已确认收货”
+            newTrack1.setStatusName(UserConstant.TRACK.STATUS117);
             newTrack1.setRemark("物流单号："+ sendInfo.getExpressNum());
             newTrack1.setRemarkEn("Tracking Num:"+sendInfo.getExpressNum());
             TrackPojo newTrack2 = new TrackPojo();
             newTrack2.setCaseNumber(caseNumber);
             newTrack2.setStatus(118);//此处新增为“第i此发货完成，等待下一次发货”
+            newTrack2.setStatusName(UserConstant.TRACK.STATUS118);
             newTrack2.setRemark(Long.toString(count));
             newTrack2.setRemarkEn(Long.toString(count));
             trackService.addTrack(newTrack1);
@@ -185,6 +191,7 @@ public class CaseExpressController {
         TrackPojo newTrack = new TrackPojo();
         newTrack.setCaseNumber(caseNumber);
         newTrack.setStatus(115);//此处新增"安排生产"
+        newTrack.setStatusName(UserConstant.TRACK.STATUS115);
         trackService.addTrack(newTrack);
         if (newSend.getStepsLowOver() > caseInfo.getLowerSentStep()) {
             caseService.updateLowerSentStep(caseNumber,newSend.getStepsLowOver());
@@ -204,6 +211,7 @@ public class CaseExpressController {
         TrackPojo newTrack = new TrackPojo();
         newTrack.setCaseNumber(caseNumber);
         newTrack.setStatus(116);//此处新增"矫治器生产完成"
+        newTrack.setStatusName(UserConstant.TRACK.STATUS116);
         newTrack.setRemark("U:"+ newSend.getStepsLowStart() + "/" + newSend.getStepsLowOver()
                             + " L:" + newSend.getStepsUpStart() + "/" + newSend.getStepsUpOver());
         newTrack.setRemarkEn("U:"+ newSend.getStepsLowStart() + "/" + newSend.getStepsLowOver()
