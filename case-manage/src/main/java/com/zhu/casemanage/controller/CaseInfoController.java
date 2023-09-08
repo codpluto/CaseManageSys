@@ -4,6 +4,8 @@ package com.zhu.casemanage.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhu.casemanage.constant.UserConstant;
+import com.zhu.casemanage.dao.AddressDao;
+import com.zhu.casemanage.dao.UserDao;
 import com.zhu.casemanage.pojo.*;
 import com.zhu.casemanage.service.*;
 import com.zhu.casemanage.utils.Constant;
@@ -32,7 +34,10 @@ public class CaseInfoController {
     private SendServiceImpl sendService;
     @Autowired
     private ObjectMapper objectMapper;
-
+    @Autowired
+    private UserDao userDao;
+    @Autowired
+    private AddressDao addressDao;
 
     /*
      * 获取指定病例号的病例信息
@@ -91,6 +96,10 @@ public class CaseInfoController {
         CasePojo newCaseInfo = objectMapper.readValue(json, CasePojo.class);
         //新增病例
         newCaseInfo.setCaseState(1);
+        UserPojo doctorInfo = userDao.selectById(newCaseInfo.getDoctorId());
+        newCaseInfo.setDoctorName(doctorInfo.getUserName());
+        AddressPojo addressPojo = addressDao.selectById(newCaseInfo.getAddressId());
+        newCaseInfo.setAddress(addressPojo.getConsignee()+'-'+addressPojo.getPhone()+'-'+addressPojo.getConsigAddress()+'-'+addressPojo.getPostcode());
         caseService.addCase(newCaseInfo);
         TrackPojo newTrack = new TrackPojo();
         newTrack.setCaseNumber(newCaseInfo.getCaseNumber());

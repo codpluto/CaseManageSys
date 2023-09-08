@@ -187,6 +187,7 @@ public class CaseServiceImpl {
     public Map<String,Object> showCaseInfoPage(int pageNum,int pageSize,int status,String param){
         Page<CasePojo> casePojoPage = new Page<>(pageNum,pageSize);
         QueryWrapper<CasePojo> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc("create_time");
         if (status != -1){
             wrapper.eq("case_state",status);
         }
@@ -228,6 +229,7 @@ public class CaseServiceImpl {
     public Map<String,Object> showCaseInfoPageByUserType(int pageNum,int pageSize,int userType,int status,String param){
         Page<CasePojo> casePojoPage = new Page<>(pageNum,pageSize);
         QueryWrapper<CasePojo> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc("create_time");
         switch (userType){
             case 1 : wrapper.and(Wrapper -> Wrapper.eq("case_state",1)
                     .or().eq("case_state",2)
@@ -236,13 +238,13 @@ public class CaseServiceImpl {
                     .or().eq("case_state",12)
                     .or().eq("case_state",14));break;
             case 2 : wrapper.and(Wrapper -> Wrapper.eq("case_state",7));break;
-            case 3 : wrapper.and(Wrapper -> Wrapper.eq("case_state",3)
+            case 4 : wrapper.and(Wrapper -> Wrapper.eq("case_state",3)
                     .or().eq("case_state",4)
                     .or().eq("case_state",5)
-                    .or().eq("case_state",6)
+//                    .or().eq("case_state",6)
                     .or().eq("case_state",9)
                     .or().eq("case_state",10));break;
-            case 4 : wrapper.and(Wrapper -> Wrapper.eq("case_state",6));break;
+            case 3 : wrapper.and(Wrapper -> Wrapper.eq("case_state",6));break;
         }
         if (status != -1){
             wrapper.and(Wrapper -> Wrapper.eq("case_state",status));

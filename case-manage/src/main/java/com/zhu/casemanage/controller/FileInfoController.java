@@ -73,9 +73,9 @@ public class FileInfoController {
         String uuid = UUID.randomUUID().toString();
         String fileUUID = uuid + StrUtil.DOT + type;
         File uploadFile = new File(fileSavePath + fileUUID);
-
+        File dest = new File(uploadFile.getAbsolutePath());
         //将临时文件转存到指定磁盘位置
-        file.transferTo(uploadFile);
+        file.transferTo(dest);
 
         //设置下载的文件路径
         String url = req.getScheme() + "://" + req.getServerName() + ":" +
@@ -123,9 +123,6 @@ public class FileInfoController {
     public Result uploadFile(@RequestBody FilePojo newFile) {
 //        newStl.setFileType();
         if (fileService.addFile(newFile)){
-            if (newFile.getFileType() == 1){
-                caseService.updateCaseFacePhoto(newFile.getCaseNumber(), newFile.getFileUrl());
-            }
             if (newFile.getFileType() >= 14 && newFile.getFileType() <= 16){
                 TrackPojo track = trackService.getTrackByStatus(newFile.getCaseNumber(), 103);
                 if (track == null){
@@ -139,6 +136,9 @@ public class FileInfoController {
                     }
                 }
             }
+        }
+        if (newFile.getFileType() == 1){
+            caseService.updateCaseFacePhoto(newFile.getCaseNumber(), newFile.getFileUrl());
         }
         return Result.success();
     }

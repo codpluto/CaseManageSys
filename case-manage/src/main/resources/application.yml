@@ -24,6 +24,11 @@ spring:
           min-idle: 0
         shutdown-timeout: 0
 
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+
 
 server:
   port: 8083

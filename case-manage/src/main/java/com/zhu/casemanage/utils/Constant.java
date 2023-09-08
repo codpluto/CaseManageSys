@@ -9,6 +9,7 @@ public class Constant {
 
     static {
         EXPRESS = new ArrayList<>();
+        EXPRESS.add("");
         EXPRESS.add("顺丰");
         EXPRESS.add("德邦");
         EXPRESS.add("EMS");
