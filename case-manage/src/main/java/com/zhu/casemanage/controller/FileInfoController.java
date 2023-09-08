@@ -4,7 +4,9 @@ package com.zhu.casemanage.controller;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhu.casemanage.constant.UserConstant;
+import com.zhu.casemanage.dao.FileDao;
 import com.zhu.casemanage.exception.BusinessException;
 import com.zhu.casemanage.pojo.FilePojo;
 import com.zhu.casemanage.pojo.SendPojo;
@@ -41,6 +43,8 @@ public class FileInfoController {
     private TrackServiceImpl trackService;
     @Autowired
     private CaseServiceImpl caseService;
+    @Autowired
+    private FileDao fileDao;
 
 
     @Value("${file-save-path}")
@@ -135,6 +139,16 @@ public class FileInfoController {
                         caseService.updateCaseState(newFile.getCaseNumber(), 2);
                     }
                 }
+            }
+        } else {
+            FilePojo filePojo = fileDao.selectOne(new LambdaQueryWrapper<FilePojo>().eq(FilePojo::getFileType, newFile.getFileType()).eq(FilePojo::getCaseNumber, newFile.getCaseNumber()));
+            String delFileName = filePojo.getFileName();
+            File delFile = new File(fileSavePath + delFileName);
+            if (delFile.exists()) {
+                delFile.delete();
+                System.out.println("===============删除成功=================");
+            } else {
+                System.out.println("===============删除失败=================");
             }
         }
         if (newFile.getFileType() == 1){
