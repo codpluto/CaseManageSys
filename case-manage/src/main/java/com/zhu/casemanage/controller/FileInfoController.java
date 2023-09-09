@@ -126,7 +126,9 @@ public class FileInfoController {
     @RequestMapping(value = "/caseInfo/file",method = RequestMethod.POST)
     public Result uploadFile(@RequestBody FilePojo newFile) {
 //        newStl.setFileType();
-        if (fileService.addFile(newFile)){
+        Map<String, Object> map = fileService.addFile(newFile);
+        Integer isNew = (Integer) map.get("isNew");
+        if (isNew == 1){
             if (newFile.getFileType() >= 14 && newFile.getFileType() <= 16){
                 TrackPojo track = trackService.getTrackByStatus(newFile.getCaseNumber(), 103);
                 if (track == null){
@@ -141,14 +143,16 @@ public class FileInfoController {
                 }
             }
         } else {
-            FilePojo filePojo = fileDao.selectOne(new LambdaQueryWrapper<FilePojo>().eq(FilePojo::getFileType, newFile.getFileType()).eq(FilePojo::getCaseNumber, newFile.getCaseNumber()));
-            String delFileName = filePojo.getFileName();
-            File delFile = new File(fileSavePath + delFileName);
+            String fileUrl = (String) map.get("fileUrl");
+            File delFile = new File(fileSavePath + fileUrl.split("/")[4]);
             if (delFile.exists()) {
-                delFile.delete();
-                System.out.println("===============删除成功=================");
+                if (delFile.delete()){
+                    log.info("===============删除成功==================");
+                } else {
+                    log.info("===============删除失败=================");
+                }
             } else {
-                System.out.println("===============删除失败=================");
+                log.info("===============删除失败=================");
             }
         }
         if (newFile.getFileType() == 1){

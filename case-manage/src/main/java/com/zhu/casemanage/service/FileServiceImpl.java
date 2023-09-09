@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FileServiceImpl {
@@ -35,16 +37,22 @@ public class FileServiceImpl {
     /*
      * 添加文件
      * */
-    public Boolean addFile(FilePojo newFile){
-        LambdaUpdateWrapper<FilePojo> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(FilePojo::getFileType, newFile.getFileType()).eq(FilePojo::getCaseNumber, newFile.getCaseNumber())
-                .set(FilePojo::getFileName,newFile.getFileName())
-                .set(FilePojo::getFileUrl,newFile.getFileUrl());
-        if (fileDao.update(null,wrapper) == 0){
+    public Map<String,Object> addFile(FilePojo newFile){
+        FilePojo filePojo = fileDao.selectOne(new LambdaQueryWrapper<FilePojo>().eq(FilePojo::getCaseNumber, newFile.getCaseNumber()).eq(FilePojo::getFileType, newFile.getFileType()));
+        Map<String ,Object> map = new HashMap<>();
+        if (filePojo == null){
+            map.put("isNew",1);
             fileDao.insert(newFile);
-            return true;
+        } else {
+            LambdaUpdateWrapper<FilePojo> wrapper = new LambdaUpdateWrapper<>();
+            wrapper.eq(FilePojo::getFileType, newFile.getFileType()).eq(FilePojo::getCaseNumber, newFile.getCaseNumber())
+                    .set(FilePojo::getFileName,newFile.getFileName())
+                    .set(FilePojo::getFileUrl,newFile.getFileUrl());
+            fileDao.update(null,wrapper);
+            map.put("isNew",0);
+            map.put("fileUrl",filePojo.getFileUrl());
         }
-        return false;
+        return map;
     }
 
     /*
