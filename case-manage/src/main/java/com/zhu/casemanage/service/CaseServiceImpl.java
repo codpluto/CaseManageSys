@@ -200,7 +200,8 @@ public class CaseServiceImpl {
         map.put("list",records);
         map.put("endRow",records.size());
         map.put("firstPage",1);
-        map.put("lastPage",caseIPage.getPages());
+        Integer lastPage = Math.toIntExact(caseIPage.getPages());
+        map.put("lastPage",lastPage);
         map.put("pageNum",pageNum);
         map.put("pageSize",pageSize);
         map.put("pages",caseIPage.getPages());
@@ -258,7 +259,8 @@ public class CaseServiceImpl {
         map.put("list",records);
         map.put("endRow",records.size());
         map.put("firstPage",1);
-        map.put("lastPage",caseIPage.getPages());
+        Integer lastPage = Math.toIntExact(caseIPage.getPages());
+        map.put("lastPage",lastPage);
         map.put("pageNum",pageNum);
         map.put("pageSize",pageSize);
         map.put("pages",caseIPage.getPages());

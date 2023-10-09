@@ -301,4 +301,15 @@ public class CaseStatusController {
         return Result.success();
     }
 
+    @RequestMapping(value = "/complete/{caseNumber}",method = RequestMethod.PUT)
+    public Result completeCase(@PathVariable("caseNumber") Long caseNumber){
+        caseService.updateCaseState(caseNumber,15);
+        TrackPojo newTrack = new TrackPojo();
+        newTrack.setCaseNumber(caseNumber);
+        newTrack.setStatus(121);
+        newTrack.setStatusName(UserConstant.TRACK.STATUS121);
+        trackService.addTrack(newTrack);
+        return Result.success();
+    }
+
 }
