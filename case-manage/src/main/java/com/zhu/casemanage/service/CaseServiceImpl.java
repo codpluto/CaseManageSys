@@ -1,19 +1,24 @@
 package com.zhu.casemanage.service;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhu.casemanage.dao.CaseDao;
+import com.zhu.casemanage.dao.FileDao;
 import com.zhu.casemanage.exception.BusinessException;
 import com.zhu.casemanage.pojo.CasePojo;
+import com.zhu.casemanage.pojo.FilePojo;
 import com.zhu.casemanage.utils.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +28,11 @@ import java.util.Map;
 public class CaseServiceImpl {
     @Autowired
     private CaseDao caseDao;
+    @Autowired
+    private FileDao fileDao;
+
+    @Value("${file-save-path}")
+    private String fileSavePath;
 
     //根据病例号获取病例信息
     public CasePojo getCaseByNumber(Long caseNumber){
@@ -55,6 +65,25 @@ public class CaseServiceImpl {
         if (caseDao.deleteById(caseNumber) == 0){
             throw new BusinessException("病例不存在，删除失败");
         }
+        //删除病例中上传的文件
+        LambdaQueryWrapper<FilePojo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FilePojo::getCaseNumber,caseNumber);
+        List<FilePojo> filePojos = fileDao.selectList(wrapper);
+        for (FilePojo file:
+             filePojos) {
+            String fileUrl = file.getFileUrl();
+            File delFile = new File(fileSavePath + fileUrl.split("/")[4]);
+            if (delFile.exists()) {
+                if (delFile.delete()){
+                    log.info("===============删除成功==================");
+                } else {
+                    log.info("===============删除失败=================");
+                }
+            } else {
+                log.info("===============删除失败=================");
+            }
+        }
+        fileDao.delete(wrapper);
     }
 
     public void delKeepCase(Long caseNumber){
