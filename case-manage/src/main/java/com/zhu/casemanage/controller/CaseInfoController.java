@@ -1,10 +1,12 @@
 package com.zhu.casemanage.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhu.casemanage.constant.UserConstant;
 import com.zhu.casemanage.dao.AddressDao;
+import com.zhu.casemanage.dao.CaseDao;
 import com.zhu.casemanage.dao.UserDao;
 import com.zhu.casemanage.pojo.*;
 import com.zhu.casemanage.service.*;
@@ -38,6 +40,8 @@ public class CaseInfoController {
     private UserDao userDao;
     @Autowired
     private AddressDao addressDao;
+    @Autowired
+    private CaseDao caseDao;
 
     /*
      * 获取指定病例号的病例信息
@@ -115,6 +119,10 @@ public class CaseInfoController {
 
             for (FilePojo image:
                     imageList) {
+                if (image.getFileType() == 1){
+                    caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,newCaseInfo.getCaseNumber())
+                            .set(CasePojo::getFacePhoto,image.getFileUrl()));
+                }
                 image.setCaseNumber(newCaseInfo.getCaseNumber());
                 fileService.addFile(image);
             }
