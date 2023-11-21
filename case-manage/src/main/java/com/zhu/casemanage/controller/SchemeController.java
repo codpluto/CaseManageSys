@@ -232,7 +232,8 @@ public class SchemeController {
         if (isPass == 0){
             caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,caseNumber)
                     .set(CasePojo::getCaseState,6)
-                    .set(CasePojo::getStateInfo,"方案已驳回\n("+remark+")"));
+                    .set(CasePojo::getStateInfo,"方案已驳回\n("+remark+")")
+                    .set(CasePojo::getIsRejected,1));
             //新增track
             TrackPojo newTrack = new TrackPojo();
             newTrack.setCaseNumber(caseNumber);
@@ -273,7 +274,8 @@ public class SchemeController {
         if (isPass == 0){
             caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,caseNumber)
                     .set(CasePojo::getCaseState,6)
-                    .set(CasePojo::getStateInfo,"方案已驳回\n("+remark+")"));
+                    .set(CasePojo::getStateInfo,"方案已驳回\n("+remark+")")
+                    .set(CasePojo::getIsRejected,1));
             //新增track
             TrackPojo newTrack = new TrackPojo();
             newTrack.setCaseNumber(caseNumber);

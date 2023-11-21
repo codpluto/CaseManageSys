@@ -120,4 +120,7 @@ public class CasePojo {
     @TableField(value = "state_info")
     private String stateInfo;
 
+    @TableField(value = "is_rejected")
+    private int isRejected;
+
 }
