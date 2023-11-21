@@ -42,4 +42,10 @@ public class FilePojo {
 
     @TableField(value = "scheme_id")
     private int schemeId;
+
+    @TableField(value = "is_pass")
+    private int isPass;
+
+    @TableField(value = "remark")
+    private String remark;
 }
