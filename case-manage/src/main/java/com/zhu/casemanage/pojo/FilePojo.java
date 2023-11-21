@@ -48,4 +48,7 @@ public class FilePojo {
 
     @TableField(value = "remark")
     private String remark;
+
+    @TableField(value = "has_examined")
+    private int hasExamined;
 }

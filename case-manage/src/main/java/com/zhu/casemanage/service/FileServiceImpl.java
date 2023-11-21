@@ -1,5 +1,6 @@
 package com.zhu.casemanage.service;
 
+import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -9,12 +10,14 @@ import com.zhu.casemanage.pojo.FilePojo;
 import com.zhu.casemanage.pojo.SendPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.io.File;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class FileServiceImpl {
@@ -98,5 +101,30 @@ public class FileServiceImpl {
     }
 
 
+//    /*
+//    * 下载文件
+//    * */
+//    public static String downloadFile(String fileUrl) {
+//        long l = 0L;
+//        String path = null;
+//        String staticAndMksDir = null;
+//        if (fileUrl != null) {
+//            //下载时文件名称
+//            String fileName = fileUrl.substring(fileUrl.lastIndexOf("."));
+//            try {
+//                String dataStr = new SimpleDateFormat("yyyyMMdd").format(new Date());
+//                String uuidName = UUID.randomUUID().toString();
+//                path = "resources/images/"+dataStr+"/"+uuidName+fileName;
+//                staticAndMksDir = Paths.get(ResourceUtils.getURL("classpath:").getPath(),"resources", "images",dataStr).toString();
+//                HttpUtil.downloadFile(fileUrl, staticAndMksDir + File.separator + uuidName + fileName);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            } finally {
+//
+//            }
+//        }
+//        System.out.println(System.currentTimeMillis()-l);
+//        return path;
+//    }
 
 }

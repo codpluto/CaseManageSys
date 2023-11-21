@@ -16,16 +16,19 @@ import com.zhu.casemanage.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import cn.hutool.http.HttpUtil;//需要导入的包
+
 
 @RestController
 @Slf4j
@@ -44,6 +47,7 @@ public class SchemeController {
     private CaseDao caseDao;
     @Autowired
     private TrackDao trackDao;
+
 
     @Value("${file-save-path}")
     private String fileSavePath;
@@ -137,10 +141,10 @@ public class SchemeController {
         //将Json序列化为Diary类
         String json = scheme;
         Map<String, Object> map = objectMapper.readValue(json, Map.class);
-        String fileUrl = (String) map.get("fileUrl");
-        String upperSteps = (String) map.get("upperSteps");
-        String lowerSteps = (String) map.get("lowerSteps");
-        Long caseNumber = (Long) map.get("caseNumber");
+//        String fileUrl = (String) map.get("fileUrl");
+        Integer upperSteps = (Integer) map.get("upperSteps");
+        Integer lowerSteps = (Integer) map.get("lowerSteps");
+        Long caseNumber = Long.valueOf((String) map.get("caseNumber"));
 
 
         //获取文件原始名称
@@ -182,7 +186,12 @@ public class SchemeController {
         //更新上下颌步数
         caseDao.update(null, new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,caseNumber)
                 .set(CasePojo::getUpperTotalStep,upperSteps)
-                .set(CasePojo::getLowerTotalStep,lowerSteps));
+                .set(CasePojo::getLowerTotalStep,lowerSteps)
+                .set(CasePojo::getStateInfo,null));
+
+        //更新caseStatus
+        caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,caseNumber)
+                .set(CasePojo::getCaseState,8));
 
         //新增track
         TrackPojo newTrack = new TrackPojo();
@@ -199,7 +208,7 @@ public class SchemeController {
     * */
     @RequestMapping(value = "/schemeFile/{caseNumber}",method = RequestMethod.GET)
     public Result getSchemeFile(@PathVariable("caseNumber") Long caseNumber){
-        FilePojo filePojo = fileDao.selectOne(new LambdaQueryWrapper<FilePojo>().eq(FilePojo::getCaseNumber, caseNumber));
+        FilePojo filePojo = fileDao.selectOne(new LambdaQueryWrapper<FilePojo>().eq(FilePojo::getCaseNumber, caseNumber).eq(FilePojo::getFileType,17));
 //        Map<String,Object> map = new HashMap<>();
 //        map.put("file",filePojo);
 //        CasePojo casePojo = caseDao.selectOne(new LambdaQueryWrapper<CasePojo>().eq(CasePojo::getCaseNumber, caseNumber));
@@ -207,11 +216,11 @@ public class SchemeController {
     }
 
     /*
-    * 审核方案
+    * 医生审核方案
     * */
-    @RequestMapping(value = "examineScheme",method = RequestMethod.PUT)
-    public Result examineScheme(@RequestBody Map<String,Object> map){
-        Long caseNumber = (Long) map.get("caseNumber");
+    @RequestMapping(value = "examineScheme/doctor",method = RequestMethod.PUT)
+    public Result examineSchemeByDoctor(@RequestBody Map<String,Object> map){
+        Long caseNumber = Long.valueOf((String) map.get("caseNumber"));
         Integer isPass = (Integer) map.get("isPass");
         String remark = (String) map.get("remark");
 
@@ -225,15 +234,71 @@ public class SchemeController {
                     .set(CasePojo::getCaseState,6)
                     .set(CasePojo::getStateInfo,"方案已驳回\n("+remark+")"));
             //新增track
-
+            TrackPojo newTrack = new TrackPojo();
+            newTrack.setCaseNumber(caseNumber);
+            newTrack.setStatus(111);
+            newTrack.setStatusName(UserConstant.TRACK.STATUS111);
+            newTrack.setRemark(remark);
+            trackDao.insert(newTrack);
         } else {
             CasePojo casePojo = caseDao.selectOne(new LambdaQueryWrapper<CasePojo>().eq(CasePojo::getCaseNumber, caseNumber));
             caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,caseNumber)
                     .set(CasePojo::getCaseState,9)
                     .set(CasePojo::getStateInfo,"(U:"+casePojo.getUpperTotalStep()+"/L:"+casePojo.getLowerTotalStep()+")"));
+            //新增track
+            TrackPojo newTrack = new TrackPojo();
+            newTrack.setCaseNumber(caseNumber);
+            newTrack.setStatus(110);
+            newTrack.setStatusName(UserConstant.TRACK.STATUS110);
+            newTrack.setRemark(remark);
+            trackDao.insert(newTrack);
         }
         return Result.success();
     }
+
+    /*
+     * 专家审核方案
+     * */
+    @RequestMapping(value = "examineScheme/expert",method = RequestMethod.PUT)
+    public Result examineSchemeByExpert(@RequestBody Map<String,Object> map){
+        Long caseNumber = Long.valueOf((String) map.get("caseNumber"));
+        Integer isPass = (Integer) map.get("isPass");
+        String remark = (String) map.get("remark");
+
+        LambdaUpdateWrapper<FilePojo> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(FilePojo::getCaseNumber,caseNumber).eq(FilePojo::getFileType,17)
+                .set(FilePojo::getIsPass,isPass)
+                .set(FilePojo::getRemark,remark);
+        fileDao.update(null,wrapper);
+        if (isPass == 0){
+            caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,caseNumber)
+                    .set(CasePojo::getCaseState,6)
+                    .set(CasePojo::getStateInfo,"方案已驳回\n("+remark+")"));
+            //新增track
+            TrackPojo newTrack = new TrackPojo();
+            newTrack.setCaseNumber(caseNumber);
+            newTrack.setStatus(113);
+            newTrack.setStatusName(UserConstant.TRACK.STATUS113);
+            newTrack.setRemark(remark);
+            trackDao.insert(newTrack);
+        } else {
+            CasePojo casePojo = caseDao.selectOne(new LambdaQueryWrapper<CasePojo>().eq(CasePojo::getCaseNumber, caseNumber));
+            caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,caseNumber)
+                    .set(CasePojo::getCaseState,9)
+                    .set(CasePojo::getStateInfo,"(U:"+casePojo.getUpperTotalStep()+"/L:"+casePojo.getLowerTotalStep()+")"));
+            //新增track
+            TrackPojo newTrack = new TrackPojo();
+            newTrack.setCaseNumber(caseNumber);
+            newTrack.setStatus(112);
+            newTrack.setStatusName(UserConstant.TRACK.STATUS112);
+            newTrack.setRemark(remark);
+            trackDao.insert(newTrack);
+        }
+        return Result.success();
+    }
+
+
+
 
 }
 
