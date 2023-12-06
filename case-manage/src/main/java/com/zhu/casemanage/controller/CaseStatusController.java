@@ -2,6 +2,7 @@ package com.zhu.casemanage.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.zhu.casemanage.constant.UserConstant;
 import com.zhu.casemanage.dao.CaseDao;
@@ -73,7 +74,9 @@ public class CaseStatusController {
         newTrack.setStatus(104);
         newTrack.setStatusName(UserConstant.TRACK.STATUS104);
         trackService.addTrack(newTrack);
-        caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,caseNumber).set(CasePojo::getCommitTime,newTrack.getCreateTime()));
+        caseDao.update(null,new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,caseNumber)
+                .set(CasePojo::getCommitTime,newTrack.getCreateTime())
+                .set(CasePojo::getStateInfo,null));
         return Result.success();
     }
 
@@ -112,6 +115,8 @@ public class CaseStatusController {
             newTrack.setStatusName(UserConstant.TRACK.STATUS105);
             newTrack.setRemark("理由："+reason);
             trackService.addTrack(newTrack);
+            caseDao.update(null, new LambdaUpdateWrapper<CasePojo>().eq(CasePojo::getCaseNumber,caseNumber)
+                    .set(CasePojo::getStateInfo,"病例已驳回(" + reason + ")"));
         }
         return Result.success();
     }
