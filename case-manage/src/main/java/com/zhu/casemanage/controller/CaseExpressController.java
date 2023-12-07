@@ -25,10 +25,8 @@ public class CaseExpressController {
 
     @Autowired
     private SendServiceImpl sendService;
-
     @Autowired
     private CaseServiceImpl caseService;
-
     @Autowired
     private TrackServiceImpl trackService;
     @Autowired
@@ -63,13 +61,13 @@ public class CaseExpressController {
     }
 
     /*
-     * 根据病例号提交快递信息
-     * */
-//    @RequestMapping(value = "/caseId/{caseNumber}",method = RequestMethod.POST)
-//    public Result addCaseExpress(@PathVariable("caseNumber") Long caseNumber, @RequestParam int expressId,@RequestParam String expressNum) {
-//        sendService.updateCaseExpressByCaseNumber(caseNumber,expressId,expressNum);
-//        return Result.success();
-//    }
+//     * 根据病例号提交快递信息
+//     * */
+////    @RequestMapping(value = "/caseId/{caseNumber}",method = RequestMethod.POST)
+////    public Result addCaseExpress(@PathVariable("caseNumber") Long caseNumber, @RequestParam int expressId,@RequestParam String expressNum) {
+////        sendService.updateCaseExpressByCaseNumber(caseNumber,expressId,expressNum);
+////        return Result.success();
+////    }
 
     /*
     * 提交牙模寄出的快递信息
@@ -102,9 +100,6 @@ public class CaseExpressController {
      * 根据病例号获取患者的快递信息
      * */
     @RequestMapping(value = "/caseNumber/{caseNumber}",method = RequestMethod.GET)
-//    @MoreSerializeField({
-//            @SerializeField(clazz = SendPojo.class, includes = {"caseNumber","expressId","expressNum"}),
-//    })
     public Result getCaseExpressByCaseNumber(@PathVariable("caseNumber") Long caseNumber) {
         SendPojo caseExpress = sendService.getCaseExpressByCaseNumber(caseNumber);
         if (caseExpress == null){
@@ -181,6 +176,7 @@ public class CaseExpressController {
         return Result.success();
     }
 
+
     /*
      * 主管对对应病例号的患者进行生产操作
      * */
@@ -202,6 +198,7 @@ public class CaseExpressController {
         return Result.success();
     }
 
+
     /*
      * 主管对对应病例号的患者进行发货操作
      * */
@@ -220,7 +217,10 @@ public class CaseExpressController {
         newSend.setExpressType(2);
         newSend.setCaseNumber(caseNumber);
         sendService.addCaseExpress(newSend);
+
+        TrackPojo newTrack1
         return Result.success();
     }
+
 
 }

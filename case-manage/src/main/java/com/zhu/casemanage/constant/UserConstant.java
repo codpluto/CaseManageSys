@@ -29,5 +29,6 @@ public class UserConstant {
         public static final String  STATUS119 = "病例已阶段调整";
         public static final String  STATUS120 = "牙套发货完成";
         public static final String  STATUS121 = "病例已完结";
+        public static final String  STATUS122 = "发货中";
     }
 }
