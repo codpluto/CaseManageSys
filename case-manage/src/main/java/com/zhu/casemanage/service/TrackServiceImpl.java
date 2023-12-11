@@ -44,7 +44,8 @@ public class TrackServiceImpl {
     public List<TrackPojo> getCaseTrackList(Long caseNumber){
         LambdaQueryWrapper<TrackPojo> wrapper = new LambdaQueryWrapper<TrackPojo>();
         wrapper.eq(TrackPojo::getCaseNumber,caseNumber)
-                        .orderByDesc(TrackPojo::getCreateTime);
+                .orderByDesc(TrackPojo::getCreateTime)
+                .orderByDesc(TrackPojo::getTrackId);
         List<TrackPojo> trackPojos = trackDao.selectList(wrapper);
 //        if (trackPojos.size() == 0){
 //            throw new BusinessException("该病例暂无病例进度");

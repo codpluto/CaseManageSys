@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zhu.casemanage.constant.UserConstant;
 import com.zhu.casemanage.dao.SendDao;
+import com.zhu.casemanage.dao.TrackDao;
 import com.zhu.casemanage.pojo.CasePojo;
 import com.zhu.casemanage.pojo.SendPojo;
 import com.zhu.casemanage.pojo.TrackPojo;
@@ -31,6 +32,9 @@ public class CaseExpressController {
     private TrackServiceImpl trackService;
     @Autowired
     private SendDao sendDao;
+    @Autowired
+    private TrackDao trackDao;
+
 
     /*
      * 根据病例号获取矫治器加工信息
@@ -195,6 +199,17 @@ public class CaseExpressController {
         if (newSend.getStepsUpOver() > caseInfo.getUpperSentStep()) {
             caseService.updateUpperSentStep(caseNumber,newSend.getStepsUpOver());
         }
+
+        TrackPojo trackPojo = new TrackPojo();
+        trackPojo.setCaseNumber(caseNumber);
+        trackPojo.setStatus(123);//此处新增"矫治器生产中"
+        trackPojo.setStatusName(UserConstant.TRACK.STATUS123);
+        trackPojo.setRemark("U:"+ newSend.getStepsLowStart() + "/" + newSend.getStepsLowOver()
+                + " L:" + newSend.getStepsUpStart() + "/" + newSend.getStepsUpOver());
+        trackPojo.setRemarkEn("U:"+ newSend.getStepsLowStart() + "/" + newSend.getStepsLowOver()
+                + " L:" + newSend.getStepsUpStart() + "/" + newSend.getStepsUpOver());
+        trackDao.insert(trackPojo);
+
         return Result.success();
     }
 
@@ -213,12 +228,19 @@ public class CaseExpressController {
                             + " L:" + newSend.getStepsUpStart() + "/" + newSend.getStepsUpOver());
         newTrack.setRemarkEn("U:"+ newSend.getStepsLowStart() + "/" + newSend.getStepsLowOver()
                 + " L:" + newSend.getStepsUpStart() + "/" + newSend.getStepsUpOver());
-        trackService.addTrack(newTrack);
+//        trackService.addTrack(newTrack);
+        trackDao.insert(newTrack);
         newSend.setExpressType(2);
         newSend.setCaseNumber(caseNumber);
         sendService.addCaseExpress(newSend);
 
-        TrackPojo newTrack1
+        TrackPojo trackPojo = new TrackPojo();
+        trackPojo.setStatus(122);
+        trackPojo.setCaseNumber(caseNumber);
+        trackPojo.setStatusName(UserConstant.TRACK.STATUS122);
+        trackPojo.setRemark(Constant.EXPRESS.get(newSend.getExpressId()) + newSend.getExpressNum());
+        trackDao.insert(trackPojo);
+
         return Result.success();
     }
 
