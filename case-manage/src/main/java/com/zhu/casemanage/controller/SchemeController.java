@@ -146,6 +146,8 @@ public class SchemeController {
         Integer lowerSteps = (Integer) map.get("lowerSteps");
         Long caseNumber = Long.valueOf((String) map.get("caseNumber"));
 
+        fileDao.delete(new LambdaQueryWrapper<FilePojo>().eq(FilePojo::getCaseNumber,caseNumber)
+                .eq(FilePojo::getFileType,17));
 
         //获取文件原始名称
         String originalFilename = file.getOriginalFilename();
