@@ -2,15 +2,19 @@ package com.zhu.casemanage.controller;
 
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.resource.FileResource;
+import cn.hutool.core.io.resource.Resource;
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.deepoove.poi.XWPFTemplate;
 import com.zhu.casemanage.constant.UserConstant;
+import com.zhu.casemanage.dao.CaseDao;
 import com.zhu.casemanage.dao.FileDao;
+import com.zhu.casemanage.dao.SchemeDao;
 import com.zhu.casemanage.exception.BusinessException;
-import com.zhu.casemanage.pojo.FilePojo;
-import com.zhu.casemanage.pojo.SendPojo;
-import com.zhu.casemanage.pojo.TrackPojo;
+import com.zhu.casemanage.pojo.*;
 import com.zhu.casemanage.service.CaseServiceImpl;
 import com.zhu.casemanage.service.FileServiceImpl;
 import com.zhu.casemanage.service.TrackServiceImpl;
@@ -19,15 +23,19 @@ import com.zhu.casemanage.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -45,6 +53,10 @@ public class FileInfoController {
     private CaseServiceImpl caseService;
     @Autowired
     private FileDao fileDao;
+    @Autowired
+    private CaseDao caseDao;
+    @Autowired
+    private SchemeDao schemeDao;
 
 
     @Value("${file-save-path}")
@@ -216,6 +228,33 @@ public class FileInfoController {
         }
         return Result.success();
     }
+
+
+    @RequestMapping(value = "/download/{caseNumber}",method = RequestMethod.GET)
+    public Result download(@PathVariable("caseNumber") Long caseNumber) throws IOException {
+        CasePojo casePojo = caseDao.selectOne(new LambdaQueryWrapper<CasePojo>().eq(CasePojo::getCaseNumber, caseNumber));
+        SchemePojo schemePojo = schemeDao.selectOne(new LambdaQueryWrapper<SchemePojo>().eq(SchemePojo::getCaseNumber, caseNumber));
+
+        XWPFTemplate template = XWPFTemplate.compile("D:\\ZZY\\projectfiles\\IDEA\\CaseManageSys\\case-manage\\src\\main\\resources\\1.docx").render(
+                new HashMap<String, Object>(){{
+                    put("name", casePojo.getPatientName());
+                    put("doctor",casePojo.getDoctorName());
+                    put("gender",casePojo.getGender());
+//                    put("face","C:\\Users\\ZQH\\Desktop\\新建文件夹 (2)\\logo.png");
+                    put("birthday",casePojo.getBirthday());
+                    put("address",casePojo.getAddress());
+                    put("clinic",casePojo.getClinic());
+                    put("complaint",casePojo.getPatientComplaint());
+
+//                    put("face","C:\\Users\\ZQH\\Desktop\\新建文件夹 (2)\\logo.png");
+                    put("diagnosis_infos",casePojo.getDiagnosisInfos());
+                    put("doctor_remark",casePojo.getDoctorRemark());
+
+                }});
+        template.writeAndClose(new FileOutputStream("output.docx"));
+        return Result.success();
+    }
+
 
 
 
