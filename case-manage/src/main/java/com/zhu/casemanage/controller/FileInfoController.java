@@ -9,6 +9,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.deepoove.poi.XWPFTemplate;
+import com.deepoove.poi.data.Pictures;
 import com.zhu.casemanage.constant.UserConstant;
 import com.zhu.casemanage.dao.CaseDao;
 import com.zhu.casemanage.dao.FileDao;
@@ -231,16 +232,20 @@ public class FileInfoController {
 
 
     @RequestMapping(value = "/download/{caseNumber}",method = RequestMethod.GET)
-    public Result download(@PathVariable("caseNumber") Long caseNumber) throws IOException {
+    public Result download(@PathVariable("caseNumber") Long caseNumber,HttpServletRequest req) throws IOException {
         CasePojo casePojo = caseDao.selectOne(new LambdaQueryWrapper<CasePojo>().eq(CasePojo::getCaseNumber, caseNumber));
         SchemePojo schemePojo = schemeDao.selectOne(new LambdaQueryWrapper<SchemePojo>().eq(SchemePojo::getCaseNumber, caseNumber));
 
-        XWPFTemplate template = XWPFTemplate.compile("D:\\ZZY\\projectfiles\\IDEA\\CaseManageSys\\case-manage\\src\\main\\resources\\1.docx").render(
+        XWPFTemplate template = XWPFTemplate.compile("D:\\projectfiles\\IDEA\\CaseManageSys\\case-manage\\src\\main\\resources\\1.docx").render(
                 new HashMap<String, Object>(){{
                     put("name", casePojo.getPatientName());
                     put("doctor",casePojo.getDoctorName());
-                    put("gender",casePojo.getGender());
-//                    put("face","C:\\Users\\ZQH\\Desktop\\新建文件夹 (2)\\logo.png");
+                    if (casePojo.getGender() == 1){
+                        put("gender","男");
+                    } else {
+                        put("gender","女");
+                    }
+                    put("face", Pictures.ofLocal("D:\\用户\\桌面\\新建文件夹\\1.jpg").sizeInCm(3.8,5).create());
                     put("birthday",casePojo.getBirthday());
                     put("address",casePojo.getAddress());
                     put("clinic",casePojo.getClinic());
@@ -249,10 +254,103 @@ public class FileInfoController {
 //                    put("face","C:\\Users\\ZQH\\Desktop\\新建文件夹 (2)\\logo.png");
                     put("diagnosis_infos",casePojo.getDiagnosisInfos());
                     put("doctor_remark",casePojo.getDoctorRemark());
+                    switch (schemePojo.getOrthodonticArch()){
+                        case 1: put("orthodontic_arch","全口");break;
+                        case 2: put("orthodontic_arch","上颌");break;
+                        case 3: put("orthodontic_arch","下颌");break;
+                    }
+                    switch (schemePojo.getExtTooth()){
+                        case 1: put("ext_tooth","拔牙");
+                                put("tooth_extraction",schemePojo.getToothExtraction());
+                                break;
+                        case 2: put("ext_tooth","不拔牙");break;
+                    }
+                    switch (schemePojo.getAnchorageLeft()){
+                        case 1: put("anchorage_left","强");break;
+                        case 2: put("anchorage_left","中");break;
+                        case 3: put("anchorage_left","弱");break;
+                    }
+                    switch (schemePojo.getAnchorageRight()){
+                        case 1: put("anchorage_left","强");break;
+                        case 2: put("anchorage_left","中");break;
+                        case 3: put("anchorage_left","弱");break;
+                    }
+                    switch (schemePojo.getCenterlineChoiceUp()){
+                        case 1: put("centerline_choice_up","保持");break;
+                        case 2: put("centerline_choice_up","左调整");break;
+                        case 3: put("centerline_choice_up","右调整");break;
+                        case 4: put("centerline_choice_up","调整");break;
+                    }
+                    put("centerline_up_val",schemePojo.getCenterlineUpVal());
+                    put("centerline_low_val",schemePojo.getCenterlineLowVal());
+                    switch (schemePojo.getOverbiteAdjust()){
+                        case 1: put("overbite_adjust","保持");break;
+                        case 2: put("overbite_adjust","压低上下前牙/正常");break;
+                        case 3: put("overbite_adjust","压低上下前牙/Ⅰ度深覆");break;
+                        case 4: put("overbite_adjust","压低上下前牙/Ⅱ度深覆");break;
+                        case 5: put("overbite_adjust","压低上下前牙/Ⅲ度深覆");break;
+                        case 6: put("overbite_adjust","压低上前牙/正常");break;
+                        case 7: put("overbite_adjust","压低上前牙/Ⅰ度深覆");break;
+                        case 8: put("overbite_adjust","压低上前牙/Ⅱ度深覆");break;
+                        case 9: put("overbite_adjust","压低上前牙/Ⅲ度深覆");break;
+                        case 10: put("overbite_adjust","压低下前牙/正常");break;
+                        case 11: put("overbite_adjust","压低下前牙/Ⅰ度深覆");break;
+                        case 12: put("overbite_adjust","压低下前牙/Ⅱ度深覆");break;
+                        case 13: put("overbite_adjust","压低下前牙/Ⅲ度深覆");break;
+                    }
+                    switch (schemePojo.getOverjetAdjust()){
+                        case 1: put("overjet_adjust","保持");break;
+                        case 2: put("overjet_adjust","正常");break;
+                        case 3: put("overjet_adjust","轻度");break;
+                        case 4: put("overjet_adjust","中度");break;
+                        case 5: put("overjet_adjust","重度");break;
+                    }
+                    put("overjet_val",schemePojo.getOverjetVal());
+                    switch (schemePojo.getMolarRelationshipLeft()){
+                        case 1: put("molar_relationship_left","保持");break;
+                        case 2: put("molar_relationship_left","中性");break;
+                        case 3: put("molar_relationship_left","近中");break;
+                        case 4: put("molar_relationship_left","远中");break;
+                    }
+                    switch (schemePojo.getMolarRelationshipRight()){
+                        case 1: put("molar_relationship_right","保持");break;
+                        case 2: put("molar_relationship_right","中性");break;
+                        case 3: put("molar_relationship_right","近中");break;
+                        case 4: put("molar_relationship_right","远中");break;
+                    }
+                    put("crowding_tooth_up",schemePojo.getCrowdingToothUp());
+                    put("crowding_tooth_low",schemePojo.getCrowdingToothLow());
+                    switch (schemePojo.getMove()){
+                        case 1: put("move","0.15mm");break;
+                        case 2: put("move","0.2mm");break;
+                        case 3: put("move","0.25mm");break;
+                    }
+                    switch (schemePojo.getAngle()){
+                        case 1: put("angle","1°");break;
+                        case 2: put("angle","2°");break;
+                        case 3: put("angle","3°");break;
+                    }
+                    put("unmovable_teeth",schemePojo.getUnmovableTeeth());
+                    put("accessory_teeth",schemePojo.getAccessoryTeeth());
+                    put("interval_teeth",schemePojo.getIntervalTeeth());
+                    put("adjacent_glaze",schemePojo.getAdjacentGlaze());
+                    switch (schemePojo.getIsExcessive()){
+                        case 0: put("is_excessive","不需要");break;
+                        case 1: put("is_excessive","需要");break;
+                    }
+
 
                 }});
         template.writeAndClose(new FileOutputStream("output.docx"));
-        return Result.success();
+
+        //设置下载的文件路径
+        String url = req.getScheme() + "://" + req.getServerName() + ":" +
+                req.getServerPort() + "/uploadFile/output.docx";
+        Map<String,Object> map = new HashMap<>();
+//        map.put("name",originalFilename);
+        map.put("url",url);
+
+        return Result.success(map);
     }
 
 
