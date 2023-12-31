@@ -20,6 +20,7 @@ import com.zhu.casemanage.service.CaseServiceImpl;
 import com.zhu.casemanage.service.FileServiceImpl;
 import com.zhu.casemanage.service.TrackServiceImpl;
 import com.zhu.casemanage.utils.Constant;
+import com.zhu.casemanage.utils.MyFileUtil;
 import com.zhu.casemanage.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +38,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.Field;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @RestController
 @Slf4j
@@ -58,6 +62,7 @@ public class FileInfoController {
     private CaseDao caseDao;
     @Autowired
     private SchemeDao schemeDao;
+
 
 
     @Value("${file-save-path}")
@@ -354,6 +359,103 @@ public class FileInfoController {
     }
 
 
+//    @RequestMapping(value = "/download/caseInfo/{caseNumber}",method = RequestMethod.GET)
+//    public Result downloadCaseZip(@PathVariable("caseNumber") Long caseNumber,HttpServletResponse response) throws UnsupportedEncodingException{
+//
+//        List<FilePojo> filePojos = fileDao.selectList(new LambdaQueryWrapper<FilePojo>().eq(FilePojo::getCaseNumber, caseNumber)
+//                .between(FilePojo::getFileType, 14, 16));
+//
+//        response.reset();
+//        response.setHeader("Content-Disposition","attachment; filename=" + URLEncoder.encode("1.zip", "UTF-8"));
+//        response.setCharacterEncoding("utf-8");
+//
+//        response.setContentType("application/octet-stream");
+//
+//        try(ZipOutputStream zipOutputStream=new ZipOutputStream(new BufferedOutputStream(response.getOutputStream())))
+//        {
+//            for(FilePojo filePojo:filePojos)
+//            {
+//                String pathName = filePojo.getFileUrl();
+//                File file =new File(pathName);
+//                String fileName=file.getName();
+//                zipOutputStream.putNextEntry(new ZipEntry(fileName));
+//                try(BufferedInputStream bis=new BufferedInputStream(new FileInputStream(file))){
+//                    byte[] bytes = new byte[1024];
+//                    int i=0;
+//                    while((i=bis.read(bytes))!=-1)
+//                    {
+//                        zipOutputStream.write(bytes,0,i);
+//                    }
+//                    zipOutputStream.closeEntry();
+//                }catch (Exception e)
+//                {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//        }catch (Exception e)
+//        {
+//            e.printStackTrace();
+//        }
+//
+//        return Result.success();
+//    }
+
+
+
+
+
+    @GetMapping(value = "/download/caseInfo/{caseNumber}")
+    public Result downloadZipStream(HttpServletResponse response,HttpServletRequest request,
+                                  @PathVariable("caseNumber") Long caseNumber) throws IOException {
+        List<FilePojo> filePojos = fileDao.selectList(new LambdaQueryWrapper<FilePojo>().eq(FilePojo::getCaseNumber, caseNumber)
+                .between(FilePojo::getFileType, 14, 16));
+
+        Map<String, Object> caseInfoWord = fileService.getCaseInfoWord(caseNumber, request);
+
+        List<Map<String, String>> mapList = new ArrayList<>();
+//        String basePath = "C:\\Users\\LiGezZ\\Desktop\\测试文件_";
+        for (FilePojo filepojo:
+             filePojos) {
+            String localUrl = null;
+            String url = filepojo.getFileUrl();
+            int lastSlashIndex = url.lastIndexOf("/");
+            if (lastSlashIndex != -1 && lastSlashIndex < url.length() - 1) {
+                localUrl = fileSavePath + url.substring(lastSlashIndex + 1);
+            }
+
+            Map<String, String> map = new HashMap<>();
+            map.put("path", localUrl);
+            int lastDotIndex = url.lastIndexOf(".");
+            switch (filepojo.getFileType()){
+                case 14:
+                    map.put("name",filepojo.getCaseNumber().toString() + caseInfoWord.get("patientName") + "上颌模型" + "." + url.substring(lastDotIndex + 1));
+                    break;
+                case 15:
+                    map.put("name",filepojo.getCaseNumber().toString() + caseInfoWord.get("patientName") + "下颌模型" + "." + url.substring(lastDotIndex + 1));
+                    break;
+                case 16:
+                    map.put("name",filepojo.getCaseNumber().toString() + caseInfoWord.get("patientName") + "其他材料" + "." + url.substring(lastDotIndex + 1));
+                    break;
+            }
+            mapList.add(map);
+        }
+
+        String localUrl = null;
+        String url = (String) caseInfoWord.get("url");
+        int lastSlashIndex = url.lastIndexOf("/");
+        if (lastSlashIndex != -1 && lastSlashIndex < url.length() - 1) {
+            localUrl = fileSavePath + url.substring(lastSlashIndex + 1);
+        }
+        Map<String,String> tmp = new HashMap<>();
+        tmp.put("name", (String) caseInfoWord.get("name"));
+        tmp.put("path",localUrl);
+        mapList.add(tmp);
+
+//        FileUtil.zipDirFileToFile(mapList, request, response);
+        MyFileUtil.zipDirFileToFile(mapList,request,response);
+        return Result.success();
+    }
 
 
 }

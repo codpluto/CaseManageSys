@@ -3,6 +3,7 @@ package com.zhu.casemanage.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhu.casemanage.constant.UserConstant;
 import com.zhu.casemanage.dao.SendDao;
 import com.zhu.casemanage.dao.TrackDao;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/platform/caseExpress")
@@ -210,7 +212,19 @@ public class CaseExpressController {
                 + " L:" + newSend.getStepsUpStart() + "/" + newSend.getStepsUpOver());
         trackDao.insert(trackPojo);
 
+        sendDao.insert(newSend);
+
         return Result.success();
+    }
+
+
+    /*
+    * 查询病例最近一次生产记录
+    * */
+    @RequestMapping(value = "/lastProduce/{caseNumber}",method = RequestMethod.GET)
+    public Result getLastShipment(@PathVariable("caseNumber") Long caseNumber){
+        SendPojo lastProduce = sendService.getLastProduce(caseNumber);
+        return Result.success(lastProduce);
     }
 
 
@@ -230,9 +244,20 @@ public class CaseExpressController {
                 + " L:" + newSend.getStepsUpStart() + "/" + newSend.getStepsUpOver());
 //        trackService.addTrack(newTrack);
         trackDao.insert(newTrack);
-        newSend.setExpressType(2);
-        newSend.setCaseNumber(caseNumber);
-        sendService.addCaseExpress(newSend);
+
+//        newSend.setExpressType(2);
+//        newSend.setCaseNumber(caseNumber);
+//        sendService.addCaseExpress(newSend);
+
+        SendPojo lastProduce = sendService.getLastProduce(caseNumber);
+        sendDao.update(null,new LambdaUpdateWrapper<SendPojo>().eq(SendPojo::getSendId,lastProduce.getSendId())
+                .set(SendPojo::getStepsLowStart,newSend.getStepsLowStart())
+                .set(SendPojo::getStepsLowOver,newSend.getStepsLowOver())
+                .set(SendPojo::getStepsUpStart,newSend.getStepsUpStart())
+                .set(SendPojo::getStepsUpOver,newSend.getStepsUpOver())
+                .set(SendPojo::getExpressType,2)
+                .set(SendPojo::getExpressId,newSend.getExpressId())
+                .set(SendPojo::getExpressNum,newSend.getExpressNum()));
 
         TrackPojo trackPojo = new TrackPojo();
         trackPojo.setStatus(122);
@@ -244,5 +269,14 @@ public class CaseExpressController {
         return Result.success();
     }
 
+
+    /*
+    * 判断是否是第一次生产
+    * */
+    @RequestMapping(value = "/isFirstProduce/{caseNumber}",method = RequestMethod.GET)
+    public Result isFirstProduce(@PathVariable("caseNumber") Long caseNumber){
+        Map<String, Object> produce = sendService.produce(caseNumber);
+        return Result.success(produce);
+    }
 
 }
